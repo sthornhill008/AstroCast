@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <Version>1.7.1</Version>
+    <AssemblyVersion>1.7.1.0</AssemblyVersion>
+    <FileVersion>1.7.1.0</FileVersion>
+    <InformationalVersion>1.7.1</InformationalVersion>
+    <Description>AstroCast — shared test doubles for the presentation layer</Description>
+  </PropertyGroup>
+
+  <!--
+    THIS PROJECT MUST NOT REFERENCE ANY TEST FRAMEWORK.
+
+    That is the entire reason it exists. AstroCast.Tests is on xunit 2.9.3;
+    AstroCast.UiTests must be on xunit v3 because Avalonia.Headless.XUnit 12.x
+    depends on it, and the two majors cannot coexist in one assembly. Neither
+    test project could therefore reference the other, which left the UI tests
+    unable to construct a MainViewModel at all.
+
+    A library with no test-framework dependency is consumable by both. Adding
+    xunit (either major) here would re-create the boundary this project was
+    built to remove, so it stays framework-free — the doubles are plain
+    interface implementations and need nothing from a test runner.
+  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AstroCast.Core\AstroCast.Core.csproj" />
+    <ProjectReference Include="..\..\src\AstroCast.Presentation\AstroCast.Presentation.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Entitlements for the hardened runtime.
+
+  Every key here weakens the hardened runtime, so the set is deliberately
+  minimal and each entry has to earn its place by an observed failure rather
+  than by precedent. The reference procedure (APPLE_NOTARIZATION.md §10.3)
+  offers three plausible keys for a .NET app; only the ones below survived
+  testing on this application. See the slice 5c report for what was tried.
+
+  The failure mode this guards against is specific: the app notarizes and
+  staples cleanly, then dies immediately on launch with a codesigning or
+  memory-protection error. A missing entitlement is invisible until launch.
+-->
+<plist version="1.0">
+<dict>
+    <!--
+      The CoreCLR JIT writes native code into a memory page and then executes
+      it. The hardened runtime forbids exactly that unless this is granted, so
+      for any JIT-compiling runtime it is not optional.
+    -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+</dict>
+</plist>

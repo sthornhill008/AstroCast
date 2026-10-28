@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>1.7.1</Version>
+    <AssemblyVersion>1.7.1.0</AssemblyVersion>
+    <FileVersion>1.7.1.0</FileVersion>
+    <!--
+      InformationalVersion is load-bearing, not cosmetic: MainViewModel's
+      GetAppVersion() reads AssemblyInformationalVersionAttribute from
+      typeof(MainViewModel).Assembly — which is THIS assembly after the Phase 3
+      extraction — and feeds the WPF window title and AppVersion display.
+      Keep it in lockstep with the other project versions on every bump.
+    -->
+    <InformationalVersion>1.7.1</InformationalVersion>
+    <Description>AstroCast — shared presentation layer (view models and commands)</Description>
+  </PropertyGroup>
+
+  <!--
+    Test access to internal members (ReturnsViewModel's profection setters,
+    LocationSearchViewModel's test accessors).
+  -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="AstroCast.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AstroCast.Core\AstroCast.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GeoTimeZone" Version="6.1.0" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+  </ItemGroup>
+
+  <!--
+    The built-in CARTO key for the map's base-map tiles (BaseMapKeyLoader). CartoKeyFile
+    names the file it is read from at build time; by default .astrocast/carto-key.txt under
+    the user's profile folder, outside the repository. The file is embedded only when it
+    exists. A build without it succeeds, has no built-in key and says so in one message.
+    The key is a secret: never commit, copy or print the file.
+  -->
+  <PropertyGroup>
+    <CartoKeyFile Condition="'$(CartoKeyFile)' == ''">$([System.IO.Path]::Combine($([System.Environment]::GetFolderPath(SpecialFolder.UserProfile)), '.astrocast', 'carto-key.txt'))</CartoKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition="Exists('$(CartoKeyFile)')">
+    <EmbeddedResource Include="$(CartoKeyFile)" LogicalName="AstroCast.Presentation.CartoKey" Visible="false" />
+  </ItemGroup>
+
+  <Target Name="ReportNoCartoKey" BeforeTargets="CoreCompile" Condition="!Exists('$(CartoKeyFile)')">
+    <Message Importance="high" Text="AstroCast.Presentation: no CARTO key file at $(CartoKeyFile); building without a built-in base-map key." />
+  </Target>
+
+</Project>

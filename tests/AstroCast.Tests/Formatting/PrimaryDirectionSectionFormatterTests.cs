@@ -1,0 +1,290 @@
+using System.Text;
+
+using AstroCast.Core.Enums;
+using AstroCast.Core.Formatting;
+using AstroCast.Core.Models;
+using AstroCast.Core.Models.PrimaryDirections;
+
+using FluentAssertions;
+
+namespace AstroCast.Tests.Formatting;
+
+/// <summary>
+/// <see cref="PrimaryDirectionSectionFormatter"/> (branch PrimaryExport, 1.5.0): the header lines by their
+/// rules, the table's columns and cells, and the none sentence, on synthetic charts and hits.
+/// </summary>
+[Trait("Category", "Unit")]
+public sealed class PrimaryDirectionSectionFormatterTests
+{
+    /// <summary>The header lines print in order, directly after the heading and a blank, with no blank between them.</summary>
+    [Fact]
+    public void AppendSection_PrintsTheHeaderLinesInOrderWithNoBlankBetween()
+    {
+        List<string> lines = Section(Result(leftOut: 0, sourceNotes: "Birth Certificate"), [], "Sub", "None.");
+
+        lines[0].Should().Be("## Primary Directions");
+        lines[1].Should().BeEmpty();
+        lines[2].Should().Be("**Method:** Placidus semi-arc, in zodiaco; direct and converse (traditional)");
+        lines[3].Should().Be("**Key:** Naibod (0°59′08″ a year)");
+        lines[4].Should().Be("**Significators:** Ascendant, Midheaven, Sun, Moon, Part of Fortune; the Descendant and IC by the conjunctions of bodies and stars");
+        lines[5].Should().Be("**Promissors:** the planets and Chiron with the Ptolemaic aspects, the node by conjunction and opposition; their antiscia and the 55 fixed stars by conjunction");
+        lines[6].Should().BeEmpty();
+        lines[7].Should().Be("### Sub");
+    }
+
+    /// <summary>The Key line names the setting's key by its display name.</summary>
+    /// <param name="key">The key.</param>
+    /// <param name="expected">The line.</param>
+    [Theory]
+    [InlineData(PrimaryDirectionKey.Naibod, "**Key:** Naibod (0°59′08″ a year)")]
+    [InlineData(PrimaryDirectionKey.Ptolemy, "**Key:** Ptolemy (1° a year)")]
+    [InlineData(PrimaryDirectionKey.SolarArcRightAscension, "**Key:** True solar arc in right ascension")]
+    public void Key_PrintsTheKeysDisplayName(PrimaryDirectionKey key, string expected)
+    {
+        List<string> lines = Section(Result(settings: new PrimaryDirectionSettings { Key = key }), [], "Sub", "None.");
+
+        lines.Should().Contain(expected);
+    }
+
+    /// <summary>With the planets as significators the line adds Mercury to Pluto after the Part of Fortune.</summary>
+    [Fact]
+    public void Significators_WithPlanets_AddMercuryToPluto()
+    {
+        List<string> lines = Section(Result(settings: new PrimaryDirectionSettings { PlanetsAsSignificators = true }), [], "Sub", "None.");
+
+        lines.Should().Contain("**Significators:** Ascendant, Midheaven, Sun, Moon, Part of Fortune, Mercury to Pluto; the Descendant and IC by the conjunctions of bodies and stars");
+    }
+
+    /// <summary>Above one, the Left out line is plural and names the latitude F4 with N.</summary>
+    [Fact]
+    public void LeftOut_AboveOne_PrintsThePluralLine()
+    {
+        List<string> lines = Section(Result(leftOut: 60), [], "Sub", "None.");
+
+        lines.Should().Contain("**Left out:** 60 directions whose point never rises or sets at 40.7128° N (no semi-arc)");
+    }
+
+    /// <summary>One direction left out reads in the singular.</summary>
+    [Fact]
+    public void LeftOut_One_IsSingular()
+    {
+        List<string> lines = Section(Result(leftOut: 1), [], "Sub", "None.");
+
+        lines.Should().Contain("**Left out:** 1 direction whose point never rises or sets at 40.7128° N (no semi-arc)");
+    }
+
+    /// <summary>Nothing left out prints no line.</summary>
+    [Fact]
+    public void LeftOut_Zero_PrintsNoLine()
+    {
+        List<string> lines = Section(Result(leftOut: 0), [], "Sub", "None.");
+
+        lines.Should().NotContain(l => l.StartsWith("**Left out:**", StringComparison.Ordinal));
+    }
+
+    /// <summary>A southern latitude prints its magnitude with S.</summary>
+    [Fact]
+    public void LeftOut_SouthernLatitude_PrintsS()
+    {
+        List<string> lines = Section(Result(leftOut: 12, latitude: -33.8688), [], "Sub", "None.");
+
+        lines.Should().Contain("**Left out:** 12 directions whose point never rises or sets at 33.8688° S (no semi-arc)");
+    }
+
+    /// <summary>
+    /// The Birth time line prints when the source is null, blank or "Unknown" in any case, naming the state,
+    /// and not when a source is given.
+    /// </summary>
+    /// <param name="sourceNotes">The chart's birth-time source.</param>
+    /// <param name="expectedState">The words after "Birth Time Source", or null for no line.</param>
+    [Theory]
+    [InlineData(null, "not specified")]
+    [InlineData("", "not specified")]
+    [InlineData("   ", "not specified")]
+    [InlineData("Unknown", "Unknown")]
+    [InlineData("UNKNOWN", "Unknown")]
+    [InlineData("Birth Certificate", null)]
+    public void BirthTime_Line_FollowsTheSource(string? sourceNotes, string? expectedState)
+    {
+        List<string> lines = Section(Result(sourceNotes: sourceNotes), [], "Sub", "None.");
+
+        if (expectedState is null)
+        {
+            lines.Should().NotContain(l => l.StartsWith("**Birth time:**", StringComparison.Ordinal));
+        }
+        else
+        {
+            lines.Should().Contain(
+                $"**Birth time:** unconfirmed (Birth Time Source {expectedState}): every date below moves with the birth time; see Months/min");
+        }
+    }
+
+    /// <summary>With an uncertainty the table has a Range column naming it, and its separator cell.</summary>
+    [Fact]
+    public void Table_RangeColumn_WhenUncertaintySet()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [Hit()], "Sub", "None.");
+
+        lines.Should().Contain("| Date (UTC) | Age | D/C | Significator | Aspect | Promissor | Arc | Months/min | Range (±4 min) |");
+        lines.Should().Contain("|------------|-----|-----|--------------|--------|-----------|-----|------------|----------------|");
+    }
+
+    /// <summary>Without an uncertainty the table ends at Months/min.</summary>
+    [Fact]
+    public void Table_NoRangeColumn_WhenUncertaintyZero()
+    {
+        List<string> lines = Section(Result(), [Hit()], "Sub", "None.");
+
+        lines.Should().Contain("| Date (UTC) | Age | D/C | Significator | Aspect | Promissor | Arc | Months/min |");
+        lines.Should().Contain("|------------|-----|-----|--------------|--------|-----------|-----|------------|");
+        lines.Should().NotContain(l => l.Contains("Range", StringComparison.Ordinal));
+    }
+
+    /// <summary>A null Months/min and a null Range print an em dash each.</summary>
+    [Fact]
+    public void Table_NullMonthsAndRange_PrintDashes()
+    {
+        PrimaryDirectionHit hit = Hit(monthsPerMinute: null, rangeStart: null, rangeEnd: null);
+
+        string row = PrimaryDirectionSectionFormatter.FormatRow(hit, withRange: true);
+
+        row.Should().EndWith("| 16°00′ | — | — |");
+    }
+
+    /// <summary>The aspect label by aspect and the angle's sign: sin for the positive, dex for the negative.</summary>
+    /// <param name="aspect">The aspect.</param>
+    /// <param name="angle">The signed angle.</param>
+    /// <param name="expected">The label.</param>
+    [Theory]
+    [InlineData(PrimaryDirectionAspect.Conjunction, 0.0, "cnj")]
+    [InlineData(PrimaryDirectionAspect.Opposition, 180.0, "opp")]
+    [InlineData(PrimaryDirectionAspect.Sextile, 60.0, "sxt sin")]
+    [InlineData(PrimaryDirectionAspect.Sextile, -60.0, "sxt dex")]
+    [InlineData(PrimaryDirectionAspect.Square, 90.0, "sqr sin")]
+    [InlineData(PrimaryDirectionAspect.Square, -90.0, "sqr dex")]
+    [InlineData(PrimaryDirectionAspect.Trine, 120.0, "tri sin")]
+    [InlineData(PrimaryDirectionAspect.Trine, -120.0, "tri dex")]
+    [InlineData(PrimaryDirectionAspect.Antiscion, 0.0, "antiscion")]
+    [InlineData(PrimaryDirectionAspect.ContraAntiscion, 0.0, "contra-antiscion")]
+    public void AspectLabel_ByAspectAndSign(PrimaryDirectionAspect aspect, double angle, string expected)
+    {
+        PrimaryDirectionSectionFormatter.AspectLabel(Hit(aspect: aspect, angle: angle)).Should().Be(expected);
+    }
+
+    /// <summary>
+    /// Months per minute print signed to one decimal, "+0.0;-0.0;0.0": a figure that rounds to zero prints 0.0
+    /// without a sign, the format's third section.
+    /// </summary>
+    /// <param name="months">The figure.</param>
+    /// <param name="expected">The cell.</param>
+    [Theory]
+    [InlineData(-2.9539, "-3.0")]
+    [InlineData(2.136, "+2.1")]
+    [InlineData(0.04, "0.0")]
+    public void MonthsPerMinute_Format(double months, string expected)
+    {
+        PrimaryDirectionSectionFormatter.FormatMonthsPerMinute(months).Should().Be(expected);
+    }
+
+    /// <summary>A row prints every cell: the UT date, the age to two decimals, D, the names, the label, the arc, the months and the range.</summary>
+    [Fact]
+    public void Row_PrintsEveryCell()
+    {
+        string row = PrimaryDirectionSectionFormatter.FormatRow(Hit(), withRange: true);
+
+        row.Should().Be("| 2016-03-26 | 16.23 | D | Midheaven | cnj | Moon | 16°00′ | -3.0 | 2015-04-02 to 2017-03-21 |");
+    }
+
+    /// <summary>Without a hit the sub-heading prints, then the none sentence in the table's place.</summary>
+    [Fact]
+    public void NoHits_PrintsTheSubheadingAndTheNoneSentence()
+    {
+        List<string> lines = Section(Result(), [], "Primary Directions, Birth to Age 100", "No primary direction falls before age 100.");
+
+        int heading = lines.IndexOf("### Primary Directions, Birth to Age 100");
+        heading.Should().BePositive();
+        lines[heading + 1].Should().BeEmpty();
+        lines[heading + 2].Should().Be("No primary direction falls before age 100.");
+        lines.Should().NotContain(l => l.StartsWith("| Date (UTC)", StringComparison.Ordinal));
+    }
+
+    #region Helpers
+
+    /// <summary>The section's lines for a result and its hits.</summary>
+    private static List<string> Section(
+        PrimaryDirectionResult result, IReadOnlyList<PrimaryDirectionHit> hits, string subheading, string noneSentence)
+    {
+        StringBuilder sb = new();
+        PrimaryDirectionSectionFormatter.AppendSection(sb, result, hits, subheading, noneSentence);
+        return [.. sb.ToString().Split('\n').Select(l => l.TrimEnd('\r'))];
+    }
+
+    /// <summary>A result over a minimal chart at a latitude with a birth-time source.</summary>
+    private static PrimaryDirectionResult Result(
+        int leftOut = 0, string? sourceNotes = null, double latitude = 40.7128, PrimaryDirectionSettings? settings = null) => new()
+    {
+        NatalChart = MinimalChart(latitude, sourceNotes),
+        Settings = settings ?? PrimaryDirectionSettings.Default,
+        Hits = [],
+        LeftOutCount = leftOut,
+    };
+
+    /// <summary>The direct Moon conjunct the Midheaven of J2000 NYC, with Tier B's figures, as a synthetic hit.</summary>
+    private static PrimaryDirectionHit Hit(
+        PrimaryDirectionAspect aspect = PrimaryDirectionAspect.Conjunction,
+        double angle = 0.0,
+        double? monthsPerMinute = -2.9539,
+        DateTime? rangeStart = null,
+        DateTime? rangeEnd = null) => new()
+    {
+        Significator = "Midheaven",
+        Promissor = "Moon",
+        PromissorKind = PrimaryDirectionPromissorKind.Body,
+        Aspect = aspect,
+        AspectAngle = angle,
+        Motion = PrimaryDirectionMotion.Direct,
+        Arc = 16.001096,
+        Years = 16.234098,
+        JulianDayUt = 2457474.377752,
+        InstantUtc = new DateTime(2016, 3, 26, 21, 3, 58, DateTimeKind.Utc),
+        MonthsPerMinute = monthsPerMinute,
+        RangeStartUtc = rangeStart ?? (monthsPerMinute is null ? null : new DateTime(2015, 4, 2, 5, 50, 20, DateTimeKind.Utc)),
+        RangeEndUtc = rangeEnd ?? (monthsPerMinute is null ? null : new DateTime(2017, 3, 21, 12, 18, 15, DateTimeKind.Utc)),
+    };
+
+    /// <summary>A chart with only what the section reads: its latitude and its birth-time source.</summary>
+    private static ChartResult MinimalChart(double latitude, string? sourceNotes) => new()
+    {
+        Input = new ChartInput
+        {
+            Name = "Section Fixture",
+            LocalDateTime = new DateTime(2000, 1, 1, 7, 0, 0),
+            TimeZone = "America/New_York",
+            Latitude = latitude,
+            Longitude = -74.006,
+            LocationName = "New York City",
+            EventType = "Birth",
+            SourceNotes = sourceNotes,
+        },
+        JulianDay = 2451545.0,
+        Obliquity = 23.4367,
+        UtcDateTime = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Utc),
+        Positions = [],
+        Houses = new HouseData { Cusps = [], Ascendant = 0.0, Midheaven = 270.0, Armc = 270.0, Vertex = 180.0 },
+        Aspects = [],
+        Midpoints = [],
+        MidpointActivations = [],
+        Dignities = [],
+        MoonCondition = null,
+        ChartContext = null,
+        FixedStarConjunctions = [],
+        ResolvedUtcOffsetHours = -5.0,
+        ResolvedOffsetLabel = "EST (UTC−5)",
+        EngineVersion = "AstroCast 1.5.0 (SwissEph 2.10.03)",
+        CalculatedAt = DateTime.UtcNow,
+    };
+
+    #endregion
+}

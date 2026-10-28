@@ -1,0 +1,97 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>AstroCast.Avalonia</RootNamespace>
+    <Version>1.7.1</Version>
+    <AssemblyVersion>1.7.1.0</AssemblyVersion>
+    <FileVersion>1.7.1.0</FileVersion>
+    <InformationalVersion>1.7.1</InformationalVersion>
+    <Description>AstroCast — cross-platform Avalonia UI head</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <!--
+    Compiled bindings ON by default, project-wide.
+
+    This is set here rather than per-file deliberately. With it enabled, a
+    binding path that does not exist on the view's x:DataType is an AVLN2000
+    BUILD ERROR; without it, the same typo is a silent runtime no-op that leaves
+    the target property at its previous value and emits only a Binding log
+    warning. Roughly 2,400 lines of WPF markup have still to be translated, and
+    retrofitting this setting after the fact is far more expensive than starting
+    with it — every view added from here carries the guarantee automatically.
+
+    Every view and DataTemplate must therefore declare x:DataType.
+  -->
+  <PropertyGroup>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AstroCast.Core\AstroCast.Core.csproj" />
+    <ProjectReference Include="..\AstroCast.Presentation\AstroCast.Presentation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The UI tests reach MessageWindow, ConfirmationWindow and App's two message texts (O-8). -->
+    <InternalsVisibleTo Include="AstroCast.UiTests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+    <!--
+      Avalonia.Skia is pinned explicitly even though nothing in this slice
+      renders through it. Mapsui.Avalonia12 declares a minimum of Avalonia
+      12.0.2, so without an explicit pin NuGet would later resolve
+      Avalonia.Skia 12.0.2 (and a prerelease SkiaSharp) alongside Avalonia
+      12.1.0. Establishing the pin now means the map slice cannot silently
+      introduce a split renderer version.
+    -->
+    <PackageReference Include="Avalonia.Skia" Version="12.1.0" />
+    <!--
+      The astrocartography map. Mapsui.Avalonia12 5.1.0 is the Avalonia 12
+      binding of Mapsui core 5.1.0; the WPF head uses Mapsui.Wpf 5.0.2, and the
+      map-drawing code is shared between the two because it speaks Mapsui's own
+      Color/Brush/Pen rather than either framework's.
+
+      THE PIN ABOVE IS LOAD BEARING FOR THIS REFERENCE. Mapsui.Avalonia12 asks
+      for Avalonia and Avalonia.Skia 12.0.2 and for SkiaSharp
+      3.119.4-preview.1.1. Direct references win, so Avalonia.Skia stays at
+      12.1.0 and the stable SkiaSharp 3.119.4 outranks the prerelease. Removing
+      the Avalonia.Skia pin would silently resolve a renderer one minor version
+      behind the framework, and a restore in that state reports ZERO warnings,
+      so read the resolved graph rather than the warning count when changing
+      anything here.
+    -->
+    <PackageReference Include="Mapsui.Avalonia12" Version="5.1.0" />
+    <!--
+      Mapsui's raster tile layer never touches the SVG path (the probe of
+      2026-10-24: tiles, lines and markers draw with every Svg DLL deleted).
+      The three references below pin the versions Mapsui already resolves and
+      exclude the runtime assets, so no Svg assembly ships, while Svg.Custom's
+      MS-PL text stays in THIRD-PARTY-NOTICES.md because the package remains
+      in the dependency graph.
+    -->
+    <PackageReference Include="Svg.Custom" Version="3.2.1" ExcludeAssets="runtime" />
+    <PackageReference Include="Svg.Model" Version="3.2.1" ExcludeAssets="runtime" />
+    <PackageReference Include="Svg.Skia" Version="3.2.1" ExcludeAssets="runtime" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.3">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <!--
+      Serilog's file sink is required by the composition root, which reproduces
+      the WPF head's rolling-file logger. Serilog itself arrives transitively
+      through AstroCast.Core, but the sink does not.
+    -->
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>

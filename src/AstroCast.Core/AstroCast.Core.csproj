@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>1.7.1</Version>
+    <AssemblyVersion>1.7.1.0</AssemblyVersion>
+    <FileVersion>1.7.1.0</FileVersion>
+    <InformationalVersion>1.7.1</InformationalVersion>
+    <Description>Astrological calculation engine using Swiss Ephemeris</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="AstroCast.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.3" />
+    <PackageReference Include="QuestPDF" Version="2026.2.1" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="NodaTime" Version="3.3.5" />
+    <!-- Security pin, not a feature dependency. Nothing in this repository uses
+         SQLitePCLRaw directly; the reference exists solely to override the
+         version Microsoft.Data.Sqlite resolves transitively. Every
+         Microsoft.Data.Sqlite 10.0.x (checked through 10.0.10) pins
+         SQLitePCLRaw.bundle_e_sqlite3 2.1.11, whose bundled SQLite 3.49.1
+         carries CVE-2025-6965 (GHSA-2m69-gcr7-jv3q, high, CWE-197; fixed in
+         SQLite 3.50.2). Bundle 2.1.12 carries SQLite 3.53.3. Retire this line
+         only once Microsoft.Data.Sqlite's own floor reaches 2.1.12 or later;
+         removing it silently reintroduces the advisory. -->
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.12" />
+  </ItemGroup>
+
+  <!-- Copy the build platform's Swiss Ephemeris native library to the output
+       directory. One ItemGroup per OS; the DllImportResolver registered in
+       SwissEphInterop selects the matching file name at runtime. -->
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <None Include="..\..\lib\swisseph\win-x64\swedll64.dll" Link="swedll64.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+    <None Include="..\..\lib\swisseph\osx-arm64\libswe.dylib" Link="libswe.dylib" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+    <None Include="..\..\lib\swisseph\linux-x64\libswe.so" Link="libswe.so" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Copy ephemeris data files to ephe\ in output directory -->
+  <ItemGroup>
+    <None Include="..\..\ephe\**\*" LinkBase="ephe" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Copy the third-party notices to the output root, so both installers ship them -->
+  <ItemGroup>
+    <None Include="..\..\THIRD-PARTY-NOTICES.md" Link="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

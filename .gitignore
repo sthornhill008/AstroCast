@@ -1,0 +1,60 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+*.userosscache
+*.userprefs
+
+# .NET
+*.nupkg
+*.snupkg
+project.lock.json
+
+# NuGet
+packages/
+
+# Rider
+.idea/
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Claude Code personal preferences (not shared); project skills are shared
+CLAUDE.local.md
+.claude/*
+!.claude/skills/
+
+# SQLite database
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Installer
+src/AstroCast.Installer/Components.wxs
+*.msi
+*.wixpdb
+
+# Windows MSI produced by BuildInstaller.ps1, mirroring build/macos/dist/
+dist/
+
+# Test results
+TestResults/
+
+# NOTE: The following directories are INCLUDED in the repository
+# (self-contained project — no runtime downloads):
+#   ephe/          — Swiss Ephemeris data files (.se1)
+#   lib/           — Native binaries (swedll64.dll) and C source
+
+# macOS application bundle produced by build/macos/make-bundle.sh
+build/macos/dist/

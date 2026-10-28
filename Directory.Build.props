@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Company>Thornhill Computer Software</Company>
+    <Product>AstroCast</Product>
+    <Copyright>Copyright &#169; 2026 Thornhill Computer Software</Copyright>
+    <Authors>Steve Thornhill</Authors>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,19 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AstroCast.Avalonia.App"
+             Name="AstroCast"
+             RequestedThemeVariant="Light">
+
+    <!--
+        Light is requested explicitly rather than following the OS. The palette
+        translated from the WPF head is a fixed light scheme with hard-coded
+        foreground colours (#FF333333 labels, #FF4A90D9 accents); under a dark
+        variant those would sit on a dark chrome and become unreadable. Honouring
+        the system theme is a later change that needs the whole palette
+        revisited, not a per-view fix.
+    -->
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+</Application>

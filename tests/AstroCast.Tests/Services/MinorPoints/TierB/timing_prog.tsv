@@ -1,0 +1,18 @@
+report	kind	point	aspect	target	orb	direction	instant
+solararc_2026	P-to-natal	Mercury	opp	Pallas	0.649551	Separating	
+solararc_2026	P-to-natal	Sun	sxt	Vesta	0.876751	Separating	
+solararc_2026	P hit	Moon	sxt	Juno			2026-11-09 13:58
+solararc_2026	P hit	Venus	sqr	Ceres			2026-12-16 01:31
+solararc_2026	SA-to-natal	Pluto	cnj	Juno	0.061420	Applying	
+solararc_2026	SA-to-natal	Chiron	cnj	Juno	0.101427	Separating	
+solararc_2026	SA-to-natal	Sun	sxt	Vesta	0.876751	Separating	
+solararc_2026	SA-to-natal	Saturn	opp	Vesta	0.903495	Separating	
+solararc_2026	SA-to-natal	Mars	sqr	Lilith	0.978791	Separating	
+solararc_2026	SA-to-natal	Venus	ses	Pallas	0.997185	Applying	
+solararc_2026	SA hit	Pluto	cnj	Juno			2026-01-23 13:46
+solararc_2026	SA hit	Venus	ses	Pallas			2026-12-25 21:48
+transit_20260412_18	P-to-natal	Venus	sqr	Ceres	0.832522	Applying	
+transit_20260412_18	SA-to-natal	Pluto	cnj	Juno	0.219604	Separating	
+transit_20260412_18	SA-to-natal	Chiron	cnj	Juno	0.382450	Separating	
+transit_20260412_18	SA-to-natal	Venus	ses	Pallas	0.716161	Applying	
+transit_20260412_18	SA-to-natal	Jupiter	ses	Juno	0.982086	Applying	

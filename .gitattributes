@@ -1,0 +1,14 @@
+# Normalise text to LF in the repository; native EOL in the working tree.
+* text=auto
+
+# Golden fixtures: byte-identical LF on every platform, checked out LF everywhere.
+tests/**/*.golden.md   text eol=lf
+tests/**/*.golden.json text eol=lf
+tests/**/TierB/*.tsv   text eol=lf
+
+# Genuinely binary assets -- leave bytes untouched.
+*.dll   binary
+*.so    binary
+*.dylib binary
+*.se1   binary
+*.ico   binary

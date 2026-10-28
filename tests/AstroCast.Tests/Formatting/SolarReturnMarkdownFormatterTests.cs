@@ -1,0 +1,283 @@
+using AstroCast.Core.Formatting;
+using AstroCast.Core.Models;
+using AstroCast.Core.Services;
+
+using AstroCast.Tests.Fixtures;
+
+using FluentAssertions;
+
+namespace AstroCast.Tests.Formatting;
+
+/// <summary>
+/// Tests for <see cref="SolarReturnMarkdownFormatter"/> verifying document structure,
+/// section headings, and content inclusion.
+/// </summary>
+[Collection("Ephemeris")]
+[Trait("Category", "Integration")]
+public sealed class SolarReturnMarkdownFormatterTests
+{
+    private readonly ChartEngine _engine;
+    private readonly SolarReturnService _solarReturnService;
+
+    /// <summary>
+    /// Receives the shared ephemeris fixture and builds a ChartEngine and SolarReturnService.
+    /// </summary>
+    public SolarReturnMarkdownFormatterTests(EphemerisFixture fixture)
+    {
+        Serilog.ILogger logger = new Serilog.LoggerConfiguration().CreateLogger();
+        AspectService aspects = new(fixture.EphemerisService, logger);
+        MidpointService midpoints = new(logger);
+        DignityService dignity = new();
+        MoonConditionService moonCondition = new();
+        ChartContextService chartContext = new(dignity, new SectService());
+        FixedStarService fixedStars = new(fixture.EphemerisService, logger);
+
+        _engine = new ChartEngine(
+            fixture.EphemerisService, aspects, midpoints, dignity,
+            moonCondition, chartContext, fixedStars, new DeclinationAspectService(), new PlanetConditionService(), new MoonMansionService(), new PlanetaryHourCalculator(fixture.EphemerisService), new ArabicPartService(new DignityService()), new AntisciaService(), new StationService(), new ParanService(fixture.EphemerisService, logger), logger);
+
+        _solarReturnService = new SolarReturnService(
+            fixture.EphemerisService, _engine, logger);
+    }
+
+    /// <summary>
+    /// Create a SolarReturnResult for testing.
+    /// </summary>
+    private SolarReturnResult CreateTestSolarReturnResult()
+    {
+        ChartResult natal = _engine.Calculate(new ChartInput
+        {
+            Name = "Alice",
+            LocalDateTime = new DateTime(2000, 1, 1, 7, 0, 0),
+            TimeZone = "America/New_York",
+            Latitude = 40.7128,
+            Longitude = -74.006,
+            LocationName = "New York City",
+            EventType = "Birth",
+        });
+
+        return _solarReturnService.Calculate(
+            natal, 2025, 40.7128, -74.006, "New York City", "America/New_York");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsHeader()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().StartWith("# Solar Return:",
+            "document should start with the solar return header");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsNatalSunLongitude()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("**Natal Sun:**",
+            "document should contain the natal Sun reference position");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsReturnLocation()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("**Return Location:**",
+            "document should contain the return location info");
+        markdown.Should().Contain("New York City");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsPrecision()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("**Precision:**",
+            "document should contain precision metadata");
+        markdown.Should().Contain("arc-seconds");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsChartBody()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Planetary Positions",
+            "document should contain planetary positions table");
+        markdown.Should().Contain("Sun",
+            "document should contain the Sun position");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsFooter()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("*Generated by",
+            "document should end with a footer containing version info");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsReturnChartSection()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Return Chart",
+            "document should contain the return chart section heading");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsReturnDetails()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Return Details",
+            "document should contain the return details section");
+        markdown.Should().Contain("**Return Date/Time:**");
+    }
+
+    [Fact]
+    public void ToMarkdown_WithContext_ContainsInterpretationContext()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(
+            result, "Major career transition year, focus on 10th house themes");
+
+        // Assert
+        markdown.Should().Contain("**Interpretation Context:** Major career transition year, focus on 10th house themes",
+            "document should contain the interpretation context when provided");
+    }
+
+    [Fact]
+    public void ToMarkdown_WithoutContext_OmitsInterpretationContext()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result, null);
+
+        // Assert
+        markdown.Should().NotContain("**Interpretation Context:**",
+            "document should not contain interpretation context when null");
+    }
+
+    [Fact]
+    public void Markdown_ContainsProfectionAtReturnIngressHeading()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Annual Profection (at Return Ingress)",
+            "document should contain the natal-keyed profection section evaluated at the SR ingress instant");
+    }
+
+    [Fact]
+    public void Markdown_ContainsFirdariaAtReturnIngressHeading()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Firdaria (at Return Ingress)",
+            "document should contain the natal-keyed firdaria section evaluated at the SR ingress instant");
+    }
+
+    [Fact]
+    public void Markdown_ContainsZodiacalReleasingAtReturnIngressHeading()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Zodiacal Releasing (Spirit) (at Return Ingress)",
+            "document should contain the natal-keyed zodiacal releasing section evaluated at the SR ingress instant");
+    }
+
+    [Fact]
+    public void Markdown_TimeLordSectionsAppearBeforeReturnChartHeading()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        int profectionIndex = markdown.IndexOf("## Annual Profection (at Return Ingress)", StringComparison.Ordinal);
+        int returnChartIndex = markdown.IndexOf("## Return Chart", StringComparison.Ordinal);
+        profectionIndex.Should().BeGreaterThan(-1, "the profection section must be present");
+        returnChartIndex.Should().BeGreaterThan(profectionIndex,
+            "the time-lord block must appear before the Return Chart body so context precedes detail");
+    }
+
+    [Fact]
+    public void Markdown_ProfectionAgeMatchesReturnIngressDate()
+    {
+        // Arrange
+        SolarReturnResult result = CreateTestSolarReturnResult();
+        ProfectionYearResult expected = ProfectionAnalyzer.AnalyzeForReturn(
+            result.NatalChart, result.ReturnChart.UtcDateTime);
+
+        // Act
+        string markdown = SolarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain($"**Age:** {expected.Age} (as of",
+            "the profection age in the SR Markdown must match AnalyzeForReturn — the SR-context age semantic where the ingress instant defines the year-of-life regardless of calendar relationship to the natal anniversary");
+    }
+}

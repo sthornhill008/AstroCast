@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Package.wxs - AstroCast Installer Package Definition
+    Copyright (c) 2026 Thornhill Computer Software
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+    <Package Name="AstroCast"
+             Manufacturer="Thornhill Computer Software"
+             Version="$(var.ProductVersion)"
+             UpgradeCode="890DAE32-060A-4B6A-99D4-D1C0F8229232"
+             Scope="perUser"
+             InstallerVersion="500"
+             Compressed="yes">
+
+        <SummaryInformation Description="AstroCast Astrological Chart Calculator"
+                           Manufacturer="Thornhill Computer Software"
+                           Keywords="AstroCast, Astrology, Chart, Swiss Ephemeris, Cosmobiology" />
+
+        <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+        <MajorUpgrade AllowSameVersionUpgrades="yes"
+                      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+        <!--
+            AllComponents is an aggregate emitted by the generator: it references
+            one ComponentGroup per directory found under the publish root. The
+            indirection is the point: a new payload directory changes only the
+            generated file, never this one. Listing groups individually here is
+            what previously required a code edit per directory and silently
+            omitted the ones nobody remembered.
+
+            No launch condition for the .NET runtime: the package is
+            self-contained (see BuildInstaller.ps1), so the runtime ships inside
+            it. Its absence here is a consequence of that, not an oversight.
+        -->
+        <Feature Id="ProductFeature" Title="AstroCast" Level="1" ConfigurableDirectory="INSTALLFOLDER">
+            <ComponentGroupRef Id="AllComponents" />
+            <ComponentRef Id="ProgramMenuShortcut" />
+            <ComponentRef Id="DesktopShortcut" />
+        </Feature>
+
+        <!--
+            The licence page shows AstroCast's licence, the GNU AGPL version 3:
+            License.rtf is LICENSE's text, one RTF paragraph per paragraph.
+            BuildInstaller.ps1 runs wix from this folder, so the path is bare.
+        -->
+        <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+
+        <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+
+    </Package>
+
+</Wix>

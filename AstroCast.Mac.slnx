@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AstroCast.Avalonia/AstroCast.Avalonia.csproj" />
+    <Project Path="src/AstroCast.Cli/AstroCast.Cli.csproj" />
+    <Project Path="src/AstroCast.Core/AstroCast.Core.csproj" />
+    <Project Path="src/AstroCast.Presentation/AstroCast.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AstroCast.TestDoubles/AstroCast.TestDoubles.csproj" />
+    <Project Path="tests/AstroCast.Tests/AstroCast.Tests.csproj" />
+    <Project Path="tests/AstroCast.UiTests/AstroCast.UiTests.csproj" />
+  </Folder>
+</Solution>

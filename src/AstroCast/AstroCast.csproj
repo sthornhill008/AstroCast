@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>AstroCast</RootNamespace>
+    <Version>1.7.1</Version>
+    <AssemblyVersion>1.7.1.0</AssemblyVersion>
+    <FileVersion>1.7.1.0</FileVersion>
+    <InformationalVersion>1.7.1</InformationalVersion>
+    <Description>AstroCast — Astrological Chart Calculator</Description>
+    <ApplicationIcon>..\..\AstroCast.ico</ApplicationIcon>
+    <!--
+      Mapsui.Wpf 5.0.2 transitively references legacy .NET Framework-only packages
+      (OpenTK, OpenTK.GLWpfControl, SkiaSharp.Views.WPF) that are optional fallbacks
+      not exercised when the WPF+Skia renderer is used. Suppress the NU1701 noise
+      so the build stays warning-clean.
+    -->
+    <NoWarn>$(NoWarn);NU1701</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AstroCast.Core\AstroCast.Core.csproj" />
+    <ProjectReference Include="..\AstroCast.Presentation\AstroCast.Presentation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GeoTimeZone" Version="6.1.0" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Mapsui.Wpf" Version="5.0.2" />
+    <!-- Mapsui's raster tile layer never touches the SVG path (the probe of
+         2026-10-24: tiles, lines and markers draw with every Svg DLL deleted).
+         The three references below pin the versions Mapsui already resolves
+         and exclude the runtime assets, so no Svg assembly ships, while
+         Svg.Custom's MS-PL text stays in THIRD-PARTY-NOTICES.md because the
+         package remains in the dependency graph. -->
+    <PackageReference Include="Svg.Custom" Version="3.2.1" ExcludeAssets="runtime" />
+    <PackageReference Include="Svg.Model" Version="3.2.1" ExcludeAssets="runtime" />
+    <PackageReference Include="Svg.Skia" Version="3.2.1" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <!-- Application icon embedded as WPF resource -->
+  <ItemGroup>
+    <Resource Include="..\..\AstroCast.ico" Link="AstroCast.ico" />
+  </ItemGroup>
+
+  <!-- Copy swedll64.dll to output directory -->
+  <ItemGroup>
+    <None Include="..\..\lib\swisseph\win-x64\swedll64.dll" Link="swedll64.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Copy ephemeris data files to ephe\ in output directory -->
+  <ItemGroup>
+    <None Include="..\..\ephe\**\*" LinkBase="ephe" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

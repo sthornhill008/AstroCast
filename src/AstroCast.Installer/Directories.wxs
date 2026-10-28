@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Directories.wxs - AstroCast Installer Directory Structure
+    Copyright (c) 2026 Thornhill Computer Software
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+    <Fragment>
+        <!--
+            Only the roots are declared here. Every directory BENEATH
+            INSTALLFOLDER is discovered from the publish output and emitted into
+            the generated Components.wxs, so this file does not name ephe, the
+            font folder, or the satellite culture folders. Naming any of them
+            here would put the harvest back under manual maintenance, which is
+            what previously lost 175 files.
+        -->
+        <StandardDirectory Id="LocalAppDataFolder">
+            <Directory Id="CompanyFolder" Name="Thornhill Computer Software">
+                <Directory Id="INSTALLFOLDER" Name="AstroCast" />
+            </Directory>
+        </StandardDirectory>
+
+        <StandardDirectory Id="ProgramMenuFolder">
+            <Directory Id="ApplicationProgramsFolder" Name="AstroCast" />
+        </StandardDirectory>
+
+        <StandardDirectory Id="DesktopFolder" />
+    </Fragment>
+
+</Wix>

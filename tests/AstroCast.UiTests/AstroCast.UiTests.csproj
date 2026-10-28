@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <Version>1.7.1</Version>
+    <AssemblyVersion>1.7.1.0</AssemblyVersion>
+    <FileVersion>1.7.1.0</FileVersion>
+    <InformationalVersion>1.7.1</InformationalVersion>
+    <!--
+      xUnit v3 test projects are executables, not libraries. Omitting this
+      produces a project that builds but discovers no tests.
+    -->
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AstroCast.Avalonia\AstroCast.Avalonia.csproj" />
+    <!--
+      Test doubles shared with AstroCast.Tests. This reference is what makes a
+      real MainViewModel constructible here: the doubles used to be nested
+      inside a class in AstroCast.Tests, which this project cannot reference
+      because that one is on xunit v2 and Avalonia.Headless.XUnit forces v3.
+    -->
+    <ProjectReference Include="..\AstroCast.TestDoubles\AstroCast.TestDoubles.csproj" />
+  </ItemGroup>
+
+  <!--
+    Why this is a separate project from tests/AstroCast.Tests.
+
+    Avalonia.Headless.XUnit 12.x depends on xunit.v3; AstroCast.Tests is on
+    xunit 2.9.3. The two major versions cannot coexist in one assembly, so the
+    UI tests live here and the 2175 existing tests stay exactly as they are on
+    v2. This is a packaging constraint, not a preference.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Headless.XUnit" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Skia" Version="12.1.0" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+  </ItemGroup>
+
+</Project>

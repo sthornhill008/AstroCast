@@ -1,0 +1,292 @@
+using AstroCast.Core.Formatting;
+using AstroCast.Core.Models;
+using AstroCast.Core.Services;
+
+using AstroCast.Tests.Fixtures;
+
+using FluentAssertions;
+
+namespace AstroCast.Tests.Formatting;
+
+/// <summary>
+/// Tests for <see cref="LunarReturnMarkdownFormatter"/> verifying document structure,
+/// section headings, and content inclusion.
+/// </summary>
+[Collection("Ephemeris")]
+[Trait("Category", "Integration")]
+public sealed class LunarReturnMarkdownFormatterTests
+{
+    private readonly ChartEngine _engine;
+    private readonly LunarReturnService _lunarReturnService;
+
+    /// <summary>
+    /// Receives the shared ephemeris fixture and builds a ChartEngine and LunarReturnService.
+    /// </summary>
+    public LunarReturnMarkdownFormatterTests(EphemerisFixture fixture)
+    {
+        Serilog.ILogger logger = new Serilog.LoggerConfiguration().CreateLogger();
+        AspectService aspects = new(fixture.EphemerisService, logger);
+        MidpointService midpoints = new(logger);
+        DignityService dignity = new();
+        MoonConditionService moonCondition = new();
+        ChartContextService chartContext = new(dignity, new SectService());
+        FixedStarService fixedStars = new(fixture.EphemerisService, logger);
+
+        _engine = new ChartEngine(
+            fixture.EphemerisService, aspects, midpoints, dignity,
+            moonCondition, chartContext, fixedStars, new DeclinationAspectService(), new PlanetConditionService(), new MoonMansionService(), new PlanetaryHourCalculator(fixture.EphemerisService), new ArabicPartService(new DignityService()), new AntisciaService(), new StationService(), new ParanService(fixture.EphemerisService, logger), logger);
+
+        _lunarReturnService = new LunarReturnService(
+            fixture.EphemerisService, _engine, logger);
+    }
+
+    /// <summary>
+    /// Create a single LunarReturnResult for testing.
+    /// </summary>
+    private LunarReturnResult CreateTestLunarReturnResult()
+    {
+        ChartResult natal = _engine.Calculate(new ChartInput
+        {
+            Name = "Alice",
+            LocalDateTime = new DateTime(2000, 1, 1, 7, 0, 0),
+            TimeZone = "America/New_York",
+            Latitude = 40.7128,
+            Longitude = -74.006,
+            LocationName = "New York City",
+            EventType = "Birth",
+        });
+
+        LunarReturnResult result = _lunarReturnService.CalculateNext(
+            natal,
+            new DateTime(2025, 3, 1, 0, 0, 0, DateTimeKind.Utc),
+            40.7128, -74.006, "New York City", "America/New_York");
+
+        return result;
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsHeader()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().StartWith("# Lunar Return:",
+            "document should start with the lunar return header");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsNatalMoonLongitude()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("**Natal Moon:**",
+            "document should contain the natal Moon reference position");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsReturnLocation()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("**Return Location:**",
+            "document should contain the return location info");
+        markdown.Should().Contain("New York City");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsSequenceNumber()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("**Sequence:**",
+            "document should contain the sequence number");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsChartBody()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Planetary Positions",
+            "document should contain planetary positions table");
+        markdown.Should().Contain("Sun",
+            "document should contain the Sun position");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsFooter()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("*Generated by",
+            "document should end with a footer containing version info");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsReturnChartSection()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Return Chart",
+            "document should contain the return chart section heading");
+    }
+
+    [Fact]
+    public void ToMarkdown_ContainsReturnDetails()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Return Details",
+            "document should contain the return details section");
+        markdown.Should().Contain("**Return Date/Time:**");
+    }
+
+    [Fact]
+    public void ToMarkdown_WithContext_ContainsInterpretationContext()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(
+            result, "Navigating a house move, focus on emotional security");
+
+        // Assert
+        markdown.Should().Contain("**Interpretation Context:** Navigating a house move, focus on emotional security",
+            "document should contain the interpretation context when provided");
+    }
+
+    [Fact]
+    public void ToMarkdown_WithoutContext_OmitsInterpretationContext()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result, null);
+
+        // Assert
+        markdown.Should().NotContain("**Interpretation Context:**",
+            "document should not contain interpretation context when null");
+    }
+
+    [Fact]
+    public void Markdown_ContainsProfectionAtReturnIngressHeading()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Annual Profection (at Return Ingress)",
+            "document should contain the natal-keyed profection section evaluated at the LR ingress instant");
+    }
+
+    [Fact]
+    public void Markdown_ContainsFirdariaAtReturnIngressHeading()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Firdaria (at Return Ingress)",
+            "document should contain the natal-keyed firdaria section evaluated at the LR ingress instant");
+    }
+
+    [Fact]
+    public void Markdown_ContainsZodiacalReleasingAtReturnIngressHeading()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain("## Zodiacal Releasing (Spirit) (at Return Ingress)",
+            "document should contain the natal-keyed zodiacal releasing section evaluated at the LR ingress instant");
+    }
+
+    [Fact]
+    public void Markdown_TimeLordSectionsAppearBeforeReturnChartHeading()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        int profectionIndex = markdown.IndexOf("## Annual Profection (at Return Ingress)", StringComparison.Ordinal);
+        int returnChartIndex = markdown.IndexOf("## Return Chart", StringComparison.Ordinal);
+        profectionIndex.Should().BeGreaterThan(-1, "the profection section must be present");
+        returnChartIndex.Should().BeGreaterThan(profectionIndex,
+            "the time-lord block must appear before the Return Chart body so context precedes detail");
+    }
+
+    /// <summary>
+    /// A lunar return's profection is the year running at the return, by completed anniversaries of the
+    /// birth day (<see cref="ProfectionAnalyzer.Analyze"/>): the first lunar return after 2025-03-01 of J2000 NYC is age 25. Only the solar return rounds to its own year
+    /// (<see cref="ProfectionAnalyzer.AnalyzeForReturn"/>). Until branch H this export rounded too.
+    /// </summary>
+    [Fact]
+    public void Markdown_ProfectionAgeIsTheYearRunningAtTheReturn()
+    {
+        // Arrange
+        LunarReturnResult result = CreateTestLunarReturnResult();
+        ProfectionYearResult expected = ProfectionAnalyzer.Analyze(
+            result.NatalChart, result.ReturnChart.UtcDateTime);
+        expected.Age.Should().Be(25);
+
+        // Act
+        string markdown = LunarReturnMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        markdown.Should().Contain($"**Age:** {expected.Age} (as of",
+            "a lunar return's profection is the year running at the return, by completed anniversaries of the birth day; only the solar return rounds to its own year");
+    }
+}
