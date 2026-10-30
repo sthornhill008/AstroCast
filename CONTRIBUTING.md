@@ -85,7 +85,7 @@ including every astrological rule the engine follows and the reasons behind them
 
 ## Documentation
 
-- A user-visible change updates the user guide (`docs/USER_GUIDE.md`, once it exists) and the
+- A user-visible change updates the user guide (`docs/USER_GUIDE.md`) and the
   prompt usage map in the same branch, and CLAUDE.md where it states the rule.
 - Markdown is the source of record; PDFs are renders.
 

@@ -26,6 +26,18 @@ $installerDir = "$projectRoot\src\AstroCast.Installer"
 $ephePath = "$projectRoot\ephe"
 $nativeDll = "$projectRoot\lib\swisseph\win-x64\swedll64.dll"
 
+# A path that must not exist. AstroCast.Presentation embeds the file its
+# CartoKeyFile property names as the built-in CARTO key, by default the
+# profile's .astrocast\carto-key.txt; publishing with CartoKeyFile naming this
+# path embeds nothing, so the MSI carries no key and every installed copy reads
+# its key from carto-key.txt (public builds ship no key, CLAUDE.md, Base Map).
+# Checked after the publish below.
+$noKeyFile = "$projectRoot\build\no-carto-key-here"
+if (Test-Path $noKeyFile) {
+    Write-Host "ERROR: $noKeyFile exists; it must not, or the publish would embed it as the built-in CARTO key" -ForegroundColor Red
+    exit 1
+}
+
 # Output goes to a gitignored dist\ beside the repo root, mirroring the macOS
 # convention (build/macos/dist/). It used to go to the Desktop, which on this
 # machine resolves to D:\OneDrive\Desktop -- so every build pushed a ~200 MB
@@ -55,7 +67,7 @@ if (Test-Path $publishDir) {
 # Because the runtime ships in the package, NO LAUNCH CONDITION IS NEEDED. Its
 # absence from Package.wxs is a consequence of this line, not an oversight.
 Write-Host "[2/5] Publishing AstroCast (Release x64, self-contained)..." -ForegroundColor Yellow
-dotnet publish "$projectRoot\src\AstroCast\AstroCast.csproj" -c Release -r win-x64 --self-contained true -p:Platform=x64
+dotnet publish "$projectRoot\src\AstroCast\AstroCast.csproj" -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:CartoKeyFile="$noKeyFile"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Publish failed!" -ForegroundColor Red
     exit 1
@@ -78,6 +90,22 @@ if (-not (Test-Path "$publishDir\LICENSE")) {
     Write-Host "ERROR: LICENSE not found in $publishDir" -ForegroundColor Red
     exit 1
 }
+
+# Verify no CARTO key was embedded. The embedded resource's name,
+# AstroCast.Presentation.CartoKey, is ASCII in the assembly's metadata, so it
+# appears in the bytes read as ASCII only when a key was embedded (the C#
+# constant of the same name is UTF-16 and does not match).
+$presentationDll = "$publishDir\AstroCast.Presentation.dll"
+if (-not (Test-Path $presentationDll)) {
+    Write-Host "ERROR: AstroCast.Presentation.dll not found in $publishDir" -ForegroundColor Red
+    exit 1
+}
+$presentationText = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes($presentationDll))
+if ($presentationText.Contains("AstroCast.Presentation.CartoKey")) {
+    Write-Host "ERROR: AstroCast.Presentation.dll carries the AstroCast.Presentation.CartoKey resource; the MSI must ship no CARTO key" -ForegroundColor Red
+    exit 1
+}
+Write-Host "  No built-in CARTO key (the user supplies carto-key.txt)" -ForegroundColor Gray
 Write-Host "  Published to: $publishDir" -ForegroundColor Gray
 
 # Read version from published assembly

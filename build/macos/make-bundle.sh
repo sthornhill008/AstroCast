@@ -61,6 +61,14 @@ APP_NAME="AstroCast"
 PROJECT="$REPO_ROOT/src/AstroCast.Avalonia/AstroCast.Avalonia.csproj"
 PRESENTATION_PROJECT="$REPO_ROOT/src/AstroCast.Presentation/AstroCast.Presentation.csproj"
 
+# A path that must not exist. AstroCast.Presentation embeds the file its
+# CartoKeyFile property names as the built-in CARTO key, by default the
+# profile's .astrocast/carto-key.txt; publishing with CartoKeyFile naming this
+# path embeds nothing, so no bundle carries a key and every installed copy reads
+# its key from carto-key.txt (public builds ship no key, CLAUDE.md, Base Map).
+# Checked after the publish below.
+NO_KEY_FILE="$REPO_ROOT/build/macos/no-carto-key-here"
+
 # The apphost derives the names of its sidecar files from its own filename
 # (AstroCast.Avalonia.runtimeconfig.json, .deps.json), so the executable is NOT
 # renamed to "AstroCast". The user-visible name comes from CFBundleName, which
@@ -103,6 +111,12 @@ step() { echo; echo "==> $*"; }
 if pgrep -x "$EXECUTABLE_NAME" >/dev/null 2>&1; then
   fail "an instance of $EXECUTABLE_NAME is running; quit it before building (a locked output directory produces errors that look like compilation failures)"
 fi
+
+# ---------------------------------------------------------------------------
+# Guard: the no-key path does not exist, or the publish would embed it as the
+# CARTO key.
+# ---------------------------------------------------------------------------
+[[ ! -e "$NO_KEY_FILE" ]] || fail "$NO_KEY_FILE exists; it must not, or the publish would embed it as the built-in CARTO key"
 
 # ---------------------------------------------------------------------------
 # Version.
@@ -175,7 +189,24 @@ dotnet publish "$PROJECT" \
   --runtime "$RID" \
   --self-contained true \
   --output "$MACOS_DIR" \
+  -p:CartoKeyFile="$NO_KEY_FILE" \
   --nologo
+
+# ---------------------------------------------------------------------------
+# No built-in CARTO key — checked in the published assembly, not assumed.
+#
+# The embedded resource's name, AstroCast.Presentation.CartoKey, is ASCII in
+# the assembly's metadata, so it counts 1 with a key embedded and 0 without
+# (the C# constant of the same name is UTF-16 and does not match). grep -c
+# exits 1 when it prints 0, hence the || true; a grep error prints nothing and
+# fails the comparison.
+# ---------------------------------------------------------------------------
+step "Checking that no CARTO key was embedded"
+PRESENTATION_DLL="$MACOS_DIR/AstroCast.Presentation.dll"
+[[ -f "$PRESENTATION_DLL" ]] || fail "AstroCast.Presentation.dll did not survive publish"
+KEY_COUNT="$(LC_ALL=C grep -a -c 'AstroCast.Presentation.CartoKey' "$PRESENTATION_DLL" || true)"
+[[ "$KEY_COUNT" == "0" ]] || fail "AstroCast.Presentation.dll carries the AstroCast.Presentation.CartoKey resource (count ${KEY_COUNT:-unreadable}); a bundle must ship no CARTO key"
+echo "    no built-in CARTO key in AstroCast.Presentation.dll; the user supplies carto-key.txt"
 
 # ---------------------------------------------------------------------------
 # Minimum system version — measured from the shipped binaries, not asserted.
@@ -367,6 +398,7 @@ echo "    version      $VERSION"
 echo "    identifier   $BUNDLE_ID"
 echo "    minimum OS   $FLOOR"
 echo "    size         $BUNDLE_SIZE"
+echo "    base map     no built-in key; the user supplies carto-key.txt"
 echo
 echo "The bundle is unsigned. Gatekeeper will refuse it on first launch until it"
 echo "is signed and notarized; until then, open it once via Finder's right-click"

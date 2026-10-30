@@ -5,6 +5,8 @@ Ephemeris, analyses them with the traditional and modern techniques of Western a
 writes every result out as a Markdown report that reads well on its own or as the input to an
 AI interpretation. A companion prompt library turns those reports into written readings.
 
+![AstroCast's Chart panel on macOS](docs/images/chart-panel.png)
+
 AstroCast is free software under the GNU Affero General Public License, version 3 or later.
 
 ## What it does
@@ -44,6 +46,8 @@ the logs live beside `AstroCast.exe` in that folder and survive an upgrade.
 **macOS.** Open the DMG from the Releases page and drag AstroCast to Applications. The app is
 signed with a Developer ID and notarized, so Gatekeeper opens it without a warning. The
 database and logs live in `~/Library/Application Support/AstroCast`.
+
+The User Guide's chapter 2 has the details for both systems.
 
 **The map's base layer.** The Map panel draws its streets and place names from CARTO's
 Voyager tiles, which need a key. Public builds ship without one: the map draws its
@@ -85,9 +89,10 @@ library's own guide explains how to make an export, choose a prompt and submit i
   `build/macos/make-bundle.sh` and `build/macos/package-macos.sh`, with the signing procedure
   in `build/macos/SIGNING.md`.
 
-A maintainer's guide to building, testing and releasing on both systems (`docs/BUILDING.md`)
-and a user guide (`docs/USER_GUIDE.md`) are being written; until they land, `CLAUDE.md` holds
-the build and test commands and every rule the engine follows.
+The [User Guide](docs/USER_GUIDE.md) takes you from installing AstroCast to a finished report,
+panel by panel. A maintainer's guide to building, testing and releasing on both systems
+(`docs/BUILDING.md`) is being written; until it lands, `CLAUDE.md` holds the build and test
+commands and every rule the engine follows.
 
 ## Contributing
 

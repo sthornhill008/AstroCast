@@ -6059,6 +6059,66 @@ Public, the front page and the swept history**
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.1 is open; no tag.
 
+**Landing record (2026-10-29, after the tag v1.7.0): branch
+UserGuide, the User Guide and its screenshots**
+> `UserGuide` (Mac, cut from `023cb20`): `69ae979` adds
+> docs/USER_GUIDE.md (ten chapters and an appendix, drafted by
+> Claude from both MainWindows and CLAUDE.md, read by Steve) and
+> thirteen screenshots under docs/images/, one set from the Avalonia
+> head on the invented charts Eleanor Hartwell and Daniel Whitfield,
+> captured by CC from a swapped-in database and checked by Steve;
+> `d56f077` points README.md (with the Chart panel screenshot),
+> CLAUDE.md's Documentation section and tree, and CONTRIBUTING.md at
+> the guide. No code, no test, no golden changed.
+> - Maple took the two Windows captures (the About window, the Chart
+>   panel) into the archive; Steve looked.
+> - Maple, lean, at `d56f077`: numstat equal (17 files, 791/8 text,
+>   13 binary, histogram); 0 errors in all eight projects, `xUnit1031`
+>   only; 4297/4297, 145/145; names 0/0 core, 0/0 UI.
+>   `D:\Code\user-guide-maple-report.md`.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.1 is open; no tag.
+
+**Landing record (2026-10-29, after the tag v1.7.0): branch GuideWin,
+the Windows captures in the User Guide**
+> `GuideWin` (Mac, cut from `ffcde87`), one commit `d66fedc`: adds
+> Maple's two Windows captures, docs/images/chart-panel-win.png and
+> docs/images/about-window-win.png, beside the macOS ones as two
+> side-by-side tables in the guide's chapter 1, and says in chapter 4
+> that a chart saved under a changed name is a new chart. No code, no
+> test, no golden changed.
+> - Landed from the Mac (Steve, 2026-10-29: docs only, nothing a
+>   Windows build exercises); both suites on the Mac at the commit:
+>   4297/4297, 145/145. Maple syncs at the release.
+> - The PDF render, AstroCast_User_Guide.pdf in OneDrive's
+>   User Documentation folder, made from this guide (pandoc, Chrome;
+>   the script in the Mac setup folder's user-guide/guidewin/).
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.1 is open; no tag.
+
+**Landing record (2026-10-29, after the tag v1.7.0): branch NoKey,
+the packagers never embed the CARTO key**
+> `NoKey` (Mac, cut from `386a54b`): `bff5d62` makes `make-bundle.sh`
+> and `BuildInstaller.ps1` publish with `CartoKeyFile` naming a path
+> that must not exist (`build/macos/no-carto-key-here`,
+> `build/no-carto-key-here`) and stop unless the published
+> AstroCast.Presentation.dll is free of the
+> `AstroCast.Presentation.CartoKey` resource (its ASCII name counts 1
+> with a key, 0 without; calibrated on the Mac); `6c18293` moves
+> CLAUDE.md's sharing item 3 to done and rewrites the Base Map bullet.
+> No C#, no test, no golden changed. The no-key bundle built on the
+> Mac; Steve saw "Base map unavailable: no CARTO key" in its map.
+> - Maple, lean, at `6c18293`: numstat equal (3 files, 71/6,
+>   histogram); 0 errors in all eight projects, `xUnit1031` only;
+>   4297/4297, 145/145; names 0/0 core, 0/0 UI; BuildInstaller.ps1
+>   dry-run, then the MSI from the tag.
+>   `D:\Code\nokey-maple-report-2.md`.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.1 closes here: the tag v1.7.1 on this record commit.
+
 **Phase 6 -- Parity verification and steady state (2-3 days, ~2-4 sessions)**
 Export the full set of Markdown reports for reference charts on both OSes and
 diff them (goldens make this nearly free), from 1.3.4 output: every 1.3.4 branch

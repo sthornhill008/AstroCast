@@ -57,8 +57,9 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
    `sthornhill008/AstroCast`, re-created from the cleaned tree at branch Public's landing, with the
    private history renamed `AstroCast-private`, so the About window's source line
    (`https://github.com/sthornhill008/AstroCast`) stays true.
-3. **The CARTO basemap key: decided.** Public builds ship no CARTO key: a user supplies a free key
-   through `carto-key.txt` (see *Base Map*).
+3. **The CARTO basemap key: done (branch NoKey, 2026-10-29).** Public builds ship no CARTO key: the
+   packagers never embed one, and a user supplies a free key through `carto-key.txt` (see
+   *Base Map*).
 4. **The source-only tarball is not the complete source.** `Package-AstroCast-SourceOnly-TarGz.ps1`
    takes files by extension and omits `.axaml`, `.sh` and `.rtf` files among others (52 of the
    713 tracked files at Licence, the Swiss Ephemeris C sources and data files among them).
@@ -67,8 +68,9 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
 
 - The guide of record for everything a public reader needs lives in the repository: `README.md`
   (the front page), `CONTRIBUTING.md` (the conventions a change must keep), `docs/LICENSING.md`
-  (the licences in plain terms), and `docs/USER_GUIDE.md` and `docs/BUILDING.md` once they are
-  written. Markdown is the source of record; PDFs are renders.
+  (the licences in plain terms), `docs/USER_GUIDE.md` (the user guide, with its screenshots in
+  `docs/images/`), and `docs/BUILDING.md` once it is written. Markdown is the source of record;
+  PDFs are renders.
 - A user-visible change updates `docs/USER_GUIDE.md` and the prompt usage map in the same branch,
   and CLAUDE.md where it states the rule.
 - The private hand-over document and the continuity files stay outside the repository.
@@ -108,8 +110,10 @@ AstroCast.Mac.slnx                  — every project but the WPF head (macOS)
 │       └── src/                     — The library's C sources
 ├── ephe/                            — Swiss Ephemeris data files (.se1) and sefstars.txt
 ├── build/macos/                     — macOS bundle, signing, notarization and DMG scripts
-├── docs/                            — LICENSING.md and H-1_Decomposition_Pattern.md (design note)
-│   └── LICENSING.md                 — The project's licences in plain terms
+├── docs/                            — LICENSING.md, USER_GUIDE.md, images/ and H-1_Decomposition_Pattern.md (design note)
+│   ├── LICENSING.md                 — The project's licences in plain terms
+│   ├── USER_GUIDE.md                — The user guide: install, first chart, every panel
+│   └── images/                      — The user guide's screenshots
 ├── README.md                        — The front page: what it does, install, first chart, building
 ├── CONTRIBUTING.md                  — The conventions a change must keep
 ├── BuildInstaller.ps1               — Windows MSI build
@@ -2243,12 +2247,16 @@ every tile is an "API KEY REQUIRED" placeholder sent as an ordinary HTTP 200.
   under the legend.
 - **Never commit, copy or print the key.** It lives outside the repository. A tile URL
   carries it, so write one as `?key=REDACTED`.
-- **The machine that builds the MSI or the DMG must have the key file**, or the release
-  ships without a map.
+- **The packagers never embed the key** (branch NoKey, 2026-10-29): `make-bundle.sh` and
+  `BuildInstaller.ps1` publish with `CartoKeyFile` naming a path that does not exist and stop if the
+  published `AstroCast.Presentation.dll` carries the `AstroCast.Presentation.CartoKey` resource (its
+  name is ASCII in the metadata; the count is 1 with a key, 0 without). Every installed copy reads
+  its key from `carto-key.txt`. A build from the IDE or the command line still embeds the profile's
+  key file when it exists.
 - **A public build ships no built-in key** (the decided policy; branch Public): it is made with the
   key file absent, or with `-p:CartoKeyFile=<a path that does not exist>`, which the csproj honours
   (`AstroCast.Presentation.csproj`, the property's `Condition` at its line 47); a user supplies a free
-  key through `carto-key.txt` as above. The packagers' switch for it comes with the no-key release.
+  key through `carto-key.txt` as above. The packagers do this always (the bullet above).
 - No test reaches a tile server: `AcgMapWindowTests` fetch through
   `RecordingTileHandler` and give the window its key sources.
 
