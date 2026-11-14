@@ -1,6 +1,13 @@
 # AstroCast — Astrological Calculation & Chart Analysis Engine
 
-Personal-use astrological calculation engine using the Swiss Ephemeris as its
+> **For a reader new to the project.** This file is the project's working contract: every rule
+> the engine follows, with the reasons, and the record of how each was decided. Commit hashes
+> named here up to the Review landing (2026-11-14), and tags before `v1.7.1`, belong to the
+> private development history and are not in the public repository, whose own history begins
+> with snapshot commits. "Steve" is the maintainer, Steve Thornhill; "Maple" is his Windows
+> machine.
+
+Astrological calculation engine and desktop program using the Swiss Ephemeris as its
 computational foundation. Implements tropical zodiac, houses in the chart's own
 system (Placidus by default), full aspect and midpoint analysis per Reinhold
 Ebertin's cosmobiology method.
@@ -41,7 +48,7 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
   RTF paragraph per paragraph) and named by `WixUILicenseRtf` in `Package.wxs`. **The DMG** has no
   licence page; `LICENSE` is in the bundle beside the executable.
 
-**Open before AstroCast is shared with anyone:**
+**Settled before AstroCast was shared** (the four items once open here):
 
 1. **Svg.Custom 3.2.1 (MS-PL): settled 2026-10-24** (branch SvgExclude; the docs-p1 probe of
    2026-10-24). Mapsui's raster tile layer never touches the SVG path — the map drew tiles, lines
@@ -60,19 +67,20 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
 3. **The CARTO basemap key: done (branch NoKey, 2026-10-29).** Public builds ship no CARTO key: the
    packagers never embed one, and a user supplies a free key through `carto-key.txt` (see
    *Base Map*).
-4. **The source-only tarball is not the complete source.** `Package-AstroCast-SourceOnly-TarGz.ps1`
-   takes files by extension and omits `.axaml`, `.sh` and `.rtf` files among others (52 of the
-   713 tracked files at Licence, the Swiss Ephemeris C sources and data files among them).
+4. **The source-only tarball script: removed (branch Review, 2026-11-14).**
+   `Package-AstroCast-SourceOnly-TarGz.ps1` took files by extension and left out part of the
+   source (52 of the 713 tracked files at Licence); the repository itself is the complete source.
 
 ## Documentation
 
 - The guide of record for everything a public reader needs lives in the repository: `README.md`
   (the front page), `CONTRIBUTING.md` (the conventions a change must keep), `docs/LICENSING.md`
   (the licences in plain terms), `docs/USER_GUIDE.md` (the user guide, with its screenshots in
-  `docs/images/`), and `docs/BUILDING.md` once it is written. Markdown is the source of record;
-  PDFs are renders.
-- A user-visible change updates `docs/USER_GUIDE.md` and the prompt usage map in the same branch,
-  and CLAUDE.md where it states the rule.
+  `docs/images/`), `docs/PROMPT_LIBRARY_GUIDE.md` (the prompt library's guide), `prompts/` (the
+  prompt library itself, under CC BY-SA 4.0, with a `README.md` of its own), and
+  `docs/BUILDING.md` once it is written. Markdown is the source of record; PDFs are renders.
+- A user-visible change updates `docs/USER_GUIDE.md` and the prompt usage map
+  (`prompts/USAGE_MAP.md`) in the same branch, and CLAUDE.md where it states the rule.
 - The private hand-over document and the continuity files stay outside the repository.
 
 ## Project Structure
@@ -110,10 +118,13 @@ AstroCast.Mac.slnx                  — every project but the WPF head (macOS)
 │       └── src/                     — The library's C sources
 ├── ephe/                            — Swiss Ephemeris data files (.se1) and sefstars.txt
 ├── build/macos/                     — macOS bundle, signing, notarization and DMG scripts
-├── docs/                            — LICENSING.md, USER_GUIDE.md, images/ and H-1_Decomposition_Pattern.md (design note)
+├── docs/                            — The two guides, LICENSING.md and images/
 │   ├── LICENSING.md                 — The project's licences in plain terms
 │   ├── USER_GUIDE.md                — The user guide: install, first chart, every panel
+│   ├── PROMPT_LIBRARY_GUIDE.md      — The prompt library's guide: export, choose, submit, read
 │   └── images/                      — The user guide's screenshots
+├── prompts/                         — The prompt library (CC BY-SA 4.0): thirty prompts by family,
+│                                      guides/, history/, helpers/, the manifest and the usage map
 ├── README.md                        — The front page: what it does, install, first chart, building
 ├── CONTRIBUTING.md                  — The conventions a change must keep
 ├── BuildInstaller.ps1               — Windows MSI build
@@ -1832,6 +1843,10 @@ on what a `Button` is.
   engine and the export (see *Davison chart* above), landed on `d85441f`; then DavisonPanel, the Synastry
   panel's section in both heads (see *Davison section* below), landed on the Mac, awaiting Maple; then the
   library run (P30 from P13, the manifest and the usage map); then the tag `v1.7.0`, the MSI and the DMG.
+  1.7.0 is tagged `v1.7.0`. 1.7.1 is tagged `v1.7.1`, after branches Fixtures, SvgExclude, Public,
+  UserGuide, GuideWin and NoKey: the first public release, the tree of the public repository's `99245d3`.
+  1.7.2 is open: branch Prompts (2026-11-14), the prompt library in `prompts/` with
+  `docs/PROMPT_LIBRARY_GUIDE.md`, then branch Review, the read-through before the repository turned public.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the

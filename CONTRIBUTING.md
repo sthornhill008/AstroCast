@@ -86,8 +86,20 @@ including every astrological rule the engine follows and the reasons behind them
 ## Documentation
 
 - A user-visible change updates the user guide (`docs/USER_GUIDE.md`) and the
-  prompt usage map in the same branch, and CLAUDE.md where it states the rule.
+  prompt usage map (`prompts/USAGE_MAP.md`) in the same branch, and CLAUDE.md where it states
+  the rule.
 - Markdown is the source of record; PDFs are renders.
+
+## Prompts
+
+- The prompt library in `prompts/` is prose under CC BY-SA 4.0 (`prompts/LICENSE.md`), not the
+  AGPL; a contribution to it is licensed the same way.
+- A prompt is changed by releasing a new version of it: the file name carries the version, the
+  prompt's History in `prompts/history/` gains an entry saying what moved and why, and
+  `prompts/MANIFEST.md` and the prompt's guide in `prompts/guides/` are brought into step. Open
+  an issue first: the prompts share rules (`prompts/SHARED_BEHAVIOR_CONTRACT.md`) that a change
+  must keep.
+- Examples in a prompt use the User Guide's invented persons, never a real private person.
 
 ## Secrets
 

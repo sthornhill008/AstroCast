@@ -57,10 +57,12 @@ application. They remain listed because they remain in the dependency graph.
 
 The interpretation prompts in `prompts/` are prose, not software, and are licensed separately
 under the **Creative Commons Attribution-ShareAlike 4.0 International** licence (CC BY-SA 4.0):
-you may share and adapt them, with attribution, under the same licence.
+you may share and adapt them, with attribution, under the same licence. The notice is
+[prompts/LICENSE.md](../prompts/LICENSE.md), with the licence's full text beside it.
 
 ## Contributions
 
 By contributing to AstroCast you agree that your contribution is licensed under the same
-AGPL-3.0-or-later terms as the rest of the project. There is no contributor licence agreement
-and no copyright assignment.
+AGPL-3.0-or-later terms as the rest of the project, or, for a contribution to the prompt
+library in `prompts/`, under CC BY-SA 4.0. There is no contributor licence agreement and no
+copyright assignment.

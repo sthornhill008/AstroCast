@@ -1,5 +1,11 @@
 # AstroCast -- macOS Port Plan
 
+> **For a reader new to the project.** This is the working log of the
+> macOS port and, in Section 6, the record of every branch landed since.
+> Commit hashes up to the Review landing (2026-11-14), and tags before
+> `v1.7.1`, belong to the private development history and are not in the
+> public repository. "Maple" is the maintainer's Windows machine.
+
 - **Date:** 2026-07-05
 - **Prepared by:** Claude Code (read-only codebase assessment)
 - **Status:** **Phases 0-5 complete.** Phase 4 closed 2026-08-10 with the
@@ -6118,6 +6124,80 @@ the packagers never embed the CARTO key**
 >
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.1 closes here: the tag v1.7.1 on this record commit.
+
+**Landing record (2026-11-14, after the tag v1.7.1): branch Prompts,
+the prompt library enters the repository**
+> `Prompts` (Mac, cut from `3f138f2`), three commits: `e7ef08b` bumps
+> the version to 1.7.2 (8 csprojs, 32 fields); `e11d9ea` adds the
+> prompt library as prompts/, 100 files: the thirty prompts in their
+> nineteen family folders, guides/ (30), history/ (30), helpers/ (4),
+> MANIFEST.md, USAGE_MAP.md, SHARED_BEHAVIOR_CONTRACT.md, README.md,
+> LICENSE.md and the CC BY-SA 4.0 legal text; `f879f25` adds
+> docs/PROMPT_LIBRARY_GUIDE.md (ten chapters, two appendices) and
+> points README's prompt library section at both. No C#, no test, no
+> golden changed.
+> - The library came from the OneDrive Prompts folder of 2026-10-22
+>   (97 files, read only) through library_pass.py, 261 pinned edits:
+>   156 links made relative, 58 output defaults rewritten to
+>   `{AstroCast folder}\Interp\...`, the private names in the examples
+>   replaced with the invented Eleanor Hartwell and Daniel Whitfield,
+>   the private archive paths reduced to file names, the folder
+>   "Planentary Returns" spelled right, LF endings. 167 relative
+>   links, none broken; the needle sweep zero.
+> - Landed from the Mac (docs only after the bump; Steve, 2026-11-14);
+>   both suites on the Mac at the bump: 4297/4297, 145/145, xUnit1031
+>   the only warning code. Maple syncs at the next Maple prompt.
+> - The PDF render, AstroCast_Prompt_Library_Guide.pdf in OneDrive's
+>   User Documentation folder (render_prompt_guide.sh in the Mac setup
+>   folder's prompt-guide/).
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
+**Landing record (2026-11-14, after the tag v1.7.1): branch Review,
+the read-through before the repository turns public**
+> `Review` (Mac, cut from `6700dc8`), two commits, docs only:
+> `b7ed676` removes three superseded files that carried private
+> paths, AstroCast_PromptWorkflow.md, docs/H-1_Decomposition_Pattern.md
+> and Package-AstroCast-SourceOnly-TarGz.ps1 (they stay in the private
+> history); `c636125` makes 17 edits in seven files: CLAUDE.md (a note
+> for new readers, the sharing items as settled, the documentation and
+> structure lists with prompts/, the status through 1.7.2),
+> CONTRIBUTING.md (a Prompts section), docs/LICENSING.md, README.md
+> (links to the Releases page and the User Guide), docs/USER_GUIDE.md
+> ("1.7.1 and later", links to the Prompt Library Guide),
+> docs/PROMPT_LIBRARY_GUIDE.md (one word in 8.1) and this file (the
+> note at its top, which moved every line below it down by six).
+> - The review itself, read-only, found nothing private in the 938
+>   tracked files (Claude, 2026-11-14; repository-review-2026-11-14.md
+>   in the Mac setup folder's review-2026-11-14/).
+> - Landed from the Mac (docs only; Steve, 2026-11-14); both suites on
+>   the Mac at `c636125`: 4297/4297, 145/145. Both PDFs rendered again
+>   into OneDrive's User Documentation folder. Maple syncs at the next
+>   Maple prompt.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
+**Landing record (2026-11-14, after the tag v1.7.1): branch
+Requirements, the last edits before the public snapshot**
+> `Requirements` (Mac, cut from `3a5d078`), one commit `14d16a4`, docs
+> only: README.md states the system requirements (Windows 10 or 11,
+> 64-bit; Apple silicon with macOS 15 or later) and that charts are
+> cast in the tropical zodiac, both of which the announcement says;
+> the notes for new readers at the top of CLAUDE.md and of this file
+> now say that commit hashes up to the Review landing belong to the
+> private history.
+> - Landed from the Mac (docs only; Steve, 2026-11-14); the suites
+>   were not run again (no file a build reads changed since `c636125`,
+>   4297/4297 and 145/145).
+> - The public repository, sthornhill008/AstroCast, then took this
+>   record commit's tree as its third snapshot commit, the tree hash
+>   proved equal. From the clone switch on, branches land in the
+>   public repository and the hashes in these records are its own.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
 
 **Phase 6 -- Parity verification and steady state (2-3 days, ~2-4 sessions)**
 Export the full set of Markdown reports for reference charts on both OSes and

@@ -1,6 +1,6 @@
 # AstroCast User Guide
 
-*For AstroCast 1.7.1 on Windows and macOS.*
+*For AstroCast 1.7.1 and later, on Windows and macOS.*
 
 This guide takes you from installing AstroCast to a finished report. The first three chapters
 are enough to cast your first chart; the rest go panel by panel. Every button, box and setting
@@ -39,7 +39,7 @@ Everything AstroCast calculates it also writes out as a **Markdown report**: a p
 with headings and tables that you can read as it is, print, or hand to an AI chat for a written
 interpretation. A companion library of prompts, one for each kind of report, is written for
 exactly that; the appendix lists which prompt reads which report, and the prompt library has a
-guide of its own.
+guide of its own, the [Prompt Library Guide](PROMPT_LIBRARY_GUIDE.md).
 
 The program has ten panels, listed down the left-hand bar in this order:
 
@@ -745,8 +745,9 @@ under the current engine's rules when you load it.
 ## Appendix: the exports and the prompts that read them
 
 AstroCast's reports are written to be read by the prompts of its companion library, one per
-kind of report. The prompt library has a guide of its own; this table is the map from an
-export to its prompt.
+kind of report. The prompt library has a guide of its own, the
+[Prompt Library Guide](PROMPT_LIBRARY_GUIDE.md); this table is the map from an export to its
+prompt.
 
 | Export | Where it is made | Prompt |
 |---|---|---|

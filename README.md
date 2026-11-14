@@ -1,9 +1,10 @@
 # AstroCast
 
 AstroCast is a desktop astrology program for Windows and macOS. It casts charts on the Swiss
-Ephemeris, analyses them with the traditional and modern techniques of Western astrology, and
-writes every result out as a Markdown report that reads well on its own or as the input to an
-AI interpretation. A companion prompt library turns those reports into written readings.
+Ephemeris in the tropical zodiac, analyses them with the traditional and modern techniques of
+Western astrology, and writes every result out as a Markdown report that reads well on its own
+or as the input to an AI interpretation. A companion prompt library turns those reports into
+written readings.
 
 ![AstroCast's Chart panel on macOS](docs/images/chart-panel.png)
 
@@ -37,7 +38,12 @@ Full write-ups of each technique and the rules the engine follows are in
 
 ## Install
 
-**Windows.** Run the MSI from the Releases page. It installs for the current user under
+**Requirements.** Windows 10 or 11 (64-bit), or a Mac with Apple silicon running macOS 15 or
+later.
+
+**Windows.** Run the MSI from the
+[Releases page](https://github.com/sthornhill008/AstroCast/releases). It installs for the
+current user under
 `%LOCALAPPDATA%\Thornhill Computer Software\AstroCast`, needs no separate .NET install, and
 shows the licence on its first page. The MSI is not Authenticode-signed, so Windows SmartScreen
 asks once before it runs: choose *More info*, then *Run anyway*. The saved-chart database and
@@ -47,7 +53,7 @@ the logs live beside `AstroCast.exe` in that folder and survive an upgrade.
 signed with a Developer ID and notarized, so Gatekeeper opens it without a warning. The
 database and logs live in `~/Library/Application Support/AstroCast`.
 
-The User Guide's chapter 2 has the details for both systems.
+Chapter 2 of the [User Guide](docs/USER_GUIDE.md) has the details for both systems.
 
 **The map's base layer.** The Map panel draws its streets and place names from CARTO's
 Voyager tiles, which need a key. Public builds ship without one: the map draws its
@@ -70,8 +76,9 @@ on macOS. The program reads it at its next start.
 
 Thirty prompts, one per kind of export, each written to read AstroCast's own report format and
 to return a written interpretation in a stated method. They are plain Markdown files, licensed
-under CC BY-SA 4.0, kept in this repository's `prompts/` folder once that folder lands. The
-library's own guide explains how to make an export, choose a prompt and submit it.
+under CC BY-SA 4.0, kept in this repository's [`prompts/`](prompts/README.md) folder. The
+[Prompt Library Guide](docs/PROMPT_LIBRARY_GUIDE.md) explains how to make an export, choose a
+prompt and submit it.
 
 ## Building from source
 
