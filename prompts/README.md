@@ -9,6 +9,18 @@ document).
 **Start with the [Prompt Library Guide](../docs/PROMPT_LIBRARY_GUIDE.md).** It explains how to
 make an export, choose the prompt, submit the two together and read what comes back.
 
+## Getting the library
+
+- **As one download:** the repository's [Releases page](https://github.com/sthornhill008/AstroCast/releases)
+  carries `AstroCast_Prompt_Library_<date>.zip`: this folder, and the guide as a PDF. Unzip it
+  anywhere.
+- **One prompt at a time:** open the prompt's file on GitHub and use the **Copy raw file** or
+  **Download raw file** button above the text.
+- **With the source:** the green **Code** button on the repository's front page, then
+  **Download ZIP**; or `git clone`.
+
+The installers do not carry the prompts.
+
 ## In short
 
 1. Make an export in AstroCast (for example **Save Markdown** on the Chart panel).

@@ -80,6 +80,10 @@ under CC BY-SA 4.0, kept in this repository's [`prompts/`](prompts/README.md) fo
 [Prompt Library Guide](docs/PROMPT_LIBRARY_GUIDE.md) explains how to make an export, choose a
 prompt and submit it.
 
+You do not need the source to use the library: the [Releases page](https://github.com/sthornhill008/AstroCast/releases)
+carries it on its own as `AstroCast_Prompt_Library_<date>.zip`, with the guide as a PDF.
+Download that and unzip it anywhere. The installers do not carry the prompts.
+
 ## Building from source
 
 - .NET 10 SDK (the version in `global.json`), C# 14. On Windows, Visual Studio 2026 or the

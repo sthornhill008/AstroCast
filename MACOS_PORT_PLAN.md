@@ -2,7 +2,7 @@
 
 > **For a reader new to the project.** This is the working log of the
 > macOS port and, in Section 6, the record of every branch landed since.
-> Commit hashes up to the Review landing (2026-11-14), and tags before
+> Commit hashes up to the Download landing (2026-11-15), and tags before
 > `v1.7.1`, belong to the private development history and are not in the
 > public repository. "Maple" is the maintainer's Windows machine.
 
@@ -6195,6 +6195,31 @@ Requirements, the last edits before the public snapshot**
 >   record commit's tree as its third snapshot commit, the tree hash
 >   proved equal. From the clone switch on, branches land in the
 >   public repository and the hashes in these records are its own.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
+**Landing record (2026-11-15, after the tag v1.7.1): branch Download,
+how a user gets the prompt library**
+> `Download` (Mac, cut from `f2301c2`), one commit `542c82f`, docs
+> only: README.md, prompts/README.md (a "Getting the library" section)
+> and chapter 1 of docs/PROMPT_LIBRARY_GUIDE.md now say that the
+> Releases page carries the library on its own as
+> AstroCast_Prompt_Library_<date>.zip; CLAUDE.md's Documentation
+> section states the rule (the zip is built again whenever a prompt or
+> the guide changes); the notes for new readers in CLAUDE.md and this
+> file name this landing as the last with private hashes.
+> - Steve's question of 2026-11-15: nothing told a user how to
+>   download the prompts, and the installers do not carry them.
+> - The zip, AstroCast_Prompt_Library_2026-10-22.zip (the prompts/
+>   folder, the guide and its PDF, a READ_ME_FIRST.txt; 103 entries),
+>   built by make_prompt_zip.py in the Mac setup folder's
+>   download-2026-11-15/ and added to the public release v1.7.1, whose
+>   notes name it with its SHA-256.
+> - Landed from the Mac (docs only; Steve, 2026-11-15); the suites
+>   were not run again (4297/4297 and 145/145 at `c636125`). The
+>   public repository took this record commit's tree as its fourth
+>   snapshot commit, the tree hash proved equal.
 >
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.2 is open; no tag.

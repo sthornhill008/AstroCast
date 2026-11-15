@@ -2,7 +2,7 @@
 
 > **For a reader new to the project.** This file is the project's working contract: every rule
 > the engine follows, with the reasons, and the record of how each was decided. Commit hashes
-> named here up to the Review landing (2026-11-14), and tags before `v1.7.1`, belong to the
+> named here up to the Download landing (2026-11-15), and tags before `v1.7.1`, belong to the
 > private development history and are not in the public repository, whose own history begins
 > with snapshot commits. "Steve" is the maintainer, Steve Thornhill; "Maple" is his Windows
 > machine.
@@ -81,6 +81,9 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
   `docs/BUILDING.md` once it is written. Markdown is the source of record; PDFs are renders.
 - A user-visible change updates `docs/USER_GUIDE.md` and the prompt usage map
   (`prompts/USAGE_MAP.md`) in the same branch, and CLAUDE.md where it states the rule.
+- A release carries the prompt library on its own as `AstroCast_Prompt_Library_<date>.zip` (the
+  `prompts/` folder, the guide and its PDF; `<date>` is the manifest's library release). The zip
+  is built again and replaced on the current release whenever a prompt or the guide changes.
 - The private hand-over document and the continuity files stay outside the repository.
 
 ## Project Structure

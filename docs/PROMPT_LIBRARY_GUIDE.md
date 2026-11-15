@@ -28,7 +28,10 @@ how each export is made; this guide picks up where an export is saved.
 
 ## 1. What the library is
 
-The library lives in the repository's `prompts/` folder. It holds:
+The library lives in the repository's `prompts/` folder. To get it without the source, download
+`AstroCast_Prompt_Library_<date>.zip` from the repository's Releases page
+(<https://github.com/sthornhill008/AstroCast/releases>) and unzip it anywhere: it is that
+folder, with this guide as a PDF. The installers do not carry the prompts. The library holds:
 
 - **Thirty prompts**, numbered P01 to P30, in nineteen family folders named for what they read:
   `Natal/`, `Transit/`, `Timeline/`, `Daily/`, `Solar Return/`, `Lunar Return/`,
