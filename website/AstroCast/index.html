@@ -130,6 +130,11 @@
         figure { margin: 0; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
         figure img { display: block; width: 100%; height: auto; border-radius: 4px; }
         figcaption { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+        /* Each picture is a link to its full-size file; the focus ring goes round the picture. */
+        .shot-link { display: block; border-radius: 4px; }
+        .shot-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+        .shot-hint { color: var(--muted); margin-bottom: 14px; }
+        .hero-shots .shot-hint { grid-column: 1 / -1; margin: -8px 0 0; }
 
         /* The download card. */
         .downloads { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 24px 0; }
@@ -161,6 +166,7 @@
         .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
         .feature { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--brand); border-radius: 8px; padding: 24px; }
         .feature .panel-name { color: var(--accent); font-size: 1rem; margin-bottom: 2px; }
+        .samples-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin: 18px 0; }
         .feature p { color: var(--muted); }
 
         ol.plain, ul.plain { margin: 0 0 14px 24px; }
@@ -182,7 +188,7 @@
             h1 { font-size: 2.1rem; }
             .tagline { font-size: 1.15rem; }
             .card { padding: 22px 18px; }
-            .hero-shots, .shot-grid, .downloads, .steps, .features { grid-template-columns: 1fr; }
+            .hero-shots, .shot-grid, .downloads, .steps, .features, .samples-grid { grid-template-columns: 1fr; }
             .app-icon { width: 64px; height: 64px; }
         }
 
@@ -338,6 +344,7 @@
                     <li><a href="#download">Download</a></li>
                     <li><a href="#start">Get started</a></li>
                     <li><a href="#features">What it does</a></li>
+                    <li><a href="#samples">Samples</a></li>
                     <li><a href="#prompts">Prompt library</a></li>
                     <li><a href="#faq">Common questions</a></li>
                     <li><a href="help/index.html">Help</a></li>
@@ -351,21 +358,26 @@
 
             <section class="hero-shots" aria-label="AstroCast on Windows and macOS">
                 <figure>
-                    <picture>
-                        <source srcset="images/shot-chart-win-v1.webp" type="image/webp">
-                        <img src="images/shot-chart-win-v1.png" width="1086" height="743" fetchpriority="high"
-                             alt="AstroCast's Chart panel on Windows: the entry form filled in for Eleanor Hartwell on the left, the Saved Charts list on the right.">
-                    </picture>
+                    <a class="shot-link" href="images/shot-chart-win-v1.png" aria-label="Open the full-size picture: the Chart panel on Windows">
+    <picture>
+                            <source srcset="images/shot-chart-win-v1.webp" type="image/webp">
+                            <img src="images/shot-chart-win-v1.png" width="1086" height="743" fetchpriority="high"
+                                 alt="AstroCast's Chart panel on Windows: the entry form filled in for Eleanor Hartwell on the left, the Saved Charts list on the right.">
+                        </picture>
+                    </a>
                     <figcaption>The Chart panel on Windows, with the invented example chart the User Guide uses.</figcaption>
                 </figure>
                 <figure>
-                    <picture>
-                        <source srcset="images/shot-chart-mac-v1.webp" type="image/webp">
-                        <img src="images/shot-chart-mac-v1.png" width="1400" height="955" fetchpriority="high"
-                             alt="The same Chart panel on macOS, with Eleanor Hartwell and Daniel Whitfield in the Saved Charts list.">
-                    </picture>
+                    <a class="shot-link" href="images/shot-chart-mac-v1.png" aria-label="Open the full-size picture: the Chart panel on macOS">
+    <picture>
+                            <source srcset="images/shot-chart-mac-v1.webp" type="image/webp">
+                            <img src="images/shot-chart-mac-v1.png" width="1400" height="955" fetchpriority="high"
+                                 alt="The same Chart panel on macOS, with Eleanor Hartwell and Daniel Whitfield in the Saved Charts list.">
+                        </picture>
+                    </a>
                     <figcaption>The same chart on macOS. Both versions share the same panels and the same reports.</figcaption>
                 </figure>
+                <p class="shot-hint">Select a picture to open it full size.</p>
             </section>
 
             <section class="card card-top" id="download" aria-labelledby="download-h">
@@ -487,59 +499,98 @@
 
             <section id="in-use" aria-labelledby="in-use-h">
                 <h2 id="in-use-h">AstroCast in use</h2>
+                <p class="lede shot-hint">Select a picture to open it full size.</p>
                 <div class="shot-grid">
                     <figure>
-                        <picture>
-                            <source srcset="images/shot-transits-v1.webp" type="image/webp">
-                            <img src="images/shot-transits-v1.png" width="1200" height="818" loading="lazy"
-                                 alt="The Transits panel: a start and an end date, tick boxes for transits, solar arcs, progressions and directions, and the export buttons.">
-                        </picture>
+                        <a class="shot-link" href="images/shot-transits-v1.png" aria-label="Open the full-size picture: the Transits panel">
+    <picture>
+                                <source srcset="images/shot-transits-v1.webp" type="image/webp">
+                                <img src="images/shot-transits-v1.png" width="1200" height="818" loading="lazy"
+                                     alt="The Transits panel: a start and an end date, tick boxes for transits, solar arcs, progressions and directions, and the export buttons.">
+                            </picture>
+                        </a>
                         <figcaption>Transits: choose a period and the techniques, then export a report, a timeline or a daily horoscope.</figcaption>
                     </figure>
                     <figure>
-                        <picture>
-                            <source srcset="images/shot-synastry-v1.webp" type="image/webp">
-                            <img src="images/shot-synastry-v1.png" width="1200" height="818" loading="lazy"
-                                 alt="The Synastry panel with Daniel Whitfield chosen as Person B, and buttons to calculate the synastry, the composite chart and the Davison chart.">
-                        </picture>
+                        <a class="shot-link" href="images/shot-synastry-v1.png" aria-label="Open the full-size picture: the Synastry panel">
+    <picture>
+                                <source srcset="images/shot-synastry-v1.webp" type="image/webp">
+                                <img src="images/shot-synastry-v1.png" width="1200" height="818" loading="lazy"
+                                     alt="The Synastry panel with Daniel Whitfield chosen as Person B, and buttons to calculate the synastry, the composite chart and the Davison chart.">
+                            </picture>
+                        </a>
                         <figcaption>Synastry: the chart on screen compared with a saved chart, here the two invented examples.</figcaption>
                     </figure>
                     <figure>
-                        <picture>
-                            <source srcset="images/shot-returns-v1.webp" type="image/webp">
-                            <img src="images/shot-returns-v1.png" width="1200" height="818" loading="lazy"
-                                 alt="The Returns panel: a paragraph on the year's annual profection, then the Solar Return and Lunar Return sections.">
-                        </picture>
-                        <figcaption>Returns: the year's time lords at the top, then the solar, lunar and planetary returns.</figcaption>
+                        <a class="shot-link" href="images/shot-relocate-v1.png" aria-label="Open the full-size picture: the Relocation panel">
+    <picture>
+                                <source srcset="images/shot-relocate-v1.webp" type="image/webp">
+                                <img src="images/shot-relocate-v1.png" width="1200" height="818" loading="lazy"
+                                     alt="The Relocation panel: Eleanor Hartwell's birth chart recast for London, with a result line naming the new Ascendant and twelve house changes.">
+                            </picture>
+                        </a>
+                        <figcaption>Relocation: the birth chart cast at another place, here London. The same moment, with new angles and new houses.</figcaption>
                     </figure>
                     <figure>
-                        <picture>
-                            <source srcset="images/shot-election-v1.webp" type="image/webp">
-                            <img src="images/shot-election-v1.png" width="1200" height="818" loading="lazy"
-                                 alt="The Election panel: a goal, a start and an end date, a place, and tick boxes for the days of the week.">
-                        </picture>
+                        <a class="shot-link" href="images/shot-election-v1.png" aria-label="Open the full-size picture: the Election panel">
+    <picture>
+                                <source srcset="images/shot-election-v1.webp" type="image/webp">
+                                <img src="images/shot-election-v1.png" width="1200" height="818" loading="lazy"
+                                     alt="The Election panel: a goal, a start and an end date, a place, and tick boxes for the days of the week.">
+                            </picture>
+                        </a>
                         <figcaption>Election: say what you plan, give a date range and a place, and AstroCast scores the best moments.</figcaption>
                     </figure>
                     <figure>
-                        <picture>
-                            <source srcset="images/shot-primary-v1.webp" type="image/webp">
-                            <img src="images/shot-primary-v1.png" width="1200" height="818" loading="lazy"
-                                 alt="The Primary Directions panel, listing 538 dated directions for Eleanor Hartwell to age 100.">
-                        </picture>
+                        <a class="shot-link" href="images/shot-primary-v1.png" aria-label="Open the full-size picture: the Primary Directions panel">
+    <picture>
+                                <source srcset="images/shot-primary-v1.webp" type="image/webp">
+                                <img src="images/shot-primary-v1.png" width="1200" height="818" loading="lazy"
+                                     alt="The Primary Directions panel, listing 538 dated directions for Eleanor Hartwell to age 100.">
+                            </picture>
+                        </a>
                         <figcaption>Primary directions: a dated list for a whole life.</figcaption>
                     </figure>
                     <figure>
-                        <picture>
-                            <source srcset="images/shot-map-v1.webp" type="image/webp">
-                            <img src="images/shot-map-v1.png" width="1200" height="828" loading="lazy"
-                                 alt="The map window: coloured planet lines over a map of North America, with a crossing report for a click near New York along the bottom.">
-                        </picture>
+                        <a class="shot-link" href="images/shot-map-v1.png" aria-label="Open the full-size picture: the map window">
+    <picture>
+                                <source srcset="images/shot-map-v1.webp" type="image/webp">
+                                <img src="images/shot-map-v1.png" width="1200" height="828" loading="lazy"
+                                     alt="The map window: coloured planet lines over a map of North America, with a crossing report for a click near New York along the bottom.">
+                            </picture>
+                        </a>
                         <figcaption>The map window, shown with the optional CARTO map background.</figcaption>
                     </figure>
                 </div>
             </section>
 
-<!-- SAMPLES-SECTION: inserted by the Phase 4 prompt -->
+            <section id="samples" aria-labelledby="samples-h">
+                <h2 id="samples-h">See what you get</h2>
+                <p class="lede">AstroCast writes the report. An AI assistant, given the report and a prompt, writes the reading. These are real examples, each shown exactly as it was written.</p>
+                <div class="samples-grid">
+                    <div class="feature">
+                        <h3>A natal chart</h3>
+                        <p>Eleanor Hartwell (an invented person).</p>
+                        <p><a class="more" href="samples/natal-report/index.html" aria-label="The report: a natal chart">The report</a> <a class="more" href="samples/natal-reading/index.html" aria-label="The reading: a natal chart">The reading</a></p>
+                    </div>
+                    <div class="feature">
+                        <h3>Three months of transits</h3>
+                        <p>Her transit timeline, January to March 2027.</p>
+                        <p><a class="more" href="samples/timeline-report/index.html" aria-label="The report: three months of transits">The report</a> <a class="more" href="samples/timeline-reading/index.html" aria-label="The reading: three months of transits">The reading</a></p>
+                    </div>
+                    <div class="feature">
+                        <h3>Two charts compared</h3>
+                        <p>The synastry of the two invented charts.</p>
+                        <p><a class="more" href="samples/synastry-report/index.html" aria-label="The report: two charts compared">The report</a> <a class="more" href="samples/synastry-reading/index.html" aria-label="The reading: two charts compared">The reading</a></p>
+                    </div>
+                    <div class="feature">
+                        <h3>A question asked of the sky</h3>
+                        <p>A horary chart answers a question from the moment it is asked. This one is a real question, with a note of what happened.</p>
+                        <p><a class="more" href="samples/horary-reading/index.html" aria-label="The reading: a question asked of the sky">The reading</a></p>
+                    </div>
+                </div>
+                <p><a class="more" href="samples/index.html">All the samples</a></p>
+            </section>
 
             <section class="card" id="prompts" aria-labelledby="prompts-h">
                 <h2 id="prompts-h">The prompt library</h2>

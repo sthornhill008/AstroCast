@@ -16,8 +16,17 @@
 # (help-v1.css, shot-...-v1.png, ...-v1.pdf). Do not add ExpiresActive: it
 # does nothing here.
 
-# There are no AddType lines: this site serves no installer. The downloads
-# are links to the release files on GitHub.
+# This site serves no installer: the downloads are links to the release
+# files on GitHub. The one AddType line is for the sample reports offered as
+# Markdown files (samples/files/*.md). The host has no mapping for .md, so
+# without it a browser is left to guess; with it the file is declared as
+# Markdown in UTF-8, which matters because the reports hold degree signs and
+# other characters outside ASCII. It stands outside <IfModule> for the
+# reason the PhotoDB and ChessSage copies give for their own AddType lines:
+# AddType is mod_mime, which is always present, and it needs the same
+# override (FileInfo) that the Header lines below already rely on. Those two
+# sites' AddType lines are honoured on this host.
+AddType "text/markdown; charset=utf-8" .md
 
 # Everything below depends on mod_headers. It is guarded because an unguarded
 # Header directive on a server without that module returns 500 on every page
@@ -60,8 +69,9 @@
         Header set Cache-Control "public, max-age=604800"
     </FilesMatch>
 
-    # The two guide PDFs. A week; a changed guide gets a new versioned name.
-    <FilesMatch "\.pdf$">
+    # The guide PDFs and the samples' PDF and Markdown files. A week; a
+    # changed file gets a new versioned name.
+    <FilesMatch "\.(pdf|md)$">
         Header set Cache-Control "public, max-age=604800"
     </FilesMatch>
 

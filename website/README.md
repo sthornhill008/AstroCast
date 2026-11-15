@@ -8,6 +8,8 @@ images and two PDFs. There is no PHP, no JavaScript, no database and no `data` f
 |---|---|
 | `AstroCast/` | **Exactly what is uploaded** to the server folder `/public/AstroCast`. Nothing that is not meant to be served goes inside it |
 | `Update-WebsiteRelease.ps1` | The per-release step: writes a release's version, file names, sizes, addresses and checksums into the pages |
+| `samples-src/` | The Markdown sources of the sample pages, exactly as they were written. Not uploaded |
+| `tools/Build-Samples.ps1` | Renders the sample pages from `samples-src/`. Not uploaded |
 | `tools/og-card.html` | The source of the social card image `AstroCast/images/og-card-v1.png`. Not uploaded |
 | `README.md` | This file. Not uploaded |
 
@@ -19,6 +21,10 @@ AstroCast/
   help-v1.css        the one stylesheet the six help pages share
   help/index.html    the help index
   help/install-windows/  install-mac/  first-reading/  map-key/  faq/   one index.html each
+  samples-v1.css     the one stylesheet the sample pages share
+  samples/index.html the list of samples
+  samples/<name>/    one index.html for each sample report or reading (built, not hand-written)
+  samples/files/     the samples' PDF and Markdown downloads (versioned names)
   docs/              the two guides as PDFs (versioned names)
   fonts/             Source Sans 3 (400, 600), JetBrains Mono (400), their licences, PROVENANCE.txt
   images/            screenshots as PNG and WebP pairs, the icons and the social card
@@ -30,7 +36,7 @@ AstroCast/
 
 `index.html` runs in this order: the header band; the two Chart-panel screenshots; the download
 card; "Get started in three steps"; "What it does" (ten cards, one per panel); "AstroCast in
-use" (six screenshots); a placeholder comment for the sample reports; the prompt library; the
+use" (six screenshots); "See what you get" (the samples); the prompt library; the
 map's background; system requirements; checking your download; common questions; the footer.
 
 Rules the pages keep:
@@ -97,7 +103,7 @@ charts.
 | `shot-chart-mac-v1` | `chart-panel.png` | 1400 |
 | `shot-transits-v1` | `transits-panel.png` | 1200 |
 | `shot-synastry-v1` | `synastry-panel.png` | 1200 |
-| `shot-returns-v1` | `returns-panel.png` | 1200 |
+| `shot-relocate-v1` | `relocate-panel.png` | 1200 |
 | `shot-election-v1` | `election-panel.png` | 1200 |
 | `shot-primary-v1` | `primary-panel.png` | 1200 |
 | `shot-map-v1` | `map-window.png` | 1200 |
@@ -129,14 +135,54 @@ The fonts are byte copies of the PhotoDB website's; `AstroCast/fonts/PROVENANCE.
 where each face comes from. The two PDFs in `AstroCast/docs/` are copies of the guides built
 from `docs/USER_GUIDE.md` and `docs/PROMPT_LIBRARY_GUIDE.md`.
 
+Each screenshot on the main page is a link to its own full-size PNG.
+
+## The samples
+
+"See what you get" on the main page links to sample pages: reports AstroCast wrote for the two
+invented charts (a natal chart, a three-month transit timeline, a synastry), each beside the
+reading an AI assistant made from it with a prompt of the prompt library, and one horary
+reading of a real question that Steve chose to share. That reading is the one exception to
+the rule that samples use invented charts only; nothing from it is quoted anywhere else on the
+site.
+
+- **The sources** are in `samples-src/`: one Markdown file for each sample page, under a short
+  name (`natal-report.md`, `natal-reading.md`, `timeline-report.md`, `timeline-reading.md`,
+  `synastry-report.md`, `synastry-reading.md`, `horary-reading.md`). They are kept exactly as
+  AstroCast or the assistant wrote them. A sample is never corrected or shortened.
+- **The pages** in `AstroCast/samples/` are built from those sources and must not be edited by
+  hand. To rebuild them:
+
+  ```powershell
+  .\tools\Build-Samples.ps1
+  ```
+
+  The script runs pandoc on each source (GitHub-flavoured Markdown to an HTML fragment),
+  shifts the sample's headings under the page's own `h1`, wraps every table in a region that
+  scrolls sideways on its own, and adds the note at the top of each page, the download links
+  and the "On this page" list. It makes no network call, and from the same sources, files and
+  pandoc version it writes the same bytes every time. The pages were made with pandoc 3.8.2.1.
+  The notes, titles and card texts are in the script's `$Samples` and `$Cards` tables.
+- **The downloads** are in `AstroCast/samples/files/`: the PDFs, and for each report the
+  Markdown file as AstroCast wrote it. They are byte copies with versioned names
+  (`natal-report-v1.pdf`).
+- **A changed sample gets a new versioned file name.** Replace its source in `samples-src/`,
+  add the new download as `...-v2`, change the name in the script's `$Samples` table, remove
+  the old file, and run the script. The pages themselves are HTML and are always fetched
+  fresh.
+
+Git stores the Markdown sources and downloads with LF line endings (`.gitattributes`:
+`* text=auto`), so a file that was written with CRLF or mixed endings has a different hash
+inside Git than it had when it was written. The build script reads either.
+
 ## The host's cache, and why assets carry `-v1`
 
 The host serves a ten-year `Cache-Control` and `Expires` on every asset type it has a rule for,
 and that wins over this folder's `.htaccess` for everything but `.html`. A visitor's browser
 may therefore keep a stylesheet, an image, a font or a PDF for years.
 
-So every asset carries a version in its name (`help-v1.css`, `shot-map-v1.png`,
-`AstroCast_User_Guide-v1.pdf`). **A changed asset gets a new versioned name** (`-v2`), and the
+So every asset carries a version in its name (`help-v1.css`, `samples-v1.css`,
+`shot-map-v1.png`, `AstroCast_User_Guide-v1.pdf`, `natal-report-v1.pdf`). **A changed asset gets a new versioned name** (`-v2`), and the
 pages that use it are changed to match; the HTML is always fetched fresh, so the new name
 takes effect at once. Never replace the contents of a versioned file under the same name.
 `favicon.ico` is requested by that fixed name and cannot be versioned.
