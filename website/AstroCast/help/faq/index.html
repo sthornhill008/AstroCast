@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1B2838">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1B2838">
+    <meta name="description" content="Common questions about AstroCast: cost and licence, what to install, the Windows warning, AI assistants, zodiac and house systems, where charts are kept, and reporting a problem.">
+    <meta name="author" content="Steve Thornhill">
+    <title>Common questions - AstroCast Help</title>
+    <link rel="canonical" href="https://www.sthornhill.com/AstroCast/help/faq/">
+    <link rel="icon" href="../../favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon-v1.png">
+    <link rel="stylesheet" href="../../help-v1.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="band">
+        <div class="container">
+            <h1>Common questions</h1>
+            <p>The questions from the AstroCast page, answered at more length</p>
+        </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../../index.html">AstroCast</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li aria-current="page">Common questions</li>
+            </ol>
+        </div>
+    </nav>
+
+    <main id="main">
+        <div class="container">
+
+            <div class="content-section" id="cost">
+                <h2>Cost and licence</h2>
+                <div class="faq-item">
+                    <h3>Is it free?</h3>
+                    <p>Yes. AstroCast is free software under the GNU Affero General Public License, version 3 or later. In outline, you may use, study, copy, change and redistribute it, and anything you distribute that contains or is derived from it must carry the same licence and make its source available. There is no warranty.</p>
+                    <p>The prompt library is licensed separately, under CC BY-SA 4.0: you may copy, adapt and share it, with credit and under the same licence.</p>
+                    <p>This is a description, not legal advice; the licence texts themselves govern. The repository's <a href="https://github.com/sthornhill008/AstroCast/blob/master/docs/LICENSING.md">licences in plain terms</a> has more.</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="installing">
+                <h2>Installing</h2>
+                <div class="faq-item">
+                    <h3>Do I need to install anything else?</h3>
+                    <p>No. On Windows the installer needs nothing else: the .NET runtime and the Swiss Ephemeris are inside. On a Mac, open the disk image, drag AstroCast into Applications and open it.</p>
+                    <p>The prompt library is a separate download, because the installers do not carry the prompts. You need it only for written readings.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Does it run on an Intel Mac?</h3>
+                    <p>No. The macOS version needs a Mac with Apple silicon running macOS 15 or later.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Why does Windows warn me about the installer?</h3>
+                    <p>The installer is not signed with a Windows certificate, so Windows SmartScreen says the publisher is unknown. Choose <strong>More info</strong>, then <strong>Run anyway</strong>. <a href="../install-windows/index.html">Installing on Windows</a> has each step.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What happens to my charts when I upgrade?</h3>
+                    <p>Install the new version over the old one. Your charts, settings and logs are kept; the installer never replaces the database.</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="readings">
+                <h2>Prompts and readings</h2>
+                <div class="faq-item">
+                    <h3>Which AI assistants do the prompts work with?</h3>
+                    <p>The prompts are written for Claude, ChatGPT and Copilot, and for any assistant that reads a long instruction and a pasted document.</p>
+                    <p>The prompts are long, because each is a complete specification: the method, the structure of the reading, and the checks the AI must pass before it answers. You never need to read a prompt to use it, but you may; nothing in them is hidden.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is a reading fact?</h3>
+                    <p>No. A reading is an interpretation. The prompts are written to keep apart what a chart suggests, what a person might do with it, and what is documented, and to say so.</p>
+                    <p>The three medical prompts are for education and research. They describe traditional correspondences. They do not diagnose, predict clinical outcomes or advise treatment.</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="program">
+                <h2>The program</h2>
+                <div class="faq-item">
+                    <h3>Which zodiac and house systems does it use?</h3>
+                    <p>The tropical zodiac. The house system is Placidus unless you choose another: Koch, Equal, Whole Sign, Regiomontanus, Campanus, Alcabitius, Porphyry or Morinus.</p>
+                    <p>Placidus and Koch have no houses inside the polar circles; for a chart there, or for an unknown birth time, choose Equal or Whole Sign.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What years can it cast?</h3>
+                    <p>Dates run from 1200 to 2399; a date outside that span is refused with a message that says so. Dates before 15 October 1582 are read and printed on the Julian calendar.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Why is the map blank?</h3>
+                    <p>The map's background comes from CARTO, a map service that needs a key, and AstroCast ships without one. The map still works and draws every line. To see the background, add a free key of your own: <a href="../map-key/index.html">The map's background</a> has the steps.</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="data">
+                <h2>Your charts and your privacy</h2>
+                <div class="faq-item">
+                    <h3>Where are my charts kept?</h3>
+                    <p>In AstroCast's own database on your computer. On Windows it is the file <code>astrocast.db</code> beside the program, in <code>%LOCALAPPDATA%\Thornhill Computer Software\AstroCast</code>; on a Mac it is in <code>~/Library/Application Support/AstroCast</code>.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Does AstroCast use the internet?</h3>
+                    <p>Two things use the internet: the place lookup, which asks OpenStreetMap's Nominatim service for a city's coordinates, and the map's background, which needs a key you supply. Everything else happens on your machine.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>How do I move my charts to another computer?</h3>
+                    <p>On the Export panel, <strong>Export Backup</strong> writes every saved chart to one file. <strong>Import Backup</strong> reads such a file back on the other computer. This is also how to move charts between the Windows and Mac versions, whose databases are separate.</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="problems">
+                <h2>Problems</h2>
+                <div class="faq-item">
+                    <h3>How do I report a problem?</h3>
+                    <p>Use the <a href="https://github.com/sthornhill008/AstroCast/issues">Issues page on GitHub</a>; its "Report a problem" form asks for what is needed. Issues are public, so please do not post anyone's real birth data: the User Guide's invented chart, Eleanor Hartwell, shows most problems.</p>
+                </div>
+                <p><a class="more" href="../index.html">All help pages</a> <a class="more" href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="band">
+        <div class="container">
+            <p><strong>AstroCast</strong> by Steve Thornhill</p>
+            <ul>
+                <li><a href="../../index.html">AstroCast home and downloads</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li><a href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a></li>
+                <li><a href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a></li>
+            </ul>
+            <p>Copyright &copy; 2026 Thornhill Computer Software</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+AstroCast website - font provenance
+Recorded 2026-11-15, on Maple.
+
+The five font files in this folder are byte-identical copies of the files
+in the PhotoDB website's fonts folder, whose own PROVENANCE.txt (recorded
+2026-09-06) is the source of the release details below. Nothing was fetched
+again for AstroCast; each copy was checked against the SHA-256 given here.
+
+Both faces are licensed under the SIL Open Font License 1.1. The licence
+permits use, embedding and redistribution of unmodified copies provided
+each copy carries the copyright notice and the licence, which is what the
+two LICENSE-*.txt files beside the fonts are for. Neither face is sold on
+its own and neither is modified.
+
+======================================================================
+Source Sans 3 - prose (400, 600)
+======================================================================
+  Release page : https://github.com/adobe-fonts/source-sans/releases
+  Tag          : 3.052R   (published 2023-04-04)
+  Archive      : WOFF2-source-sans-3.052R.zip  (3,850,565 bytes)
+  Archive SHA-256: d7f6724027fe5ca0bab44d6121284f1fa8f66dec5f2864aa969aed347041ac95
+  Licence      : SIL Open Font License 1.1
+
+  The WOFF2 release archive contains no licence file, so
+  LICENSE-SourceSans3.txt was taken from the repository at the same tag
+  (LICENSE.md at tag 3.052R).
+
+======================================================================
+JetBrains Mono - file names, commands and checksums (400)
+======================================================================
+  Release page : https://github.com/JetBrains/JetBrainsMono/releases
+  Tag          : v2.304  (published 2023-01-14)
+  Archive      : JetBrainsMono-2.304.zip  (5,622,857 bytes)
+  Archive SHA-256: 6f6376c6ed2960ea8a963cd7387ec9d76e3f629125bc33d1fdcd7eb7012f7bbf
+  Licence      : SIL Open Font License 1.1 (OFL.txt, in the archive)
+
+======================================================================
+Files stored in this folder
+======================================================================
+
+Binaries - byte-identical to the archive entry and to PhotoDB's copy:
+
+  SourceSans3-Regular.woff2
+    from   : WOFF2/OTF/SourceSans3-Regular.otf.woff2
+    bytes  : 153800
+    SHA-256: 63de0da0cc05298e2e9c6e5cef506d8454ca665f6e668a99d94f51174b9256ed
+
+  SourceSans3-Semibold.woff2
+    from   : WOFF2/OTF/SourceSans3-Semibold.otf.woff2
+    bytes  : 155624
+    SHA-256: c248b0a178c362916db7c853ed640db77f184d19a0ed9fa5591fa707d3089635
+
+  JetBrainsMono-Regular.woff2
+    from   : fonts/webfonts/JetBrainsMono-Regular.woff2
+    bytes  : 92164
+    SHA-256: a9cb1cd82332b23a47e3a1239d25d13c86d16c4220695e34b243effa999f45f2
+
+Licences - byte-identical to PhotoDB's copies, which have CRLF line
+endings. The sizes and hashes are of the files as they stand in a Windows
+working tree, which is also what is uploaded. This repository stores text
+with LF line endings (.gitattributes: * text=auto), so the copy inside Git
+is the same text with LF endings and a different hash.
+
+  LICENSE-SourceSans3.txt
+    from   : repo LICENSE.md @ tag 3.052R
+    bytes  : 4579
+    SHA-256: 89ad2c4f66dd29127527493e729c31e731f111cf10faf5774c3db9275ed0c22c
+
+  LICENSE-JetBrainsMono.txt
+    from   : archive OFL.txt (4399 bytes with LF endings,
+             SHA-256 30f0c136e3c88e422d0791acd97238870f9054a9729bc34cf2ff0d4ed8cac4ad)
+    bytes  : 4492
+    SHA-256: 3d5fbb2d0e83919c8d9c6aa7a30e9554ef3448b0270f52a7520d49cc9ffa588f

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1B2838">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1B2838">
+    <meta name="description" content="How to install AstroCast on a Mac with Apple silicon: open the disk image, drag AstroCast to Applications, and where your charts are kept.">
+    <meta name="author" content="Steve Thornhill">
+    <title>Installing on a Mac - AstroCast Help</title>
+    <link rel="canonical" href="https://www.sthornhill.com/AstroCast/help/install-mac/">
+    <link rel="icon" href="../../favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon-v1.png">
+    <link rel="stylesheet" href="../../help-v1.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="band">
+        <div class="container">
+            <h1>Installing on a Mac</h1>
+            <p>For a Mac with Apple silicon, running macOS 15 or later</p>
+        </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../../index.html">AstroCast</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li aria-current="page">Installing on a Mac</li>
+            </ol>
+        </div>
+    </nav>
+
+    <main id="main">
+        <div class="container">
+
+            <div class="content-section">
+                <h2>Install AstroCast</h2>
+                <ol class="step-list">
+                    <li>Download the Mac disk image (the file ending in <code>.dmg</code>) from the <a href="../../index.html#download">download section of the AstroCast page</a>, and open it.</li>
+                    <li>Drag <strong>AstroCast</strong> into <strong>Applications</strong>.</li>
+                    <li>Open it from Applications or Launchpad. The app is signed and notarized, so macOS opens it without a warning.</li>
+                </ol>
+            </div>
+
+            <div class="content-section">
+                <h2>Where things live on a Mac</h2>
+                <table>
+                    <thead>
+                        <tr><th scope="col">What</th><th scope="col">Where</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>The program</td><td><code>/Applications/AstroCast.app</code></td></tr>
+                        <tr><td>Your saved charts</td><td><code>~/Library/Application Support/AstroCast/astrocast.db</code></td></tr>
+                        <tr><td>Logs</td><td><code>~/Library/Application Support/AstroCast/logs</code></td></tr>
+                        <tr><td>The map key (optional)</td><td><code>~/Library/Application Support/AstroCast/carto-key.txt</code></td></tr>
+                    </tbody>
+                </table>
+                <p>The <code>Application Support</code> folder and the database are created the first time the app runs.</p>
+                <div class="tip-box">
+                    <p><strong>Finding the Library folder.</strong> <code>~</code> is your home folder. In the Finder, hold Option and open the <strong>Go</strong> menu to see <strong>Library</strong>.</p>
+                </div>
+                <p>The map key is only for the Map panel's background. <a href="../map-key/index.html">The map's background</a> explains it.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Upgrading, and moving charts from Windows</h2>
+                <p>Install the new version over the old one. Your charts, settings and logs are kept.</p>
+                <p>The Windows and Mac versions keep separate databases. To carry your charts from one to the other, use <strong>Export Backup</strong> on the Export panel of the first computer, which writes every saved chart to one file, and <strong>Import Backup</strong> on the second.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Next</h2>
+                <p><a class="more" href="../first-reading/index.html">Your first chart and reading</a> <a class="more" href="../index.html">All help pages</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="band">
+        <div class="container">
+            <p><strong>AstroCast</strong> by Steve Thornhill</p>
+            <ul>
+                <li><a href="../../index.html">AstroCast home and downloads</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li><a href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a></li>
+                <li><a href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a></li>
+            </ul>
+            <p>Copyright &copy; 2026 Thornhill Computer Software</p>
+        </div>
+    </footer>
+</body>
+</html>

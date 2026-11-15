@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1B2838">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1B2838">
+    <meta name="description" content="How to install AstroCast on Windows 10 or 11: run the installer, pass the SmartScreen warning, and where your charts are kept.">
+    <meta name="author" content="Steve Thornhill">
+    <title>Installing on Windows - AstroCast Help</title>
+    <link rel="canonical" href="https://www.sthornhill.com/AstroCast/help/install-windows/">
+    <link rel="icon" href="../../favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon-v1.png">
+    <link rel="stylesheet" href="../../help-v1.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="band">
+        <div class="container">
+            <h1>Installing on Windows</h1>
+            <p>For Windows 10 or 11, 64-bit</p>
+        </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../../index.html">AstroCast</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li aria-current="page">Installing on Windows</li>
+            </ol>
+        </div>
+    </nav>
+
+    <main id="main">
+        <div class="container">
+
+            <div class="content-section">
+                <h2>Install AstroCast</h2>
+                <ol class="step-list">
+                    <li>Download the Windows installer (the file ending in <code>.msi</code>) from the <a href="../../index.html#download">download section of the AstroCast page</a>, and run it.</li>
+                    <li>Windows SmartScreen will say the publisher is unknown, because the installer is not signed with a Windows certificate. Choose <strong>More info</strong>, then <strong>Run anyway</strong>.</li>
+                    <li>Accept the licence shown on the installer's first page and finish.</li>
+                </ol>
+                <p>AstroCast installs for the current user only, and needs nothing else: the .NET runtime and the Swiss Ephemeris are inside.</p>
+                <div class="tip-box">
+                    <p><strong>The warning appears once.</strong> SmartScreen asks once before the installer runs.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>Where things live on Windows</h2>
+                <table>
+                    <thead>
+                        <tr><th scope="col">What</th><th scope="col">Where</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>The program</td><td><code>%LOCALAPPDATA%\Thornhill Computer Software\AstroCast\AstroCast.exe</code></td></tr>
+                        <tr><td>Your saved charts</td><td><code>astrocast.db</code> in that same folder</td></tr>
+                        <tr><td>Logs</td><td>the <code>logs</code> folder in that same folder</td></tr>
+                        <tr><td>The map key (optional)</td><td><code>carto-key.txt</code> in that same folder</td></tr>
+                    </tbody>
+                </table>
+                <p>The map key is only for the Map panel's background. <a href="../map-key/index.html">The map's background</a> explains it.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Upgrading</h2>
+                <p>Install the new version over the old one. Your charts, settings and logs are kept; the installer never replaces the database.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Next</h2>
+                <p><a class="more" href="../first-reading/index.html">Your first chart and reading</a> <a class="more" href="../index.html">All help pages</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="band">
+        <div class="container">
+            <p><strong>AstroCast</strong> by Steve Thornhill</p>
+            <ul>
+                <li><a href="../../index.html">AstroCast home and downloads</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li><a href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a></li>
+                <li><a href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a></li>
+            </ul>
+            <p>Copyright &copy; 2026 Thornhill Computer Software</p>
+        </div>
+    </footer>
+</body>
+</html>

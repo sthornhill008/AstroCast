@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1B2838">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1B2838">
+    <meta name="description" content="Cast your first chart in AstroCast, save its report, and get a written reading by giving the report and its prompt to an AI assistant.">
+    <meta name="author" content="Steve Thornhill">
+    <title>Your first chart and reading - AstroCast Help</title>
+    <link rel="canonical" href="https://www.sthornhill.com/AstroCast/help/first-reading/">
+    <link rel="icon" href="../../favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon-v1.png">
+    <link rel="stylesheet" href="../../help-v1.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="band">
+        <div class="container">
+            <h1>Your first chart and reading</h1>
+            <p>Cast a chart, save its report, and ask an AI assistant to read it</p>
+        </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../../index.html">AstroCast</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li aria-current="page">Your first chart and reading</li>
+            </ol>
+        </div>
+    </nav>
+
+    <main id="main">
+        <div class="container">
+
+            <div class="content-section">
+                <h2>1. Cast your first chart</h2>
+                <p>The example here is the one the User Guide uses: an invented person, Eleanor Hartwell, born 5 October 1947 at 9:30 in the morning in Harrisburg, Pennsylvania. Use your own details in its place.</p>
+                <ol class="step-list">
+                    <li>Open AstroCast. The <strong>Chart</strong> panel is showing, with the title <em>Natal Chart</em>.</li>
+                    <li>Type the name in <strong>Name</strong>. Leave <strong>Type</strong> at <em>Birth</em>.</li>
+                    <li>Type the birthplace in the <strong>Lookup</strong> box, for example <code>Harrisburg, PA</code>, and press <strong>Lookup</strong>. Choose the right place from <strong>Results</strong>. The <strong>Latitude</strong>, <strong>Longitude</strong>, <strong>Location</strong> and <strong>Timezone</strong> boxes fill in. The lookup needs an internet connection.</li>
+                    <li>Set the <strong>Date</strong> with the date picker. Type the time in <strong>Time</strong> on the 24-hour clock, for example <code>09:30</code>.</li>
+                    <li>Leave the house <strong>System</strong> at <em>Placidus</em> and <strong>Points</strong> unticked.</li>
+                    <li>Optional: in <strong>Source</strong>, record where the birth data came from, such as <code>Birth Certificate</code>. The reports print it.</li>
+                    <li>Press <strong>Calculate &amp; Save</strong>. The status bar at the bottom reports the result.</li>
+                </ol>
+                <figure>
+                    <picture>
+                        <source srcset="../../images/shot-chart-win-v1.webp" type="image/webp">
+                        <img src="../../images/shot-chart-win-v1.png" width="1086" height="743" loading="lazy"
+                             alt="The Chart panel on Windows after Calculate and Save: the form filled in for Eleanor Hartwell, her chart in the Saved Charts list, and the confirmation in the status bar.">
+                    </picture>
+                    <figcaption>The Chart panel after Calculate &amp; Save: the form on the left, the Saved Charts list on the right, the status bar's confirmation at the bottom.</figcaption>
+                </figure>
+            </div>
+
+            <div class="content-section">
+                <h2>2. Save the report</h2>
+                <ol class="step-list">
+                    <li>Press <strong>Save Markdown</strong>. A file dialog opens, proposing a name such as <code>Eleanor_Hartwell.md</code>.</li>
+                    <li>Choose a folder and save.</li>
+                </ol>
+                <p>That file is the chart report: a plain text file with headings and tables. You can open it in any text editor and read it as it is. It begins with the chart's header, then the planetary positions, the houses, the aspects and the rest.</p>
+                <div class="tip-box">
+                    <p><strong>Coming back to a chart.</strong> Find it in the <strong>Saved Charts</strong> list on the right of the window and press <strong>Load</strong>.</p>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>3. Get the prompt library</h2>
+                <p>AstroCast calculates; it does not interpret. The written reading comes from an AI assistant, guided by a prompt: a long instruction written for one kind of report. The prompt library holds thirty of them.</p>
+                <ol class="step-list">
+                    <li>Download the prompt library from the <a href="../../index.html#download">download section of the AstroCast page</a>. The installers do not carry the prompts.</li>
+                    <li>Unzip it anywhere. The prompts are in folders named for what they read.</li>
+                    <li>For a birth chart, open the <code>Natal</code> folder. <strong>P02</strong> is a shorter reading and <strong>P01</strong> is the full one. The guide's advice: start with P02 to see what a reading looks like, and use P01 when you want the whole picture.</li>
+                </ol>
+                <p>For any other report, the <a href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a> has a table of every export and the prompt that reads it.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>4. Ask for the reading</h2>
+                <p>The prompts are written for Claude, ChatGPT and Copilot, and for any assistant that reads a long instruction and a pasted document.</p>
+                <ol class="step-list">
+                    <li>Open a <strong>new chat</strong> with your AI assistant. A new chat, not a continuing one: an earlier reading in the same chat colours the next.</li>
+                    <li>Open the prompt file in any text editor, select all, copy, and paste it into the chat.</li>
+                    <li>Open the report you saved, select all, copy, and paste it under the prompt.</li>
+                    <li>Type what you want. A sentence is enough, for example: <em>Please read this chart for Eleanor Hartwell; she is the reader.</em></li>
+                    <li>Send it, and read what comes back.</li>
+                </ol>
+                <div class="tip-box">
+                    <p><strong>The order matters.</strong> The prompt goes first, so the assistant knows what it is reading when the report arrives.</p>
+                </div>
+                <p>The prompts ask the assistant for a PDF. Some assistants produce one and others return the text; either is fine. Each prompt sets the length of the reading, and your request can change it: <em>Use 1,500 words maximum</em> is a line the prompts understand.</p>
+                <p>Three prompts are submitted a little differently (synastry, electional and horary), and the three medical prompts are for education and research only. The Prompt Library Guide explains both.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Reading the result</h2>
+                <p>A reading is an interpretation, not fact. The prompts are written to keep apart what a chart suggests, what a person might do with it, and what is documented, and to say so.</p>
+                <p><a class="more" href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a> <a class="more" href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a> <a class="more" href="../index.html">All help pages</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="band">
+        <div class="container">
+            <p><strong>AstroCast</strong> by Steve Thornhill</p>
+            <ul>
+                <li><a href="../../index.html">AstroCast home and downloads</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li><a href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a></li>
+                <li><a href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a></li>
+            </ul>
+            <p>Copyright &copy; 2026 Thornhill Computer Software</p>
+        </div>
+    </footer>
+</body>
+</html>

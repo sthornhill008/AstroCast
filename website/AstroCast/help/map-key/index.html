@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1B2838">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1B2838">
+    <meta name="description" content="Why AstroCast's map is blank at first, and how to add a free CARTO key of your own so the Map panel shows its map background.">
+    <meta name="author" content="Steve Thornhill">
+    <title>The map's background - AstroCast Help</title>
+    <link rel="canonical" href="https://www.sthornhill.com/AstroCast/help/map-key/">
+    <link rel="icon" href="../../favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="../../images/apple-touch-icon-v1.png">
+    <link rel="stylesheet" href="../../help-v1.css">
+</head>
+<body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="band">
+        <div class="container">
+            <h1>The map's background</h1>
+            <p>Why the map is blank at first, and how to add a free key</p>
+        </div>
+    </header>
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <div class="container">
+            <ol>
+                <li><a href="../../index.html">AstroCast</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li aria-current="page">The map's background</li>
+            </ol>
+        </div>
+    </nav>
+
+    <main id="main">
+        <div class="container">
+
+            <div class="content-section">
+                <h2>Why the map is blank</h2>
+                <p>The <strong>Map</strong> panel draws astrocartography: lines on a world map where each planet was rising, setting, or at its highest or lowest point at the moment of birth.</p>
+                <p>Under the lines, the map window can show a street map from CARTO, a map service that needs a key. AstroCast ships without one. The map still works and draws every line and marker, on a blank background, and its legend says <em>Base map unavailable: no CARTO key</em>.</p>
+                <p>You do not need a key to use the map. Add one only if you want the background.</p>
+            </div>
+
+            <div class="content-section">
+                <h2>Add the map background</h2>
+                <ol class="step-list">
+                    <li>Request a free key at <a href="https://carto.com/basemaps/">CARTO's basemaps page</a>. CARTO's terms allow free non-commercial use within a monthly allowance, and require the credit the map already shows.</li>
+                    <li>Save the key, by itself, in a plain text file named <code>carto-key.txt</code>.</li>
+                    <li>Put the file in the right folder for your computer (the table below).</li>
+                    <li>Start AstroCast again. The map window now draws the background.</li>
+                </ol>
+                <table>
+                    <thead>
+                        <tr><th scope="col">Computer</th><th scope="col">Where <code>carto-key.txt</code> goes</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Windows</td><td>Beside <code>AstroCast.exe</code>, in <code>%LOCALAPPDATA%\Thornhill Computer Software\AstroCast</code></td></tr>
+                        <tr><td>Mac</td><td><code>~/Library/Application Support/AstroCast</code></td></tr>
+                    </tbody>
+                </table>
+                <div class="tip-box">
+                    <p><strong>On a Mac.</strong> <code>~</code> is your home folder. In the Finder, hold Option and open the <strong>Go</strong> menu to see <strong>Library</strong>.</p>
+                </div>
+                <figure>
+                    <picture>
+                        <source srcset="../../images/shot-map-v1.webp" type="image/webp">
+                        <img src="../../images/shot-map-v1.png" width="1200" height="828" loading="lazy"
+                             alt="The map window with a key in place: coloured planet lines over a map of North America, with the credits to OpenStreetMap and CARTO at the lower right.">
+                    </picture>
+                    <figcaption>The map window with a key in place: the lines over the CARTO map background.</figcaption>
+                </figure>
+            </div>
+
+            <div class="content-section">
+                <h2>Your key stays with you</h2>
+                <p>The key is yours and stays on your machine; AstroCast never writes it anywhere else. With a key in place, the only internet traffic from the map is the requests for map tiles, sent as you pan and zoom.</p>
+                <p>The map background is served by CARTO from OpenStreetMap data, and the map credits both.</p>
+                <p><a class="more" href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a> <a class="more" href="../index.html">All help pages</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="band">
+        <div class="container">
+            <p><strong>AstroCast</strong> by Steve Thornhill</p>
+            <ul>
+                <li><a href="../../index.html">AstroCast home and downloads</a></li>
+                <li><a href="../index.html">Help</a></li>
+                <li><a href="../../docs/AstroCast_User_Guide-v1.pdf">User Guide (PDF)</a></li>
+                <li><a href="../../docs/AstroCast_Prompt_Library_Guide-v1.pdf">Prompt Library Guide (PDF)</a></li>
+            </ul>
+            <p>Copyright &copy; 2026 Thornhill Computer Software</p>
+        </div>
+    </footer>
+</body>
+</html>

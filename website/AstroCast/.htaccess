@@ -1,0 +1,68 @@
+# AstroCast website - directory-scoped Apache configuration.
+#
+# Scoped to /AstroCast/. PhotoDB and ChessSage each have their own copy under
+# their own folders and the copies do not reach each other. This file does
+# not belong at the server root.
+
+# The host serves Expires: Thu, 31 Dec 2037 and a ten-year Cache-Control on
+# every type it has a rule for, and it wins over this file's
+# "Header set Cache-Control". That was measured live on the PhotoDB site on
+# 2026-09-07 (stylesheet, favicon.ico, the text files, the help pages, the
+# fonts and the images). ExpiresActive Off was tried there and Apache
+# accepted it without effect, so the override happens above a directory's
+# .htaccess and no directive in this file can reach it. The Header set lines
+# below are kept because they are honoured on .html, which is the case that
+# matters; everything else is protected by a versioned filename instead
+# (help-v1.css, shot-...-v1.png, ...-v1.pdf). Do not add ExpiresActive: it
+# does nothing here.
+
+# There are no AddType lines: this site serves no installer. The downloads
+# are links to the release files on GitHub.
+
+# Everything below depends on mod_headers. It is guarded because an unguarded
+# Header directive on a server without that module returns 500 on every page
+# in this directory, and this file cannot be tested before it is deployed.
+# Without the module the site behaves as it would with no .htaccess at all.
+#
+# mod_expires is deliberately not used: two modules both writing
+# Cache-Control is a way to be surprised.
+#
+# There is deliberately no Options directive. -Indexes looks free, but if the
+# host's AllowOverride does not include Options it is a 500, and directory
+# indexing is already off.
+<IfModule mod_headers.c>
+
+    # Stops a browser second-guessing a declared type.
+    Header set X-Content-Type-Options "nosniff"
+
+    # The pages, the text files and the stylesheet must revalidate every
+    # time. All the CSS of the main page is inline in index.html, so a cached
+    # page is cached CSS. sitemap.txt and llms.txt ride along: they are small
+    # and crawlers should see them fresh. The stylesheet sits here because a
+    # no-cache HTML page does not invalidate a cached stylesheet; on this
+    # host the header is overridden anyway (see the top), which is why the
+    # file is named help-v1.css: the version in the filename is what
+    # actually publishes a change.
+    <FilesMatch "\.(html|txt|css)$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+
+    # Fonts. Filenames are stable and the contents never change, so a year
+    # and immutable are both safe.
+    <FilesMatch "\.woff2$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Icons and images. A week, not a year. favicon.ico is requested by that
+    # fixed name and cannot be versioned; the social card is the file most
+    # likely to be redone after it has been shared.
+    <FilesMatch "\.(png|ico|svg|webp)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+
+    # The two guide PDFs. A week; a changed guide gets a new versioned name.
+    <FilesMatch "\.pdf$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+
+</IfModule>
