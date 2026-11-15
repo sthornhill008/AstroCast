@@ -171,9 +171,13 @@ site.
   the old file, and run the script. The pages themselves are HTML and are always fetched
   fresh.
 
-Git stores the Markdown sources and downloads with LF line endings (`.gitattributes`:
-`* text=auto`), so a file that was written with CRLF or mixed endings has a different hash
-inside Git than it had when it was written. The build script reads either.
+How Git stores them: `website/.gitattributes` declares the PDFs, fonts and images binary and
+the Markdown downloads in `AstroCast/samples/files/` `-text`, so all of them are stored and
+checked out byte for byte. (Without it Git took the smallest PDF for text, and a Windows
+checkout would have rewritten its line endings.) The Markdown sources in `samples-src/` are
+ordinary text, stored with LF line endings (the repository's `* text=auto`), so a source that
+was written with CRLF or mixed endings has a different hash inside Git than it had when it
+was written. The build script reads either.
 
 ## The host's cache, and why assets carry `-v1`
 

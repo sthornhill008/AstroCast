@@ -1,0 +1,21 @@
+# Attributes for the website folder only. The repository's own .gitattributes
+# (* text=auto) lets Git decide what is text by looking for NUL bytes, and
+# with core.autocrlf a file it takes for text is rewritten with the system's
+# line endings at checkout.
+#
+# That is wrong for two kinds of file here:
+#
+# - A PDF can be free of NUL bytes (samples/files/horary-reading-v1.pdf is),
+#   so Git takes it for text and a Windows checkout would insert carriage
+#   returns into it. The site's binary types are therefore declared, so that
+#   none of them depends on detection.
+# - The sample reports offered as Markdown downloads are served "as AstroCast
+#   wrote it", mixed line endings included. They are stored byte for byte.
+#
+# The Markdown sources in samples-src/ are ordinary text: Git stores them
+# with LF endings, and tools/Build-Samples.ps1 reads either.
+*.pdf   binary
+*.woff2 binary
+*.png   binary
+*.webp  binary
+AstroCast/samples/files/*.md -text
