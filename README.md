@@ -111,6 +111,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the conventions a change must keep: d
 public members, culture-independent output, the golden-file and Tier B testing pattern, and
 Conventional Commits. `CLAUDE.md` is the full contract.
 
+## Questions and bug reports
+
+Use the repository's [Issues page](https://github.com/sthornhill008/AstroCast/issues); the
+"Report a problem" form asks for what is needed. Issues are public, so please do not post
+anyone's real birth data: the User Guide's invented chart, Eleanor Hartwell, shows most problems.
+
 ## Licence
 
 AstroCast is licensed under the GNU Affero General Public License, version 3 or (at your

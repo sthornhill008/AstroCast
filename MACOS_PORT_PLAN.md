@@ -2,9 +2,9 @@
 
 > **For a reader new to the project.** This is the working log of the
 > macOS port and, in Section 6, the record of every branch landed since.
-> Commit hashes up to the Download landing (2026-11-15), and tags before
-> `v1.7.1`, belong to the private development history and are not in the
-> public repository. "Maple" is the maintainer's Windows machine.
+> Commit hashes that the public repository does not hold, and tags
+> before `v1.7.1`, belong to the private development history; the public
+> history begins with snapshots. "Maple" is the maintainer's Windows PC.
 
 - **Date:** 2026-07-05
 - **Prepared by:** Claude Code (read-only codebase assessment)
@@ -6220,6 +6220,28 @@ how a user gets the prompt library**
 >   were not run again (4297/4297 and 145/145 at `c636125`). The
 >   public repository took this record commit's tree as its fourth
 >   snapshot commit, the tree hash proved equal.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
+**Landing record (2026-11-15, after the tag v1.7.1): branch Issues, a
+bug-report form before the repository turns public**
+> `Issues` (Mac, cut from `ca53b55`), one commit `6918756`, no code:
+> adds .github/ISSUE_TEMPLATE/bug_report.yml (a form: what it is
+> about, the version, the system, what happened, the steps, and a
+> required box that the report holds no private person's data; it
+> points to the User Guide's invented chart for examples) and
+> config.yml (links to the two guides; blank issues stay allowed);
+> README.md gains "Questions and bug reports"; the notes for new
+> readers in CLAUDE.md and this file now say, without a date, that
+> hashes the public repository does not hold are private history.
+> - Why: the flip to public is set for 2026-11-23, 3:00 PM EST
+>   (Steve, 2026-11-15), and issues are public: a blank form invites a
+>   private chart.
+> - Landed from the Mac (Steve, 2026-11-15); the suites were not run
+>   again (4297/4297 and 145/145 at `c636125`). The public repository
+>   took this record commit's tree as its fifth snapshot commit, the
+>   tree hash proved equal.
 >
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.2 is open; no tag.

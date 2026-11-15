@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: User Guide
+    url: https://github.com/sthornhill008/AstroCast/blob/master/docs/USER_GUIDE.md
+    about: Installing, the first chart, and every panel. Chapter 2 covers the Windows SmartScreen prompt and the map key.
+  - name: Prompt Library Guide
+    url: https://github.com/sthornhill008/AstroCast/blob/master/docs/PROMPT_LIBRARY_GUIDE.md
+    about: Making an export, choosing a prompt, submitting the two together and reading the result.

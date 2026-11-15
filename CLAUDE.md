@@ -2,10 +2,9 @@
 
 > **For a reader new to the project.** This file is the project's working contract: every rule
 > the engine follows, with the reasons, and the record of how each was decided. Commit hashes
-> named here up to the Download landing (2026-11-15), and tags before `v1.7.1`, belong to the
-> private development history and are not in the public repository, whose own history begins
-> with snapshot commits. "Steve" is the maintainer, Steve Thornhill; "Maple" is his Windows
-> machine.
+> named here that the public repository does not hold, and tags before `v1.7.1`, belong to the
+> private development history; the public repository's own history begins with snapshot
+> commits. "Steve" is the maintainer, Steve Thornhill; "Maple" is his Windows machine.
 
 Astrological calculation engine and desktop program using the Swiss Ephemeris as its
 computational foundation. Implements tropical zodiac, houses in the chart's own

@@ -1,0 +1,75 @@
+name: Report a problem
+description: Something in AstroCast, an export, a prompt or the documentation is wrong or does not work.
+title: "[Problem] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to report this.
+
+        **Please do not post anyone's real birth data.** Issues are public. If a chart is needed to show the problem, use the invented chart from the User Guide (Eleanor Hartwell, 5 October 1947, 9:30 AM, Harrisburg, Pennsylvania) or a public figure's published data, and say which.
+  - type: dropdown
+    id: area
+    attributes:
+      label: What is this about?
+      options:
+        - Installing or starting AstroCast
+        - A calculation or a panel in the program
+        - An exported report
+        - A prompt, or a reading made with one
+        - The User Guide or the Prompt Library Guide
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: AstroCast version
+      description: The About button at the right of the status bar shows it. For a prompt, give the prompt's file name as well.
+      placeholder: "1.7.1"
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: Your system
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS (Apple silicon)
+        - Not applicable (a prompt or the documentation)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+      description: A sentence or two on each is enough.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to see it
+      description: The panel, the settings you chose and the buttons you pressed, in order. For a reading, name the AI chat you used.
+      placeholder: |
+        1. Chart panel: the Eleanor Hartwell chart, Placidus
+        2. Transits panel: period 2026-01-01 to 2026-12-31, Transits ticked
+        3. Calculate, then Export Timeline MD
+    validations:
+      required: true
+  - type: textarea
+    id: more
+    attributes:
+      label: Anything else
+      description: A screenshot or the few lines of the report that show the problem help. Do not attach a whole report or a database made from a private chart.
+    validations:
+      required: false
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: This report contains no private person's name, birth data or question.
+          required: true
