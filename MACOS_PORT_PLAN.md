@@ -6246,6 +6246,25 @@ bug-report form before the repository turns public**
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.2 is open; no tag.
 
+**Record (2026-11-15, after the tag v1.7.1): the clone switch on the
+Mac; this repository is now the working repository**
+> No branch. Until now this file's records were made in the private
+> development history (sthornhill008/AstroCast-private), and the public
+> repository received its tree as five snapshot commits, the last
+> `c2bd18e`. From this commit on, work is done in the public
+> repository, sthornhill008/AstroCast: branches are cut from its
+> `master`, land in it, and the hashes in the records below are its
+> own.
+> - Mac, 2026-11-15: the private clone renamed
+>   Developer/AstroCast-private (kept, its push address disabled); the
+>   public clone took its place as Developer/AstroCast, with the
+>   untracked build/macos/dist folder moved across; rebuilt from
+>   clean, 0 errors, `xUnit1031` the only warning code.
+> - Maple switches at its next prompt.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
 **Phase 6 -- Parity verification and steady state (2-3 days, ~2-4 sessions)**
 Export the full set of Markdown reports for reference charts on both OSes and
 diff them (goldens make this nearly free), from 1.3.4 output: every 1.3.4 branch
