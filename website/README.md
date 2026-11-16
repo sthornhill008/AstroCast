@@ -30,14 +30,15 @@ AstroCast/
   images/            screenshots as PNG and WebP pairs, the icons and the social card
   favicon.ico        16, 32 and 48 px
   .htaccess          response headers for this folder only
-  sitemap.txt        the seven pages
+  sitemap.txt        the fourteen pages
   llms.txt           a plain-text summary for language-model crawlers
 ```
 
 `index.html` runs in this order: the header band; the two Chart-panel screenshots; the download
 card; "Get started in three steps"; "What it does" (ten cards, one per panel); "AstroCast in
-use" (six screenshots); "See what you get" (the samples); the prompt library; the
-map's background; system requirements; checking your download; common questions; the footer.
+use" (six screenshots); "Documentation" (the two guides); "See what you get" (the samples); the
+prompt library; the map's background; system requirements; checking your download; common
+questions; the footer.
 
 Rules the pages keep:
 
