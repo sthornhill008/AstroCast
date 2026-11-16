@@ -6265,6 +6265,48 @@ Mac; this repository is now the working repository**
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.2 is open; no tag.
 
+**Landing record (2026-11-16, after the tag v1.7.1): branch Website, the
+website for sthornhill.com/AstroCast**
+> `Website` (Maple, cut from `c9a569d`), five commits, no code:
+> `ab2115d` adds website/: the served folder website/AstroCast (one
+> self-contained index.html, six help pages, fonts, images, the two
+> guide PDFs, .htaccess, sitemap.txt, llms.txt), README.md,
+> Update-WebsiteRelease.ps1 and tools/; `fad0ce9` adds the sample
+> section (three report-and-reading pairs of the invented charts and
+> one horary reading), samples-src/ and tools/Build-Samples.ps1,
+> replaces the Returns screenshot with Relocation's and links every
+> screenshot to its full-size picture; `d48c8b5` adds
+> website/.gitattributes (the site's PDFs, fonts and images binary,
+> its Markdown downloads byte for byte); `9988eb2` lets the sample
+> tables scroll sooner under 1024 px, adds a sentence on traditional
+> keywords to the report pages and unlists the horary page;
+> `4be46b5` adds a Documentation section and menu entry. This record
+> commit adds the site's line to README.md and the website to
+> CLAUDE.md (Documentation, Project Structure).
+> - Why: Steve, 2026-11-15: a website on sthornhill.com in the
+>   pattern of PhotoDB's, linking to the GitHub downloads and giving
+>   non-technical users a plainer way in, with sample reports.
+> - Rulings (Steve, 2026-11-15 and 16): the download buttons link to
+>   the release assets on GitHub, with no counter, no PHP and no data
+>   folder; the samples use the invented charts, Eleanor Hartwell and
+>   Daniel Whitfield, with one exception by his decision, a horary
+>   reading of a real question of his own, shown as a reading only,
+>   its place written as Richmond, and kept out of sitemap.txt and
+>   llms.txt; the two guide PDFs are committed under
+>   website/AstroCast/docs so the uploaded folder is whole.
+> - The sample exports were made on Maple by a scratch console
+>   program on AstroCast.Core built from the source of v1.7.1; the
+>   readings by Steve with ChatGPT Codex and prompts P01, P04, P12
+>   and P15.
+> - Landed from Maple (docs only; Steve, 2026-11-16): `master`
+>   fast-forwarded to `4be46b5`, then this record commit; the suites
+>   were not run again (4297/4297 and 145/145 at `c636125`). Nothing
+>   is uploaded yet: Steve uploads website/AstroCast by hand at the
+>   flip, 2026-11-23.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
 **Phase 6 -- Parity verification and steady state (2-3 days, ~2-4 sessions)**
 Export the full set of Markdown reports for reference charts on both OSes and
 diff them (goldens make this nearly free), from 1.3.4 output: every 1.3.4 branch

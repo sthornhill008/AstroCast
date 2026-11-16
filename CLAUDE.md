@@ -83,6 +83,15 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
 - A release carries the prompt library on its own as `AstroCast_Prompt_Library_<date>.zip` (the
   `prompts/` folder, the guide and its PDF; `<date>` is the manifest's library release). The zip
   is built again and replaced on the current release whenever a prompt or the guide changes.
+- The website for non-technical users is `website/`: `website/AstroCast/` is the folder served
+  at `https://www.sthornhill.com/AstroCast/` (uploaded by hand), and `website/README.md` says
+  how it is built, checked and uploaded. Every statement on it comes from the documents above.
+  At each release, run `website/Update-WebsiteRelease.ps1` with the version and the folder
+  holding that release's three files, commit, and upload what changed. When a guide changes,
+  its PDF under `website/AstroCast/docs/` is replaced under a new versioned name. The sample
+  pages are built by `website/tools/Build-Samples.ps1` from `website/samples-src/`; they use the
+  invented charts, apart from one horary reading, a real question of the maintainer's own,
+  there by his decision.
 - The private hand-over document and the continuity files stay outside the repository.
 
 ## Project Structure
@@ -127,6 +136,7 @@ AstroCast.Mac.slnx                  — every project but the WPF head (macOS)
 │   └── images/                      — The user guide's screenshots
 ├── prompts/                         — The prompt library (CC BY-SA 4.0): thirty prompts by family,
 │                                      guides/, history/, helpers/, the manifest and the usage map
+├── website/                         — The website for sthornhill.com/AstroCast: the served folder, its sources and tools
 ├── README.md                        — The front page: what it does, install, first chart, building
 ├── CONTRIBUTING.md                  — The conventions a change must keep
 ├── BuildInstaller.ps1               — Windows MSI build

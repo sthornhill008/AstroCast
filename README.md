@@ -10,6 +10,9 @@ written readings.
 
 AstroCast is free software under the GNU Affero General Public License, version 3 or later.
 
+New here? The [AstroCast website](https://www.sthornhill.com/AstroCast/) has the downloads,
+step-by-step help and sample reports in plain language.
+
 ## What it does
 
 The program has ten panels, in the order of its left-hand bar. Each panel calculates on
