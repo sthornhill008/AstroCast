@@ -30,10 +30,9 @@ https://github.com/sthornhill008/AstroCast/releases
 - [Samples](https://www.sthornhill.com/AstroCast/samples/index.html): reports
   AstroCast wrote for two invented charts (a natal chart, a three-month
   transit timeline, a synastry), each beside the reading an AI assistant
-  made from it with a prompt of the prompt library; and one horary
-  reading. Each has a page of its own under samples/: natal-report,
-  natal-reading, timeline-report, timeline-reading, synastry-report,
-  synastry-reading, horary-reading.
+  made from it with a prompt of the prompt library. Each has a page of its
+  own under samples/: natal-report, natal-reading, timeline-report,
+  timeline-reading, synastry-report, synastry-reading.
 - [User Guide (PDF)](https://www.sthornhill.com/AstroCast/docs/AstroCast_User_Guide-v1.pdf)
 - [Prompt Library Guide (PDF)](https://www.sthornhill.com/AstroCast/docs/AstroCast_Prompt_Library_Guide-v1.pdf)
 

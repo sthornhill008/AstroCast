@@ -160,8 +160,14 @@ site.
   The script runs pandoc on each source (GitHub-flavoured Markdown to an HTML fragment),
   shifts the sample's headings under the page's own `h1`, wraps every table in a region that
   scrolls sideways on its own, and adds the note at the top of each page, the download links
-  and the "On this page" list. It makes no network call, and from the same sources, files and
-  pandoc version it writes the same bytes every time. The pages were made with pandoc 3.8.2.1.
+  and the "On this page" list. It also marks the cells of each table column that holds running
+  text (class `wrap`) and, beside such a column, longer phrases (class `phrase`), so that
+  under 1024 px `samples-v1.css` keeps every other cell on one line, gives a wrapping column
+  a readable width, and lets a table scroll sideways before its cells are squeezed; and it
+  puts one line above a sample's first table, shown under 768 px only, that says so (class
+  `table-hint`, the one text inside a sample's `article` that is not the sample's own). It
+  makes no network call, and from the same sources, files and pandoc version it writes the
+  same bytes every time. The pages were made with pandoc 3.8.2.1.
   The notes, titles and card texts are in the script's `$Samples` and `$Cards` tables.
 - **The downloads** are in `AstroCast/samples/files/`: the PDFs, and for each report the
   Markdown file as AstroCast wrote it. They are byte copies with versioned names
@@ -170,6 +176,11 @@ site.
   add the new download as `...-v2`, change the name in the script's `$Samples` table, remove
   the old file, and run the script. The pages themselves are HTML and are always fetched
   fresh.
+- **The horary page is unlisted on purpose.** It stays linked from the main page's card and
+  from the samples index, but it is not offered to search engines: the build script (the
+  `NoIndex` entry in `$Samples`) gives its page a robots `noindex` meta and no canonical
+  address, `AstroCast/.htaccess` sends `X-Robots-Tag: noindex` with its PDF, and neither
+  `sitemap.txt` nor `llms.txt` names it.
 
 How Git stores them: `website/.gitattributes` declares the PDFs, fonts and images binary and
 the Markdown downloads in `AstroCast/samples/files/` `-text`, so all of them are stored and

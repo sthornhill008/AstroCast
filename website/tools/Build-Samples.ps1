@@ -18,9 +18,18 @@
       and closes any level a source skips;
     - wraps every table in a region that scrolls sideways on its own, labelled by the heading
       above it, and marks header cells as column headers;
+    - marks the cells of each column of running text (class "wrap") and, beside such a column,
+      of each column of longer phrases (class "phrase"), so that the stylesheet can keep every
+      other cell on one line and give a wrapping column a readable width;
+    - puts one line above a sample's first table, shown on small screens only, that says a
+      wide table scrolls sideways (class "table-hint": the one piece of text inside a
+      sample's article that is not the sample's own);
     - adds the note that says what the reader is looking at, the download links with file type
       and size (read from website\AstroCast\samples\files), and an "On this page" list when the
       sample has four sections or more.
+
+    A sample marked NoIndex is unlisted: its page asks search engines not to index it and
+    carries no canonical address. It is still built and still linked from the samples index.
 
     Nothing in a sample's text is rewritten. The script makes no network call. The pages come
     out the same on every run from the same sources, files and pandoc version; they were made
@@ -56,8 +65,25 @@ $samplesRoot = Join-Path $siteRoot 'samples'
 $filesRoot = Join-Path $samplesRoot 'files'
 $siteAddress = 'https://www.sthornhill.com/AstroCast/'
 
+# A table column whose longest cell holds more than $WrapOver characters is running text: its
+# cells may wrap (class "wrap"). In a table that has such a column the rows are several lines
+# tall anyway, so there a column whose longest cell holds more than $PhraseOver characters may
+# break onto a second line too (class "phrase"). Every other cell stays on one line: a name, a
+# position (up to 21 characters), an orb, a date.
+[int]$WrapOver = 32
+[int]$PhraseOver = 21
+
+# The line above a sample's first table, shown on small screens only (samples-v1.css).
+[string]$TableHint = 'On a small screen, a wide table scrolls sideways.'
+
+# The last paragraph of a report page's note. The keywords are called traditional because the
+# source does: AstroCast.Core's FixedStarCatalog ("keywords from traditional sources") and
+# ProfectionAnalyzer ("the traditional house themes").
+[string]$KeywordNote = 'Some tables give traditional keywords, for example for fixed stars and for the houses. Some are stark. They are the tradition''s words for a symbol, not predictions about a person.'
+
 # One entry for each sample page. Kind is report, reading or horary. Pair is the page the note
-# links to. Prompt and Assistant are as each reading's own closing lines give them.
+# links to. Prompt and Assistant are as each reading's own closing lines give them. NoIndex
+# marks a page that is on the site but not offered to search engines.
 $Samples = @(
     @{ Key = 'natal-report'; Kind = 'report'; Title = 'Sample report: a natal chart'
        Subtitle = 'Eleanor Hartwell, an invented person'; Pair = 'natal-reading'
@@ -91,7 +117,7 @@ $Samples = @(
        Description = 'A synastry reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.' },
     @{ Key = 'horary-reading'; Kind = 'horary'; Title = 'Sample reading: a horary question'
        Subtitle = 'A real question, shared by the developer'; Pair = ''
-       Prompt = 'P15, Horary Chart Interpretation v2.10'
+       Prompt = 'P15, Horary Chart Interpretation v2.10'; NoIndex = $true
        Pdf = 'horary-reading-v1.pdf'; Markdown = ''
        Description = 'A horary reading of a real question, shared by the developer, with a note of what happened afterwards.' }
 )
@@ -163,6 +189,59 @@ function Get-SizeText {
     return ([Math]::Round($bytes / 1000.0)).ToString([System.Globalization.CultureInfo]::InvariantCulture) + ' KB'
 }
 
+function Set-CellWrap {
+    <#
+    .SYNOPSIS
+        Marks the cells of a table's running-text columns, so that the stylesheet lets them wrap.
+    .DESCRIPTION
+        A column whose longest body cell holds more than $WrapOver characters of text is a column
+        of running text, and each of its body cells gets the class "wrap". In a table that has
+        such a column, each body cell of a column whose longest cell holds more than $PhraseOver
+        characters gets the class "phrase". Every other body cell is short (a name, a position,
+        an orb, a date) and the stylesheet keeps it on one line. No cell's text is changed.
+    .PARAMETER TableHtml
+        One table element, as pandoc wrote it.
+    .PARAMETER Label
+        The sample's name and the table's number, for messages.
+    .OUTPUTS
+        The table, with the class added where it applies.
+    #>
+    param(
+        [Parameter(Mandatory = $true)][string]$TableHtml,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+    if ($TableHtml -match '(col|row)span=') { throw "$Label has merged cells, which this script does not measure." }
+    $bodyMatch = [regex]::Match($TableHtml, '(?s)<tbody>.*?</tbody>')
+    if (-not $bodyMatch.Success) { return $TableHtml }
+    [string]$cellPattern = '<tr>|<td( class="[^"]*")?>'
+    if ([regex]::Matches($bodyMatch.Value, '<t[rd]\b').Count -ne [regex]::Matches($bodyMatch.Value, $cellPattern).Count) {
+        throw "$Label has a row or cell with an attribute this script does not know."
+    }
+    [int]$columnCount = [regex]::Matches([regex]::Match($TableHtml, '(?s)<thead>.*?</thead>').Value, '<th[ >]').Count
+    [int[]]$longest = New-Object int[] $columnCount
+    foreach ($rowMatch in [regex]::Matches($bodyMatch.Value, '(?s)<tr>(.*?)</tr>')) {
+        $cellMatches = [regex]::Matches($rowMatch.Groups[1].Value, '(?s)<td[^>]*>(.*?)</td>')
+        if ($cellMatches.Count -ne $columnCount) { throw "$Label has a row of $($cellMatches.Count) cells under $columnCount headers." }
+        for ([int]$i = 0; $i -lt $columnCount; $i++) {
+            [int]$length = (Get-PlainText -Html $cellMatches[$i].Groups[1].Value).Length
+            if ($length -gt $longest[$i]) { $longest[$i] = $length }
+        }
+    }
+    [bool]$hasRunningText = @($longest | Where-Object { $_ -gt $script:WrapOver }).Count -gt 0
+    $place = @{ Column = 0 }
+    [string]$newBody = [regex]::Replace($bodyMatch.Value, $cellPattern, {
+            param($c)
+            if ($c.Value -eq '<tr>') { $place.Column = 0; return $c.Value }
+            [int]$index = $place.Column
+            $place.Column++
+            [string]$mark = if ($longest[$index] -gt $script:WrapOver) { 'wrap' } elseif ($hasRunningText -and $longest[$index] -gt $script:PhraseOver) { 'phrase' } else { '' }
+            if (-not $mark) { return $c.Value }
+            if ($c.Groups[1].Success) { return $c.Value.Replace('">', ' ' + $mark + '">') }
+            return '<td class="' + $mark + '">'
+        })
+    return $TableHtml.Substring(0, $bodyMatch.Index) + $newBody + $TableHtml.Substring($bodyMatch.Index + $bodyMatch.Length)
+}
+
 function Convert-Sample {
     <#
     .SYNOPSIS
@@ -219,7 +298,8 @@ function Convert-Sample {
         })
     if ($html -match '<h1[ >]') { throw "$Label still holds an h1 after the heading shift." }
 
-    # Tables: each in its own scrolling region, labelled by the heading above it.
+    # Tables: each in its own scrolling region, labelled by the heading above it, with the cells
+    # of its running-text columns marked. The line about sideways scrolling goes above the first.
     $labelCounts = @{}
     $tables = @{ Count = 0 }
     $heading = @{ Text = 'the start of the sample' }
@@ -234,7 +314,9 @@ function Convert-Sample {
             [string]$name = 'Table: ' + $heading.Text
             if ($labelCounts.ContainsKey($name)) { $labelCounts[$name]++; $name = $name + ' (' + $labelCounts[$name] + ')' }
             else { $labelCounts[$name] = 1 }
-            return '<div class="table-wrap" tabindex="0" role="region" aria-label="' + (ConvertTo-Attribute -Text $name) + '">' + "`n" + $m.Value + "`n" + '</div>'
+            [string]$hint = if ($tables.Count -eq 1) { '<p class="table-hint">' + $script:TableHint + '</p>' + "`n" } else { '' }
+            [string]$marked = Set-CellWrap -TableHtml $m.Value -Label "$Label, table $($tables.Count)"
+            return $hint + '<div class="table-wrap" tabindex="0" role="region" aria-label="' + (ConvertTo-Attribute -Text $name) + '">' + "`n" + $marked + "`n" + '</div>'
         })
     if ($html -match '<a\s[^>]*href="(https?:|//)') { throw "$Label would link to another host." }
     if ($html -match '<(script|img|iframe|link|style|object|embed|video|audio)\b') { throw "$Label holds an element the sample pages do not allow." }
@@ -279,6 +361,9 @@ function Get-PageHead {
         The relative path from the page to the site's root folder ('../' or '../../').
     .PARAMETER Crumbs
         The breadcrumb's list items, as HTML.
+    .PARAMETER NoIndex
+        The page is unlisted: it gets a robots meta that says noindex, and no canonical link
+        (a canonical address names the address to index, and this page asks not to be indexed).
     #>
     param(
         [Parameter(Mandatory = $true)][string]$Title,
@@ -286,8 +371,11 @@ function Get-PageHead {
         [Parameter(Mandatory = $true)][string]$Description,
         [Parameter(Mandatory = $true)][string]$Canonical,
         [Parameter(Mandatory = $true)][string]$Root,
-        [Parameter(Mandatory = $true)][string]$Crumbs
+        [Parameter(Mandatory = $true)][string]$Crumbs,
+        [switch]$NoIndex
     )
+    [string]$robotsLine = if ($NoIndex) { '    <meta name="robots" content="noindex">' + "`n" } else { '' }
+    [string]$canonicalLine = if ($NoIndex) { '' } else { '    <link rel="canonical" href="' + $siteAddress + $Canonical + '">' + "`n" }
     return @"
 <!DOCTYPE html>
 <html lang="en">
@@ -298,9 +386,8 @@ function Get-PageHead {
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1B2838">
     <meta name="description" content="$Description">
     <meta name="author" content="Steve Thornhill">
-    <title>$Title - AstroCast</title>
-    <link rel="canonical" href="$siteAddress$Canonical">
-    <link rel="icon" href="${Root}favicon.ico" sizes="any">
+$robotsLine    <title>$Title - AstroCast</title>
+$canonicalLine    <link rel="icon" href="${Root}favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="${Root}images/apple-touch-icon-v1.png">
     <link rel="stylesheet" href="${Root}samples-v1.css">
 </head>
@@ -418,7 +505,8 @@ foreach ($sample in $Samples) {
     [string]$note = switch ($sample.Kind) {
         'report' {
             '                <p><strong>What this is.</strong> AstroCast 1.7.1 wrote this report. It is shown here unedited, and the person it describes is invented. ' + $sample.Made + '</p>' + "`n" +
-            '                <p>An AI assistant, given this report and a prompt from the AstroCast prompt library, wrote a reading from it. ' + $pairLink + '.</p>'
+            '                <p>An AI assistant, given this report and a prompt from the AstroCast prompt library, wrote a reading from it. ' + $pairLink + '.</p>' + "`n" +
+            '                <p>' + $KeywordNote + '</p>'
         }
         'reading' {
             '                <p><strong>What this is.</strong> An AI assistant, ' + $sample.Assistant + ', wrote this reading from an AstroCast report, using prompt ' + $sample.Prompt + ', of the AstroCast prompt library. It is shown here unedited, and the person it describes is invented.</p>' + "`n" +
@@ -440,7 +528,8 @@ foreach ($sample in $Samples) {
     [string]$crumbs = "                <li><a href=`"../../index.html`">AstroCast</a></li>`n                <li><a href=`"../index.html`">Samples</a></li>`n                <li aria-current=`"page`">$($sample.Title)</li>"
     [string]$more = '            <p class="more-links">' + $(if ($pairLink) { $pairLink + ' ' } else { '' }) + '<a href="../index.html">All samples</a> <a href="../../index.html#download">Download AstroCast</a></p>'
 
-    [string]$page = (Get-PageHead -Title $sample.Title -Subtitle $sample.Subtitle -Description $sample.Description -Canonical ('samples/' + $sample.Key + '/') -Root '../../' -Crumbs $crumbs) +
+    [bool]$unlisted = $sample.ContainsKey('NoIndex') -and $sample.NoIndex
+    [string]$page = (Get-PageHead -Title $sample.Title -Subtitle $sample.Subtitle -Description $sample.Description -Canonical ('samples/' + $sample.Key + '/') -Root '../../' -Crumbs $crumbs -NoIndex:$unlisted) +
         "            <div class=`"note-box`">`n$note`n            </div>`n`n$downloads`n`n$toc" +
         "            <article class=`"sample`">`n" + $rendered.Html + "`n            </article>`n`n$downloads`n$more" +
         (Get-PageFoot -Root '../../' -SamplesIndex '../index.html')

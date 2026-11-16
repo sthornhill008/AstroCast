@@ -75,4 +75,14 @@ AddType "text/markdown; charset=utf-8" .md
         Header set Cache-Control "public, max-age=604800"
     </FilesMatch>
 
+    # The horary sample is on the site but is not offered to search engines.
+    # Its page says so itself (a robots "noindex" meta, written by
+    # Build-Samples.ps1). A PDF cannot carry that meta, so this header says
+    # the same for the page's PDF. <Files> with a plain name matches that one
+    # file name and no other file: no pattern, no other type, no other
+    # sample. A new version of the PDF needs its new name here.
+    <Files "horary-reading-v1.pdf">
+        Header set X-Robots-Tag "noindex"
+    </Files>
+
 </IfModule>
