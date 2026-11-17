@@ -8,7 +8,7 @@ images and two PDFs. There is no PHP, no JavaScript, no database and no `data` f
 |---|---|
 | `AstroCast/` | **Exactly what is uploaded** to the server folder `/public/AstroCast`. Nothing that is not meant to be served goes inside it |
 | `Update-WebsiteRelease.ps1` | The per-release step: writes a release's version, file names, sizes, addresses and checksums into the pages |
-| `samples-src/` | The Markdown sources of the sample pages, exactly as they were written. Not uploaded |
+| `samples-src/` | The Markdown sources of the sample pages, as they were written (one is an excerpt and one a transcription: see "The samples"). Not uploaded |
 | `tools/Build-Samples.ps1` | Renders the sample pages from `samples-src/`. Not uploaded |
 | `tools/og-card.html` | The source of the social card image `AstroCast/images/og-card-v1.png`. Not uploaded |
 | `README.md` | This file. Not uploaded |
@@ -30,7 +30,7 @@ AstroCast/
   images/            screenshots as PNG and WebP pairs, the icons and the social card
   favicon.ico        16, 32 and 48 px
   .htaccess          response headers for this folder only
-  sitemap.txt        the fourteen pages
+  sitemap.txt        the sixteen listed pages (every page but the unlisted horary one)
   llms.txt           a plain-text summary for language-model crawlers
 ```
 
@@ -56,8 +56,20 @@ Rules the pages keep:
 - **Every factual statement comes from the repository**: `README.md`, `docs/USER_GUIDE.md`,
   `docs/PROMPT_LIBRARY_GUIDE.md`, `docs/LICENSING.md`, `prompts/README.md`,
   `THIRD-PARTY-NOTICES.md`. When one of those changes, check the pages that restate it.
-- **Only invented people appear**: Eleanor Hartwell and Daniel Whitfield, the User Guide's
-  example charts. No CARTO key is ever shown; the site tells users to get their own.
+- **A sample uses an invented chart or a public figure's published data, never a private
+  person's.** On the site now: the two invented people, Eleanor Hartwell and Daniel Whitfield,
+  the User Guide's example charts; one public figure, Harry, Duke of Sussex, with his
+  published birth time (the rectification sample, whose reading also names members of his
+  family where its dated public events do); and the horary reading, a real question of Steve's
+  own, there by his decision. The screenshots show only the two invented charts. No CARTO key
+  is ever shown; the site tells users to get their own.
+- **The prompts are an aid, not a replacement.** The site presents the prompt library as an
+  aid to an astrologer, not a replacement for one (Steve, 2026-11-17): an assistant presents
+  a report, organises it and highlights the patterns in it, and judging what those patterns
+  mean stays with the reader. The main page says so in the samples introduction, the prompt
+  library section, the third step and a common question (with its twin in the `FAQPage`
+  block); the samples index, the rectification reading's note, `help/faq`,
+  `help/first-reading` and `llms.txt` say it too. New text keeps to it.
 
 ## Previewing from disk
 
@@ -140,17 +152,41 @@ Each screenshot on the main page is a link to its own full-size PNG.
 
 ## The samples
 
-"See what you get" on the main page links to sample pages: reports AstroCast wrote for the two
-invented charts (a natal chart, a three-month transit timeline, a synastry), each beside the
-reading an AI assistant made from it with a prompt of the prompt library, and one horary
-reading of a real question that Steve chose to share. That reading is the one exception to
-the rule that samples use invented charts only; nothing from it is quoted anywhere else on the
-site.
+"See what you get" on the main page links to sample pages: reports AstroCast wrote, each
+beside the reading an AI assistant made from it with a prompt of the prompt library. Three
+pairs are for the two invented charts (a natal chart, a three-month transit timeline, a
+synastry). One pair is for a public figure, Harry, Duke of Sussex, with his published birth
+time: his primary directions from birth to age 43, and a reading that tests that birth time
+against ten dated events. And there is one horary reading of a real question that Steve
+chose to share.
+
+The rule: a sample uses an invented chart or a public figure's published data, never a
+private person's. The horary reading is the one exception, by Steve's decision; nothing from
+it is quoted anywhere else on the site.
+
+The cards run in the same order on the main page and on the samples index: Three months of
+transits; A birth time put to the test; A natal chart; Two charts compared; A question asked
+of the sky. `sitemap.txt` lists 16 addresses: the main page, the six help pages, the samples
+index and the eight listed sample pages.
 
 - **The sources** are in `samples-src/`: one Markdown file for each sample page, under a short
   name (`natal-report.md`, `natal-reading.md`, `timeline-report.md`, `timeline-reading.md`,
-  `synastry-report.md`, `synastry-reading.md`, `horary-reading.md`). They are kept exactly as
-  AstroCast or the assistant wrote them. A sample is never corrected or shortened.
+  `rectification-report.md`, `rectification-reading.md`, `synastry-report.md`,
+  `synastry-reading.md`, `horary-reading.md`). They are kept as AstroCast or the assistant
+  wrote them. A sample is never corrected. Two are not the whole of what was written, and
+  their pages say so:
+  - `rectification-report.md` is an **excerpt**: the report's header and its Primary
+    Directions section, cut at the byte level (the export's first 12 lines, then everything
+    from its line `## Primary Directions` to the end), the natal chart left out. The reason:
+    the natal chart's medical correspondences and stark keywords would stand beside a living
+    person's name, and the reading uses none of them.
+  - `rectification-reading.md` is a **transcription**: the assistant delivered a PDF, and the
+    source gives that PDF's words as Markdown, checked word for word against the PDF's text.
+    The page footers and the chart's axis labels are left out, and the chart's ten values are
+    given as a list.
+  - The export as AstroCast wrote it (the full report) and the PDF under the name it was
+    delivered with are kept outside the repository. `rectification-reading-v1.pdf` in
+    `AstroCast/samples/files/` is a byte copy of that PDF.
 - **The pages** in `AstroCast/samples/` are built from those sources and must not be edited by
   hand. To rebuild them:
 
@@ -169,10 +205,14 @@ site.
   `table-hint`, the one text inside a sample's `article` that is not the sample's own). It
   makes no network call, and from the same sources, files and pandoc version it writes the
   same bytes every time. The pages were made with pandoc 3.8.2.1.
-  The notes, titles and card texts are in the script's `$Samples` and `$Cards` tables.
+  The notes, titles and card texts are in the script's `$Samples` and `$Cards` tables. A
+  sample takes the standard note of its kind, or a note of its own (`Note`): the
+  rectification pair has its own, and its report's download is worded as an excerpt
+  (`MarkdownText`).
 - **The downloads** are in `AstroCast/samples/files/`: the PDFs, and for each report the
-  Markdown file as AstroCast wrote it. They are byte copies with versioned names
-  (`natal-report-v1.pdf`).
+  Markdown file as AstroCast wrote it (for the rectification report, the excerpt:
+  `rectification-report-v1.md`; its reading's PDF is `rectification-reading-v1.pdf`). They
+  are byte copies with versioned names (`natal-report-v1.pdf`).
 - **A changed sample gets a new versioned file name.** Replace its source in `samples-src/`,
   add the new download as `...-v2`, change the name in the script's `$Samples` table, remove
   the old file, and run the script. The pages themselves are HTML and are always fetched

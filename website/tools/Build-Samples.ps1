@@ -31,6 +31,18 @@
     A sample marked NoIndex is unlisted: its page asks search engines not to index it and
     carries no canonical address. It is still built and still linked from the samples index.
 
+    A report page may be an excerpt: its source in website\samples-src is part of a report, cut
+    at the byte level and otherwise as AstroCast wrote it, and its Markdown download is that
+    same excerpt. The script renders an excerpt as it renders any source. The sample's entry
+    says what was left out in a note of its own (Note) and words the download's link as an
+    excerpt (MarkdownText).
+
+    A reading's source may be a transcription: the assistant delivered a PDF, and the Markdown
+    in website\samples-src gives that PDF's words. The script renders the transcription as it
+    renders any source, and offers the PDF as delivered as the page's download. The sample's
+    entry says how the reading is shown in a note of its own (Note). A line break inside a
+    table cell (the source's <br>) is kept, and a right-aligned column stays right-aligned.
+
     Nothing in a sample's text is rewritten. The script makes no network call. The pages come
     out the same on every run from the same sources, files and pandoc version; they were made
     with pandoc 3.8.2.1. Text is written as ASCII (other characters as numeric references) with
@@ -84,6 +96,13 @@ $siteAddress = 'https://www.sthornhill.com/AstroCast/'
 # One entry for each sample page. Kind is report, reading or horary. Pair is the page the note
 # links to. Prompt and Assistant are as each reading's own closing lines give them. NoIndex
 # marks a page that is on the site but not offered to search engines.
+#
+# Two optional fields serve a sample that is not a whole report beside its unedited reading:
+# Note holds the note's paragraphs, as HTML, in place of the kind's standard note; in it {pair}
+# stands for the link to the paired page, {assistant} for Assistant and {prompt} for Prompt.
+# MarkdownText is the Markdown download's link text in place of the standard one (the file type
+# and size are added). The rectification pair uses both: its report page is an excerpt, and its
+# reading's source is a transcription of the PDF the assistant delivered.
 $Samples = @(
     @{ Key = 'natal-report'; Kind = 'report'; Title = 'Sample report: a natal chart'
        Subtitle = 'Eleanor Hartwell, an invented person'; Pair = 'natal-reading'
@@ -105,6 +124,27 @@ $Samples = @(
        Assistant = 'Codex'; Prompt = 'P04, Transit Timeline v2.12'
        Pdf = 'timeline-reading-v1.pdf'; Markdown = ''
        Description = 'A transit timeline reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.' },
+    @{ Key = 'rectification-report'; Kind = 'report'; Title = 'Sample report: primary directions'
+       Subtitle = 'Harry, Duke of Sussex, a public figure: birth to age 43'; Pair = 'rectification-reading'
+       Pdf = ''; Markdown = 'rectification-report-v1.md'
+       MarkdownText = 'Download this excerpt as a Markdown file'
+       Description = 'The primary directions section of a report exactly as AstroCast 1.7.1 wrote it, for a public figure: the dates a birth-time rectification works from.'
+       Note = @(
+           '<strong>What this is.</strong> AstroCast 1.7.1 wrote this report: the primary directions of a public figure, Harry, Duke of Sussex, from birth to age 43, cast for his published birth time. This page is an excerpt, unedited: the report''s header and its Primary Directions section. The full report also holds the natal chart, which is left out here.',
+           'In the program it comes from the <strong>Primary</strong> panel, here with the age limit set to 43 and the uncertainty to 6 minutes: <strong>Calculate Directions</strong>, then <strong>Export Directions MD</strong>.',
+           'An AI assistant, given the full report and a prompt from the AstroCast prompt library, tested the birth time against ten dated events. {pair}.'
+       ) },
+    @{ Key = 'rectification-reading'; Kind = 'reading'; Title = 'Sample reading: a birth time put to the test'
+       Subtitle = 'Harry, Duke of Sussex, a public figure: ten dated events'; Pair = 'rectification-report'
+       Assistant = 'ChatGPT'; Prompt = 'P29, Primary Directions Interpretation v1.0'
+       Pdf = 'rectification-reading-v1.pdf'; Markdown = ''
+       Description = 'A birth-time rectification written by an AI assistant from an AstroCast primary directions report and a prompt of the AstroCast prompt library.'
+       Note = @(
+           '<strong>What this is.</strong> An AI assistant, {assistant}, wrote this reading from an AstroCast report, using prompt {prompt}, of the AstroCast prompt library. Its subject is a public figure, Harry, Duke of Sussex. It tests his published birth time against ten dated events of his life.',
+           '<strong>What was asked.</strong> With the prompt and the report attached, the request was: &#8220;I want to rectify this chart with the uploaded prompt. This is a chart of a public figure whose biography is well known. Research this person to find significant biographical events that can be used for rectification. Include a table of events used for rectification in the PDF report.&#8221; The assistant found the events and their sources itself.',
+           '<strong>How it is shown.</strong> The assistant delivered a PDF. This page gives its words unchanged. The PDF also draws the ten birth-time shifts as a chart, given here as a list, and its sources are links there.',
+           'The prompts are an aid to an astrologer, not a replacement for one. The assistant gathers the dated events, sets them against the directions and shows where they agree and where they do not. Checking the events and weighing the matches stay with you. {pair}.'
+       ) },
     @{ Key = 'synastry-report'; Kind = 'report'; Title = 'Sample report: a synastry'
        Subtitle = 'Eleanor Hartwell and Daniel Whitfield, two invented people'; Pair = 'synastry-reading'
        Made = 'In the program it comes from the <strong>Synastry</strong> panel: <strong>Calculate Synastry</strong>, then <strong>Export Synastry MD</strong>.'
@@ -124,8 +164,9 @@ $Samples = @(
 
 # The cards of the samples index, in order. Each names the pages it links to.
 $Cards = @(
-    @{ Heading = 'A natal chart'; Text = 'Eleanor Hartwell, an invented person: the chart report, and the full reading made from it.'; Pages = @('natal-report', 'natal-reading') },
     @{ Heading = 'Three months of transits'; Text = 'Her transit timeline for January to March 2027, and the dated reading made from it.'; Pages = @('timeline-report', 'timeline-reading') },
+    @{ Heading = 'A birth time put to the test'; Text = 'Harry, Duke of Sussex, a public figure: his primary directions from birth to age 43, and a reading that tests his published birth time against ten dated events.'; Pages = @('rectification-report', 'rectification-reading') },
+    @{ Heading = 'A natal chart'; Text = 'Eleanor Hartwell, an invented person: the chart report, and the full reading made from it.'; Pages = @('natal-report', 'natal-reading') },
     @{ Heading = 'Two charts compared'; Text = 'The synastry of the two invented charts, Eleanor Hartwell and Daniel Whitfield, and its reading.'; Pages = @('synastry-report', 'synastry-reading') },
     @{ Heading = 'A question asked of the sky'; Text = 'A horary chart answers a question from the moment it is asked. This one is a real question, with a note of what happened.'; Pages = @('horary-reading') }
 )
@@ -340,7 +381,8 @@ function Get-DownloadLinks {
         $links.Add('<a href="' + $Prefix + 'files/' + $Sample.Pdf + '">Download this ' + $what + ' as a PDF (PDF, ' + (Get-SizeText -Path (Join-Path $filesRoot $Sample.Pdf)) + ')</a>')
     }
     if ($Sample.Markdown) {
-        $links.Add('<a href="' + $Prefix + 'files/' + $Sample.Markdown + '" download>Download the Markdown file as AstroCast wrote it (Markdown, ' + (Get-SizeText -Path (Join-Path $filesRoot $Sample.Markdown)) + ')</a>')
+        [string]$markdownText = if ($Sample.ContainsKey('MarkdownText')) { $Sample.MarkdownText } else { 'Download the Markdown file as AstroCast wrote it' }
+        $links.Add('<a href="' + $Prefix + 'files/' + $Sample.Markdown + '" download>' + $markdownText + ' (Markdown, ' + (Get-SizeText -Path (Join-Path $filesRoot $Sample.Markdown)) + ')</a>')
     }
     return '            <p class="downloads">' + ($links -join ' ') + '</p>'
 }
@@ -502,7 +544,14 @@ foreach ($sample in $Samples) {
         $pairLink = '<a href="../' + $sample.Pair + '/index.html">' + $pairWords + '</a>'
     }
 
-    [string]$note = switch ($sample.Kind) {
+    [string]$kindOfNote = if ($sample.ContainsKey('Note')) { 'own' } else { $sample.Kind }
+    [string]$note = switch ($kindOfNote) {
+        'own' {
+            [string]$assistant = if ($sample.ContainsKey('Assistant')) { $sample.Assistant } else { '' }
+            [string]$promptName = if ($sample.ContainsKey('Prompt')) { $sample.Prompt } else { '' }
+            if (-not $pairLink -and (@($sample.Note) -join ' ').Contains('{pair}')) { throw "The note of $($sample.Key) names its pair, and the pair's source is absent." }
+            (@($sample.Note) | ForEach-Object { '                <p>' + $_.Replace('{pair}', $pairLink).Replace('{assistant}', $assistant).Replace('{prompt}', $promptName) + '</p>' }) -join "`n"
+        }
         'report' {
             '                <p><strong>What this is.</strong> AstroCast 1.7.1 wrote this report. It is shown here unedited, and the person it describes is invented. ' + $sample.Made + '</p>' + "`n" +
             '                <p>An AI assistant, given this report and a prompt from the AstroCast prompt library, wrote a reading from it. ' + $pairLink + '.</p>' + "`n" +
@@ -549,10 +598,10 @@ foreach ($card in $Cards) {
     $cardHtml.Add("                <li>`n                    <h2>$($card.Heading)</h2>`n                    <p>$($card.Text)</p>`n                    <p>" + ($links -join ' ') + "</p>`n                </li>")
 }
 [string]$indexCrumbs = "                <li><a href=`"../index.html`">AstroCast</a></li>`n                <li aria-current=`"page`">Samples</li>"
-[string]$indexPage = (Get-PageHead -Title 'Sample reports and readings' -Subtitle 'What AstroCast writes, and what an AI assistant makes of it' -Description 'Sample AstroCast reports for two invented charts, each beside the reading an AI assistant wrote from it.' -Canonical 'samples/index.html' -Root '../' -Crumbs $indexCrumbs) +
+[string]$indexPage = (Get-PageHead -Title 'Sample reports and readings' -Subtitle 'What AstroCast writes, and what an AI assistant makes of it' -Description 'Sample AstroCast reports, each beside the reading an AI assistant wrote from it: a transit timeline, a birth time put to the test, a natal chart and a synastry.' -Canonical 'samples/index.html' -Root '../' -Crumbs $indexCrumbs) +
     "            <div class=`"note-box`">`n" +
-    "                <p><strong>How to read these.</strong> AstroCast writes the report: the positions, aspects and timings, as a plain file. An AI assistant, given that report and a prompt from the AstroCast prompt library, writes the reading. Each sample below is shown exactly as it was written.</p>`n" +
-    "                <p>A reading is an interpretation, not fact.</p>`n" +
+    "                <p><strong>How to read these.</strong> AstroCast writes the report: the positions, aspects and timings, as a plain file. An AI assistant, given that report and a prompt from the AstroCast prompt library, writes the reading: it presents the report, organises it and highlights the patterns in it. Each page says what it shows and how it was made.</p>`n" +
+    "                <p>The prompts are an aid to an astrologer, not a replacement for one. A reading is an interpretation, not fact.</p>`n" +
     "            </div>`n`n" +
     "            <ul class=`"sample-cards`">`n" + ($cardHtml -join "`n") + "`n            </ul>`n`n" +
     "            <p class=`"more-links`"><a href=`"../index.html#download`">Download AstroCast</a> <a href=`"../help/first-reading/index.html`">Your first chart and reading, step by step</a></p>" +

@@ -10,5 +10,7 @@ https://www.sthornhill.com/AstroCast/samples/natal-report/
 https://www.sthornhill.com/AstroCast/samples/natal-reading/
 https://www.sthornhill.com/AstroCast/samples/timeline-report/
 https://www.sthornhill.com/AstroCast/samples/timeline-reading/
+https://www.sthornhill.com/AstroCast/samples/rectification-report/
+https://www.sthornhill.com/AstroCast/samples/rectification-reading/
 https://www.sthornhill.com/AstroCast/samples/synastry-report/
 https://www.sthornhill.com/AstroCast/samples/synastry-reading/

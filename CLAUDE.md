@@ -91,7 +91,10 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
   its PDF under `website/AstroCast/docs/` is replaced under a new versioned name. The sample
   pages are built by `website/tools/Build-Samples.ps1` from `website/samples-src/`; they use the
   invented charts, apart from one horary reading, a real question of the maintainer's own,
-  there by his decision.
+  there by his decision, and one pair for a public figure's published birth data (Harry, Duke
+  of Sussex): an excerpt of his primary directions report and the rectification reading made
+  from it. The site presents the prompt library as an aid to an astrologer, not a replacement
+  for one (Steve, 2026-11-17).
 - The private hand-over document and the continuity files stay outside the repository.
 
 ## Project Structure
