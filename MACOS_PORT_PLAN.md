@@ -6307,6 +6307,43 @@ website for sthornhill.com/AstroCast**
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.2 is open; no tag.
 
+**Landing record (2026-11-17, after the tag v1.7.1): branch Rectify,
+the rectification sample and "an aid, not a replacement"**
+> `Rectify` (Maple, cut from `11ddc02`), two commits, no code:
+> `222a0c6` adds a fifth sample to the website, a public figure's
+> primary directions (an excerpt of the report: its header and its
+> Primary Directions section) and the birth-time rectification an AI
+> assistant made from it with prompt P29, puts the transit timeline
+> and that pair first among the samples, and says on the main page,
+> the samples index, two help pages and llms.txt that the prompts
+> are an aid to an astrologer, not a replacement for one;
+> `92e1421` names Eleanor Hartwell on the transits card, which now
+> comes before the card that introduced her.
+> - Why: Steve, 2026-11-17: rectification is a valuable feature and
+>   belongs among the samples; the prompts are to be presented as an
+>   aid to a practising astrologer, not a replacement, and the
+>   rectification and timeline samples show what an assistant adds
+>   in presenting, organising and highlighting patterns in data.
+> - Rulings (Steve, 2026-11-17): the report page shows the header
+>   and the Primary Directions section only, the natal chart left
+>   out; the request he gave the assistant is shown on the reading's
+>   page; the site carries no contact address for now. The rule the
+>   samples follow is now: an invented chart or a public figure's
+>   published data, never a private person's.
+> - The subject is Harry, Duke of Sussex, with the birth time the
+>   London Gazette published (issue 49869). Steve made the export in
+>   AstroCast 1.7.1 and the reading with ChatGPT; the reading's page
+>   is a transcription of its PDF, checked word for word, and it
+>   names members of his family where its dated public events do.
+> - Landed from Maple (docs only; Steve, 2026-11-17): `master`
+>   fast-forwarded to `92e1421`, then this record commit; the suites
+>   were not run again (4297/4297 and 145/145 at `c636125`). Nothing
+>   is uploaded yet: Steve uploads website/AstroCast by hand at the
+>   flip, 2026-11-23.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
 **Phase 6 -- Parity verification and steady state (2-3 days, ~2-4 sessions)**
 Export the full set of Markdown reports for reference charts on both OSes and
 diff them (goldens make this nearly free), from 1.3.4 output: every 1.3.4 branch
