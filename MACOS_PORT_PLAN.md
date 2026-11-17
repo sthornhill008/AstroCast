@@ -6344,6 +6344,39 @@ the rectification sample and "an aid, not a replacement"**
 > `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
 > 1.7.2 is open; no tag.
 
+**Landing record (2026-11-17, after the tag v1.7.1): branch Guide82,
+the guide's 8.2 on why another program may give different dates**
+> `Guide82` (Mac, cut from `5616611`), one commit, no code:
+> `7095ae2` adds to docs/PROMPT_LIBRARY_GUIDE.md, section 8.2, the
+> paragraph "Why another program may give different dates": a table
+> of AstroCast's choices for primary directions (directing method,
+> aspect type, latitude, converse, time key, orbs) beside what other
+> programs offer, and how to compare two programs.
+> - Why: Steve, 2026-11-17, after reading a forum thread on primary
+>   directions: a reader who checks AstroCast against another
+>   program must first set that program to the same five choices.
+> - The text was checked against the rules of 1.5.0 (CLAUDE.md,
+>   Primary directions) and against an export: the key is named on
+>   the report's Key line. Two candidates are recorded for after the
+>   release, with no decision taken: a switch to direct a
+>   conjunction without latitude, and mundane aspects.
+> - With it: the guide's PDF was rendered again (23 pages),
+>   and the prompt library zip was built again and replaced on the
+>   v1.7.1 release under the name it had,
+>   AstroCast_Prompt_Library_2026-10-22.zip: 1034969 bytes,
+>   SHA-256
+>   `72731f7fb5ec2a9713e5ea7b1089d5aa296c0069e9bf3705bd27939fdec1f82b`.
+>   Two of its 103 entries changed, the guide and its PDF. The
+>   release notes carry the new checksum. No prompt changed.
+> - Landed from the Mac (docs only; Steve, 2026-11-17): `master`
+>   fast-forwarded to `7095ae2` and pushed, then this record
+>   commit; the suites were not run again (4297/4297 and 145/145 at
+>   `c636125`). The website's copy of the PDF and the zip's values
+>   on its pages follow from Maple.
+>
+> `AstroCast.Tests` 4297 -> 4297; `AstroCast.UiTests` 145 -> 145.
+> 1.7.2 is open; no tag.
+
 **Phase 6 -- Parity verification and steady state (2-3 days, ~2-4 sessions)**
 Export the full set of Markdown reports for reference charts on both OSes and
 diff them (goldens make this nearly free), from 1.3.4 output: every 1.3.4 branch
