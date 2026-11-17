@@ -164,7 +164,7 @@ $Samples = @(
 
 # The cards of the samples index, in order. Each names the pages it links to.
 $Cards = @(
-    @{ Heading = 'Three months of transits'; Text = 'Her transit timeline for January to March 2027, and the dated reading made from it.'; Pages = @('timeline-report', 'timeline-reading') },
+    @{ Heading = 'Three months of transits'; Text = 'The transit timeline of Eleanor Hartwell, an invented person, for January to March 2027, and the dated reading made from it.'; Pages = @('timeline-report', 'timeline-reading') },
     @{ Heading = 'A birth time put to the test'; Text = 'Harry, Duke of Sussex, a public figure: his primary directions from birth to age 43, and a reading that tests his published birth time against ten dated events.'; Pages = @('rectification-report', 'rectification-reading') },
     @{ Heading = 'A natal chart'; Text = 'Eleanor Hartwell, an invented person: the chart report, and the full reading made from it.'; Pages = @('natal-report', 'natal-reading') },
     @{ Heading = 'Two charts compared'; Text = 'The synastry of the two invented charts, Eleanor Hartwell and Daniel Whitfield, and its reading.'; Pages = @('synastry-report', 'synastry-reading') },
