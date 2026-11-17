@@ -663,6 +663,27 @@ direct (`D`) and converse (`C`). The settings are on the Primary panel:
 The settings last for the session only, and the Transits panel's **Directions** box uses them
 too.
 
+**Why another program may give different dates.** Primary directions are not one calculation.
+Every program chooses a directing method, a kind of aspect, a rule for latitude, a kind of
+converse and a time key, and two programs that differ on any one of them will date the same
+direction differently, sometimes by years. AstroCast's choices, in the terms other programs
+use:
+
+| Choice | AstroCast | What else exists |
+|---|---|---|
+| Directing method | Placidus semi-arc: each point keeps its own proportion of its arc above or below the horizon, the method of Ptolemy as Placidus restored it | Placidus "under the pole", Regiomontanus, Campanus, Morinus, Topocentric and others, which AstroCast does not compute |
+| Aspect type | Zodiacal: an aspect is measured along the ecliptic | Mundane aspects, measured in the houses' proportions, which AstroCast does not compute |
+| Latitude | A conjunction uses the promissor's true latitude, so a planet directed to the Ascendant or Midheaven is its actual rising or culmination. Its sextile, square, trine and opposition points lie on the ecliptic. A significator is taken where it is | No latitude at all; or latitude carried into the aspect points |
+| Converse | The traditional converse: the significator is carried by the same daily rotation to the promissor's place | The modern converse, which turns the sky backwards to before the birth |
+| Time key | Naibod by default; Ptolemy or the true solar arc in right ascension by the setting. The report names the key on its **Key** line | Cardan, and several others |
+| Orbs | None: each direction has one exact date | |
+
+To compare AstroCast with another program, set that program to the same five choices first. If
+it cannot match one of them, expect its dates to differ, and do not treat either set as the
+wrong one: they answer slightly different questions. For rectification this matters more than
+anywhere else, since an event matched under one method proves nothing about a time tested
+under another.
+
 **The two reports, and which prompt.**
 
 | | A period: P28 (or P03) | The whole life: P29 |
