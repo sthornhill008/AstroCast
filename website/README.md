@@ -241,7 +241,10 @@ So every asset carries a version in its name (`help-v1.css`, `samples-v1.css`,
 `shot-map-v1.png`, `AstroCast_User_Guide-v1.pdf`, `natal-report-v1.pdf`). **A changed asset gets a new versioned name** (`-v2`), and the
 pages that use it are changed to match; the HTML is always fetched fresh, so the new name
 takes effect at once. Never replace the contents of a versioned file under the same name.
-`favicon.ico` is requested by that fixed name and cannot be versioned.
+`favicon.ico` is requested by that fixed name and cannot be versioned. One exception is on
+record. On 2026-11-17 the Prompt Library Guide's PDF was replaced under its `-v1` name, by
+Steve's decision, because the site had not yet been uploaded and no copy was cached anywhere.
+Once the site is uploaded, the rule has no exception.
 
 ## The upload
 
