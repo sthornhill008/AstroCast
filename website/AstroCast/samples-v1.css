@@ -90,6 +90,26 @@ li { margin-bottom: 8px; }
 }
 .note-box p:last-child { margin-bottom: 0; }
 
+/* On a reading page: the box that leads to the PDF the assistant delivered,
+   and the heading that says the page's own text is the same reading as text. */
+.delivered {
+    background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--brand);
+    border-radius: 8px; padding: 18px 22px; margin-bottom: 28px;
+}
+.delivered p:last-child { margin-bottom: 0; }
+#text-version { font-size: 1.4rem; line-height: 1.3; margin-bottom: 8px; }
+
+/* The button to that PDF: the main page's button (the .btn rules of
+   index.html), here as wide as its text and not as its box. */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 52px; padding: 10px 22px;
+    background: var(--accent); color: var(--on-accent);
+    border: 2px solid var(--accent); border-radius: 8px;
+    font-size: 1.1rem; font-weight: 600; text-decoration: none; text-align: center;
+}
+.btn:hover { background: var(--bg); color: var(--accent); }
+
 /* Download and navigation links, each a tap target. */
 .downloads, .more-links { margin-bottom: 20px; }
 .downloads a, .more-links a { display: inline-flex; align-items: center; min-height: 44px; margin-right: 22px; }
@@ -173,4 +193,5 @@ footer li a { display: inline-flex; align-items: center; min-height: 44px; paddi
 /* Motion only for readers who have not asked for less of it. */
 @media (prefers-reduced-motion: no-preference) {
     .skip { transition: top 0.15s ease; }
+    .btn { transition: background-color 0.2s ease, color 0.2s ease; }
 }

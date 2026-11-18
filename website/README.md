@@ -205,6 +205,13 @@ index and the eight listed sample pages.
   `table-hint`, the one text inside a sample's `article` that is not the sample's own). It
   makes no network call, and from the same sources, files and pandoc version it writes the
   same bytes every time. The pages were made with pandoc 3.8.2.1.
+  A reading page leads with its PDF: under the note it holds a box (class `delivered`) with
+  a button (class `btn`) to the PDF as the assistant delivered it, the button's text giving
+  the PDF's page count and size; then, under the heading "The same reading as text" (id
+  `text-version`), the text version: the "On this page" list and the sample. The page counts
+  are fields in the script's `$Samples` table (`PdfPages`), to be set when a PDF is replaced;
+  the sizes are read from the files. The rectification reading's box has a sentence of its
+  own (`Delivered`), which names the PDF's chart.
   The notes, titles and card texts are in the script's `$Samples` and `$Cards` tables. A
   sample takes the standard note of its kind, or a note of its own (`Note`): the
   rectification pair has its own, and its report's download is worded as an excerpt
@@ -241,9 +248,10 @@ So every asset carries a version in its name (`help-v1.css`, `samples-v1.css`,
 `shot-map-v1.png`, `AstroCast_User_Guide-v1.pdf`, `natal-report-v1.pdf`). **A changed asset gets a new versioned name** (`-v2`), and the
 pages that use it are changed to match; the HTML is always fetched fresh, so the new name
 takes effect at once. Never replace the contents of a versioned file under the same name.
-`favicon.ico` is requested by that fixed name and cannot be versioned. One exception is on
+`favicon.ico` is requested by that fixed name and cannot be versioned. Two exceptions are on
 record. On 2026-11-17 the Prompt Library Guide's PDF was replaced under its `-v1` name, by
 Steve's decision, because the site had not yet been uploaded and no copy was cached anywhere.
+On 2026-11-18 `samples-v1.css` gained rules under its name for the same reason.
 Once the site is uploaded, the rule has no exception.
 
 ## The upload

@@ -43,6 +43,14 @@
     entry says how the reading is shown in a note of its own (Note). A line break inside a
     table cell (the source's <br>) is kept, and a right-aligned column stays right-aligned.
 
+    A reading page leads with the PDF the assistant delivered. Under its note, in place of the
+    download links, it has a box (class "delivered") that holds one sentence and a button
+    (class "btn") to that PDF; the button's text gives the PDF's page count (the entry's
+    PdfPages) and its size. Then come a heading, "The same reading as text" (id
+    "text-version"), and one line that says the words below are the PDF's; then the "On this
+    page" list and the sample. The download line below the sample is a plain link with the
+    button's text. A report page keeps its download links above and below the sample.
+
     Nothing in a sample's text is rewritten. The script makes no network call. The pages come
     out the same on every run from the same sources, files and pandoc version; they were made
     with pandoc 3.8.2.1. Text is written as ASCII (other characters as numeric references) with
@@ -51,8 +59,8 @@
     A sample whose source file is absent is left out, with its card and its links.
 
     To change a sample: replace its source in website\samples-src, give any changed download a
-    new versioned name in website\AstroCast\samples\files (and here, in $Samples), and run this
-    script again.
+    new versioned name in website\AstroCast\samples\files (and here, in $Samples), set PdfPages
+    to the page count of a reading's new PDF, and run this script again.
 
 .PARAMETER PandocPath
     The pandoc program. By default the one on the PATH, or the per-user Windows installation.
@@ -93,6 +101,14 @@ $siteAddress = 'https://www.sthornhill.com/AstroCast/'
 # ProfectionAnalyzer ("the traditional house themes").
 [string]$KeywordNote = 'Some tables give traditional keywords, for example for fixed stars and for the houses. Some are stark. They are the tradition''s words for a symbol, not predictions about a person.'
 
+# A reading page leads with the PDF the assistant delivered: a box (class "delivered") with a
+# sentence and a button to the PDF, then a heading and a line that say the page's own text is
+# the text version. $DeliveredText is the box's sentence unless the sample's entry has one of
+# its own (Delivered).
+[string]$DeliveredText = 'The assistant delivered this reading as a PDF. Open it to see the reading as it was received, in its own layout.'
+[string]$TextVersionHeading = 'The same reading as text'
+[string]$TextVersionText = 'The words below are the PDF''s, set as a web page so that they read well on a phone and with a screen reader.'
+
 # One entry for each sample page. Kind is report, reading or horary. Pair is the page the note
 # links to. Prompt and Assistant are as each reading's own closing lines give them. NoIndex
 # marks a page that is on the site but not offered to search engines.
@@ -103,6 +119,11 @@ $siteAddress = 'https://www.sthornhill.com/AstroCast/'
 # MarkdownText is the Markdown download's link text in place of the standard one (the file type
 # and size are added). The rectification pair uses both: its report page is an excerpt, and its
 # reading's source is a transcription of the PDF the assistant delivered.
+#
+# A reading (Kind reading or horary) names its PDF and carries PdfPages, that PDF's page count,
+# which the button to the PDF states beside the file's size: set it when the PDF is replaced.
+# Delivered, optional, is the sentence above that button in place of the standard one
+# ($DeliveredText); the rectification reading has its own, which names the PDF's chart.
 $Samples = @(
     @{ Key = 'natal-report'; Kind = 'report'; Title = 'Sample report: a natal chart'
        Subtitle = 'Eleanor Hartwell, an invented person'; Pair = 'natal-reading'
@@ -112,7 +133,7 @@ $Samples = @(
     @{ Key = 'natal-reading'; Kind = 'reading'; Title = 'Sample reading: a natal chart'
        Subtitle = 'Eleanor Hartwell, an invented person'; Pair = 'natal-report'
        Assistant = 'Codex'; Prompt = 'P01, Enhanced Birth Interpretation v3.7'
-       Pdf = 'natal-reading-v1.pdf'; Markdown = ''
+       Pdf = 'natal-reading-v1.pdf'; PdfPages = 10; Markdown = ''
        Description = 'A natal chart reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.' },
     @{ Key = 'timeline-report'; Kind = 'report'; Title = 'Sample report: a transit timeline'
        Subtitle = 'Eleanor Hartwell, January to March 2027'; Pair = 'timeline-reading'
@@ -122,7 +143,7 @@ $Samples = @(
     @{ Key = 'timeline-reading'; Kind = 'reading'; Title = 'Sample reading: a transit timeline'
        Subtitle = 'Eleanor Hartwell, January to March 2027'; Pair = 'timeline-report'
        Assistant = 'Codex'; Prompt = 'P04, Transit Timeline v2.12'
-       Pdf = 'timeline-reading-v1.pdf'; Markdown = ''
+       Pdf = 'timeline-reading-v1.pdf'; PdfPages = 24; Markdown = ''
        Description = 'A transit timeline reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.' },
     @{ Key = 'rectification-report'; Kind = 'report'; Title = 'Sample report: primary directions'
        Subtitle = 'Harry, Duke of Sussex, a public figure: birth to age 43'; Pair = 'rectification-reading'
@@ -137,7 +158,8 @@ $Samples = @(
     @{ Key = 'rectification-reading'; Kind = 'reading'; Title = 'Sample reading: a birth time put to the test'
        Subtitle = 'Harry, Duke of Sussex, a public figure: ten dated events'; Pair = 'rectification-report'
        Assistant = 'ChatGPT'; Prompt = 'P29, Primary Directions Interpretation v1.0'
-       Pdf = 'rectification-reading-v1.pdf'; Markdown = ''
+       Pdf = 'rectification-reading-v1.pdf'; PdfPages = 4; Markdown = ''
+       Delivered = 'The assistant delivered this reading as a PDF. Open it to see the reading as it was received, in its own layout and with its chart of the ten birth-time shifts.'
        Description = 'A birth-time rectification written by an AI assistant from an AstroCast primary directions report and a prompt of the AstroCast prompt library.'
        Note = @(
            '<strong>What this is.</strong> An AI assistant, {assistant}, wrote this reading from an AstroCast report, using prompt {prompt}, of the AstroCast prompt library. Its subject is a public figure, Harry, Duke of Sussex. It tests his published birth time against ten dated events of his life.',
@@ -153,12 +175,12 @@ $Samples = @(
     @{ Key = 'synastry-reading'; Kind = 'reading'; Title = 'Sample reading: a synastry'
        Subtitle = 'Eleanor Hartwell and Daniel Whitfield, two invented people'; Pair = 'synastry-report'
        Assistant = 'Codex'; Prompt = 'P12, Synastry Interpretation v1.13'
-       Pdf = 'synastry-reading-v1.pdf'; Markdown = ''
+       Pdf = 'synastry-reading-v1.pdf'; PdfPages = 8; Markdown = ''
        Description = 'A synastry reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.' },
     @{ Key = 'horary-reading'; Kind = 'horary'; Title = 'Sample reading: a horary question'
        Subtitle = 'A real question, shared by the developer'; Pair = ''
        Prompt = 'P15, Horary Chart Interpretation v2.10'; NoIndex = $true
-       Pdf = 'horary-reading-v1.pdf'; Markdown = ''
+       Pdf = 'horary-reading-v1.pdf'; PdfPages = 6; Markdown = ''
        Description = 'A horary reading of a real question, shared by the developer, with a note of what happened afterwards.' }
 )
 
@@ -365,10 +387,55 @@ function Convert-Sample {
     return @{ Html = $html; Sections = $sections; Tables = $tables.Count; Notes = $notes }
 }
 
+function Get-DeliveredLinkText {
+    <#
+    .SYNOPSIS
+        The text of a reading page's link to the PDF as delivered: file type, page count and size.
+    .DESCRIPTION
+        The button at the top of a reading page and the plain link below its sample carry the
+        same text. The page count is the entry's PdfPages; the size is read from the file.
+    .PARAMETER Sample
+        The reading's entry.
+    .OUTPUTS
+        For example "Open the reading as delivered (PDF, 4 pages, 350 KB)".
+    #>
+    param([Parameter(Mandatory = $true)][hashtable]$Sample)
+    [int]$pages = if ($Sample.ContainsKey('PdfPages')) { [int]$Sample.PdfPages } else { 0 }
+    if (-not $Sample.Pdf -or $pages -lt 1) { throw "The reading $($Sample.Key) needs its PDF (Pdf) and that PDF's page count (PdfPages)." }
+    [string]$pageWords = if ($pages -eq 1) { '1 page' } else { $pages.ToString([System.Globalization.CultureInfo]::InvariantCulture) + ' pages' }
+    return 'Open the reading as delivered (PDF, ' + $pageWords + ', ' + (Get-SizeText -Path (Join-Path $filesRoot $Sample.Pdf)) + ')'
+}
+
+function Get-DeliveredLead {
+    <#
+    .SYNOPSIS
+        What a reading page holds between its note and its "On this page" list.
+    .DESCRIPTION
+        The box that leads to the PDF as the assistant delivered it (class "delivered": one
+        sentence, then the button, class "btn"), then the heading (id "text-version") and the line
+        that say the page's own text is the text version.
+    .PARAMETER Sample
+        The reading's entry.
+    .PARAMETER Prefix
+        The relative path from the page to the samples folder.
+    #>
+    param([Parameter(Mandatory = $true)][hashtable]$Sample, [Parameter(Mandatory = $true)][string]$Prefix)
+    [string]$sentence = if ($Sample.ContainsKey('Delivered')) { $Sample.Delivered } else { $script:DeliveredText }
+    return "            <div class=`"delivered`">`n" +
+        '                <p>' + $sentence + '</p>' + "`n" +
+        '                <p><a class="btn" href="' + $Prefix + 'files/' + $Sample.Pdf + '">' + (Get-DeliveredLinkText -Sample $Sample) + '</a></p>' + "`n" +
+        "            </div>`n`n" +
+        '            <h2 id="text-version">' + $script:TextVersionHeading + '</h2>' + "`n" +
+        '            <p>' + $script:TextVersionText + '</p>'
+}
+
 function Get-DownloadLinks {
     <#
     .SYNOPSIS
         The paragraph of download links for a sample page, with file type and size in each link.
+    .DESCRIPTION
+        A report's PDF link reads "Download this report as a PDF"; a reading's is the link to the
+        PDF as delivered, worded as the button at the top of its page (Get-DeliveredLinkText).
     .PARAMETER Sample
         The sample's entry.
     .PARAMETER Prefix
@@ -376,9 +443,11 @@ function Get-DownloadLinks {
     #>
     param([Parameter(Mandatory = $true)][hashtable]$Sample, [Parameter(Mandatory = $true)][string]$Prefix)
     $links = New-Object System.Collections.Generic.List[string]
-    [string]$what = if ($Sample.Kind -eq 'report') { 'report' } else { 'reading' }
-    if ($Sample.Pdf) {
-        $links.Add('<a href="' + $Prefix + 'files/' + $Sample.Pdf + '">Download this ' + $what + ' as a PDF (PDF, ' + (Get-SizeText -Path (Join-Path $filesRoot $Sample.Pdf)) + ')</a>')
+    if ($Sample.Kind -ne 'report') {
+        $links.Add('<a href="' + $Prefix + 'files/' + $Sample.Pdf + '">' + (Get-DeliveredLinkText -Sample $Sample) + '</a>')
+    }
+    elseif ($Sample.Pdf) {
+        $links.Add('<a href="' + $Prefix + 'files/' + $Sample.Pdf + '">Download this report as a PDF (PDF, ' + (Get-SizeText -Path (Join-Path $filesRoot $Sample.Pdf)) + ')</a>')
     }
     if ($Sample.Markdown) {
         [string]$markdownText = if ($Sample.ContainsKey('MarkdownText')) { $Sample.MarkdownText } else { 'Download the Markdown file as AstroCast wrote it' }
@@ -574,12 +643,14 @@ foreach ($sample in $Samples) {
     }
 
     [string]$downloads = Get-DownloadLinks -Sample $sample -Prefix '../'
+    # Under the note: a report's download links, or a reading's box, button and text-version label.
+    [string]$lead = if ($sample.Kind -eq 'report') { $downloads } else { Get-DeliveredLead -Sample $sample -Prefix '../' }
     [string]$crumbs = "                <li><a href=`"../../index.html`">AstroCast</a></li>`n                <li><a href=`"../index.html`">Samples</a></li>`n                <li aria-current=`"page`">$($sample.Title)</li>"
     [string]$more = '            <p class="more-links">' + $(if ($pairLink) { $pairLink + ' ' } else { '' }) + '<a href="../index.html">All samples</a> <a href="../../index.html#download">Download AstroCast</a></p>'
 
     [bool]$unlisted = $sample.ContainsKey('NoIndex') -and $sample.NoIndex
     [string]$page = (Get-PageHead -Title $sample.Title -Subtitle $sample.Subtitle -Description $sample.Description -Canonical ('samples/' + $sample.Key + '/') -Root '../../' -Crumbs $crumbs -NoIndex:$unlisted) +
-        "            <div class=`"note-box`">`n$note`n            </div>`n`n$downloads`n`n$toc" +
+        "            <div class=`"note-box`">`n$note`n            </div>`n`n$lead`n`n$toc" +
         "            <article class=`"sample`">`n" + $rendered.Html + "`n            </article>`n`n$downloads`n$more" +
         (Get-PageFoot -Root '../../' -SamplesIndex '../index.html')
     Write-Page -Path (Join-Path $samplesRoot ($sample.Key + '\index.html')) -Html $page
