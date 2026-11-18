@@ -4,7 +4,8 @@ AstroCast is a desktop astrology program for Windows and macOS. It casts charts 
 Ephemeris in the tropical zodiac, analyses them with the traditional and modern techniques of
 Western astrology, and writes every result out as a Markdown report that reads well on its own
 or as the input to an AI interpretation. A companion prompt library turns those reports into
-written readings.
+written readings, which you can shape by adding context and a focus in the chart's Notes or in
+your request.
 
 ![AstroCast's Chart panel on macOS](docs/images/chart-panel.png)
 
