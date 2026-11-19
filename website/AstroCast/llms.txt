@@ -31,11 +31,12 @@ https://github.com/sthornhill008/AstroCast/releases
 - [Samples](https://www.sthornhill.com/AstroCast/samples/index.html): reports
   AstroCast wrote, each beside the reading an AI assistant made from
   it with a prompt of the prompt library. For two invented charts: a
-  natal chart, a three-month transit timeline and a synastry. For a
-  public figure: the primary directions from birth to age 43, and a
-  reading that tests the published birth time against ten dated
-  events. Each has a page of its own under samples/: natal-report,
-  natal-reading, timeline-report, timeline-reading,
+  natal chart, a solar return, a three-month transit timeline and a
+  synastry. For a public figure: the primary directions from birth to
+  age 43, and a reading that tests the published birth time against
+  ten dated events. Each has a page of its own under samples/:
+  natal-report, natal-reading, solar-return-report,
+  solar-return-reading, timeline-report, timeline-reading,
   rectification-report, rectification-reading, synastry-report,
   synastry-reading.
 - [User Guide (PDF)](https://www.sthornhill.com/AstroCast/docs/AstroCast_User_Guide-v1.pdf)

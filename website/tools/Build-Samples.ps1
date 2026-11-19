@@ -42,6 +42,8 @@
     renders any source, and offers the PDF as delivered as the page's download. The sample's
     entry says how the reading is shown in a note of its own (Note). A line break inside a
     table cell (the source's <br>) is kept, and a right-aligned column stays right-aligned.
+    Two readings are transcriptions with a note of their own: the rectification reading and
+    the solar return reading.
 
     A reading page leads with the PDF the assistant delivered. Under its note, in place of the
     download links, it has a box (class "delivered") that holds one sentence and a button
@@ -118,7 +120,9 @@ $siteAddress = 'https://www.sthornhill.com/AstroCast/'
 # stands for the link to the paired page, {assistant} for Assistant and {prompt} for Prompt.
 # MarkdownText is the Markdown download's link text in place of the standard one (the file type
 # and size are added). The rectification pair uses both: its report page is an excerpt, and its
-# reading's source is a transcription of the PDF the assistant delivered.
+# reading's source is a transcription of the PDF the assistant delivered. The solar return
+# reading has a note of its own too, and its source is a transcription as well; its report is
+# the whole report and takes the standard note.
 #
 # A reading (Kind reading or horary) names its PDF and carries PdfPages, that PDF's page count,
 # which the button to the PDF states beside the file's size: set it when the PDF is replaced.
@@ -135,6 +139,22 @@ $Samples = @(
        Assistant = 'Codex'; Prompt = 'P01, Enhanced Birth Interpretation v3.7'
        Pdf = 'natal-reading-v1.pdf'; PdfPages = 10; Markdown = ''
        Description = 'A natal chart reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.' },
+    @{ Key = 'solar-return-report'; Kind = 'report'; Title = 'Sample report: a solar return'
+       Subtitle = 'Eleanor Hartwell, October 2026 to October 2027'; Pair = 'solar-return-reading'
+       Made = 'In the program it comes from the <strong>Returns</strong> panel, with the year set to 2026: <strong>Calculate Solar Return</strong>, then <strong>Export Solar Return MD</strong>.'
+       Pdf = ''; Markdown = 'solar-return-report-v1.md'
+       Description = 'A solar return report exactly as AstroCast 1.7.1 wrote it, for an invented person.' },
+    @{ Key = 'solar-return-reading'; Kind = 'reading'; Title = 'Sample reading: a solar return'
+       Subtitle = 'Eleanor Hartwell, October 2026 to October 2027'; Pair = 'solar-return-report'
+       Assistant = 'ChatGPT'; Prompt = 'P06, Solar Return Interpretation v1.14'
+       Pdf = 'solar-return-reading-v1.pdf'; PdfPages = 11; Markdown = ''
+       Description = 'A solar return reading written by an AI assistant from an AstroCast report and a prompt of the AstroCast prompt library.'
+       Note = @(
+           '<strong>What this is.</strong> An AI assistant, {assistant}, wrote this reading from an AstroCast report, using prompt {prompt}, of the AstroCast prompt library. The person it describes is invented.',
+           '<strong>How it is shown.</strong> The assistant delivered a PDF. This page gives its words unchanged. Left out are the footer of each page and the heading that carries the glossary over to the PDF''s last page.',
+           '<strong>One correction.</strong> The assistant''s first version said that two tables of the report gave different declinations for Neptune. They do not: it had read Saturn''s row. Told so, it delivered this version, which differs from the first only in leaving that remark out. The prompts are an aid to an astrologer, not a replacement for one: checking a reading against its report stays with you.',
+           'A reading is an interpretation, not fact. {pair}.'
+       ) },
     @{ Key = 'timeline-report'; Kind = 'report'; Title = 'Sample report: a transit timeline'
        Subtitle = 'Eleanor Hartwell, January to March 2027'; Pair = 'timeline-reading'
        Made = 'In the program it comes from the <strong>Transits</strong> panel: <strong>Calculate</strong>, then <strong>Export Timeline MD</strong>.'
@@ -189,6 +209,7 @@ $Cards = @(
     @{ Heading = 'Three months of transits'; Text = 'The transit timeline of Eleanor Hartwell, an invented person, for January to March 2027, and the dated reading made from it.'; Pages = @('timeline-report', 'timeline-reading') },
     @{ Heading = 'A birth time put to the test'; Text = 'Harry, Duke of Sussex, a public figure: his primary directions from birth to age 43, and a reading that tests his published birth time against ten dated events.'; Pages = @('rectification-report', 'rectification-reading') },
     @{ Heading = 'A natal chart'; Text = 'Eleanor Hartwell, an invented person: the chart report, and the full reading made from it.'; Pages = @('natal-report', 'natal-reading') },
+    @{ Heading = 'The year ahead'; Text = 'The solar return of Eleanor Hartwell, an invented person, for 2026: the chart of her year from October 2026 to October 2027, and the reading made from it.'; Pages = @('solar-return-report', 'solar-return-reading') },
     @{ Heading = 'Two charts compared'; Text = 'The synastry of the two invented charts, Eleanor Hartwell and Daniel Whitfield, and its reading.'; Pages = @('synastry-report', 'synastry-reading') },
     @{ Heading = 'A question asked of the sky'; Text = 'A horary chart answers a question from the moment it is asked. This one is a real question, with a note of what happened.'; Pages = @('horary-reading') }
 )
@@ -669,7 +690,7 @@ foreach ($card in $Cards) {
     $cardHtml.Add("                <li>`n                    <h2>$($card.Heading)</h2>`n                    <p>$($card.Text)</p>`n                    <p>" + ($links -join ' ') + "</p>`n                </li>")
 }
 [string]$indexCrumbs = "                <li><a href=`"../index.html`">AstroCast</a></li>`n                <li aria-current=`"page`">Samples</li>"
-[string]$indexPage = (Get-PageHead -Title 'Sample reports and readings' -Subtitle 'What AstroCast writes, and what an AI assistant makes of it' -Description 'Sample AstroCast reports, each beside the reading an AI assistant wrote from it: a transit timeline, a birth time put to the test, a natal chart and a synastry.' -Canonical 'samples/index.html' -Root '../' -Crumbs $indexCrumbs) +
+[string]$indexPage = (Get-PageHead -Title 'Sample reports and readings' -Subtitle 'What AstroCast writes, and what an AI assistant makes of it' -Description 'Sample AstroCast reports, each beside the reading an AI assistant wrote from it: a transit timeline, a birth time put to the test, a natal chart, a solar return and a synastry.' -Canonical 'samples/index.html' -Root '../' -Crumbs $indexCrumbs) +
     "            <div class=`"note-box`">`n" +
     "                <p><strong>How to read these.</strong> AstroCast writes the report: the positions, aspects and timings, as a plain file. An AI assistant, given that report and a prompt from the AstroCast prompt library, writes the reading: it presents the report, organises it and highlights the patterns in it. Each page says what it shows and how it was made.</p>`n" +
     "                <p>The prompts are an aid to an astrologer, not a replacement for one. A reading is an interpretation, not fact.</p>`n" +

@@ -8,7 +8,7 @@ images and two PDFs. There is no PHP, no JavaScript, no database and no `data` f
 |---|---|
 | `AstroCast/` | **Exactly what is uploaded** to the server folder `/public/AstroCast`. Nothing that is not meant to be served goes inside it |
 | `Update-WebsiteRelease.ps1` | The per-release step: writes a release's version, file names, sizes, addresses and checksums into the pages |
-| `samples-src/` | The Markdown sources of the sample pages, as they were written (one is an excerpt and one a transcription: see "The samples"). Not uploaded |
+| `samples-src/` | The Markdown sources of the sample pages, as they were written (one is an excerpt and two are transcriptions: see "The samples"). Not uploaded |
 | `tools/Build-Samples.ps1` | Renders the sample pages from `samples-src/`. Not uploaded |
 | `tools/og-card.html` | The source of the social card image `AstroCast/images/og-card-v1.png`. Not uploaded |
 | `README.md` | This file. Not uploaded |
@@ -30,7 +30,7 @@ AstroCast/
   images/            screenshots as PNG and WebP pairs, the icons and the social card
   favicon.ico        16, 32 and 48 px
   .htaccess          response headers for this folder only
-  sitemap.txt        the sixteen listed pages (every page but the unlisted horary one)
+  sitemap.txt        the eighteen listed pages (every page but the unlisted horary one)
   llms.txt           a plain-text summary for language-model crawlers
 ```
 
@@ -68,8 +68,8 @@ Rules the pages keep:
   a report, organises it and highlights the patterns in it, and judging what those patterns
   mean stays with the reader. The main page says so in the samples introduction, the prompt
   library section, the third step and a common question (with its twin in the `FAQPage`
-  block); the samples index, the rectification reading's note, `help/faq`,
-  `help/first-reading` and `llms.txt` say it too. New text keeps to it.
+  block); the samples index, the rectification reading's note, the solar return reading's
+  note, `help/faq`, `help/first-reading` and `llms.txt` say it too. New text keeps to it.
 
 ## Previewing from disk
 
@@ -153,27 +153,28 @@ Each screenshot on the main page is a link to its own full-size PNG.
 ## The samples
 
 "See what you get" on the main page links to sample pages: reports AstroCast wrote, each
-beside the reading an AI assistant made from it with a prompt of the prompt library. Three
-pairs are for the two invented charts (a natal chart, a three-month transit timeline, a
-synastry). One pair is for a public figure, Harry, Duke of Sussex, with his published birth
-time: his primary directions from birth to age 43, and a reading that tests that birth time
-against ten dated events. And there is one horary reading of a real question that Steve
-chose to share.
+beside the reading an AI assistant made from it with a prompt of the prompt library. Four
+pairs are for the two invented charts (a natal chart, a solar return, a three-month transit
+timeline, a synastry). One pair is for a public figure, Harry, Duke of Sussex, with his
+published birth time: his primary directions from birth to age 43, and a reading that tests
+that birth time against ten dated events. And there is one horary reading of a real question
+that Steve chose to share.
 
 The rule: a sample uses an invented chart or a public figure's published data, never a
 private person's. The horary reading is the one exception, by Steve's decision; nothing from
 it is quoted anywhere else on the site.
 
 The cards run in the same order on the main page and on the samples index: Three months of
-transits; A birth time put to the test; A natal chart; Two charts compared; A question asked
-of the sky. `sitemap.txt` lists 16 addresses: the main page, the six help pages, the samples
-index and the eight listed sample pages.
+transits; A birth time put to the test; A natal chart; The year ahead; Two charts compared; A
+question asked of the sky. `sitemap.txt` lists 18 addresses: the main page, the six help
+pages, the samples index and the ten listed sample pages.
 
 - **The sources** are in `samples-src/`: one Markdown file for each sample page, under a short
-  name (`natal-report.md`, `natal-reading.md`, `timeline-report.md`, `timeline-reading.md`,
+  name (`natal-report.md`, `natal-reading.md`, `solar-return-report.md`,
+  `solar-return-reading.md`, `timeline-report.md`, `timeline-reading.md`,
   `rectification-report.md`, `rectification-reading.md`, `synastry-report.md`,
   `synastry-reading.md`, `horary-reading.md`). They are kept as AstroCast or the assistant
-  wrote them. A sample is never corrected. Two are not the whole of what was written, and
+  wrote them. A sample is never corrected. Three are not the whole of what was written, and
   their pages say so:
   - `rectification-report.md` is an **excerpt**: the report's header and its Primary
     Directions section, cut at the byte level (the export's first 12 lines, then everything
@@ -187,6 +188,19 @@ index and the eight listed sample pages.
   - The export as AstroCast wrote it (the full report) and the PDF under the name it was
     delivered with are kept outside the repository. `rectification-reading-v1.pdf` in
     `AstroCast/samples/files/` is a byte copy of that PDF.
+  - `solar-return-reading.md` is a **transcription** too: the assistant delivered a PDF, and
+    the source gives that PDF's words as Markdown, made from the PDF's text and checked word
+    for word against it. The eleven page footers and the heading that continues the glossary
+    onto the last page are left out.
+  - That PDF is the assistant's **second delivery**. The first said that two tables of the
+    report gave different declinations for Neptune, which they do not (it had read Saturn's
+    row). Told so, the assistant delivered a version that differs only in leaving that remark
+    out, and the page's note says so. Nobody but the assistant changed the reading's words,
+    so the rule that a sample is never corrected holds (Steve, 2026-11-19).
+  - `solar-return-report.md` and its download, `solar-return-report-v1.md`, are the whole
+    report as AstroCast wrote it. The PDF as delivered, its first version and the export
+    under its own name are kept outside the repository. `solar-return-reading-v1.pdf` in
+    `AstroCast/samples/files/` is a byte copy of the PDF as delivered.
 - **The pages** in `AstroCast/samples/` are built from those sources and must not be edited by
   hand. To rebuild them:
 
@@ -215,10 +229,12 @@ index and the eight listed sample pages.
   The notes, titles and card texts are in the script's `$Samples` and `$Cards` tables. A
   sample takes the standard note of its kind, or a note of its own (`Note`): the
   rectification pair has its own, and its report's download is worded as an excerpt
-  (`MarkdownText`).
+  (`MarkdownText`); the solar return reading has a note of its own too, which says how the
+  reading is shown and that it is the assistant's second delivery.
 - **The downloads** are in `AstroCast/samples/files/`: the PDFs, and for each report the
   Markdown file as AstroCast wrote it (for the rectification report, the excerpt:
-  `rectification-report-v1.md`; its reading's PDF is `rectification-reading-v1.pdf`). They
+  `rectification-report-v1.md`; its reading's PDF is `rectification-reading-v1.pdf`). The
+  solar return's two are `solar-return-report-v1.md` and `solar-return-reading-v1.pdf`. They
   are byte copies with versioned names (`natal-report-v1.pdf`).
 - **A changed sample gets a new versioned file name.** Replace its source in `samples-src/`,
   add the new download as `...-v2`, change the name in the script's `$Samples` table, remove
