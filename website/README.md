@@ -24,10 +24,13 @@ AstroCast/
   samples-v1.css     the one stylesheet the sample pages share
   samples/index.html the list of samples
   samples/<name>/    one index.html for each sample report or reading (built, not hand-written)
-  samples/files/     the samples' PDF and Markdown downloads (versioned names)
+  samples/files/     the samples' PDF and Markdown downloads (versioned names), and
+                     natal-wheel-v1.png, the natal sample's chart wheel at full size
   docs/              the two guides as PDFs (versioned names)
   fonts/             Source Sans 3 (400, 600), JetBrains Mono (400), their licences, PROVENANCE.txt
-  images/            screenshots as PNG and WebP pairs, the icons and the social card
+  images/            screenshots as PNG and WebP pairs, the icons and the social card, and
+                     sample-wheel-natal-v1.png and .webp, the chart wheel's smaller copy for
+                     the pages
   favicon.ico        16, 32 and 48 px
   .htaccess          response headers for this folder only
   sitemap.txt        the eighteen listed pages (every page but the unlisted horary one)
@@ -36,7 +39,8 @@ AstroCast/
 
 `index.html` runs in this order: the header band; the two Chart-panel screenshots; the download
 card; "Get started in three steps"; "What it does" (ten cards, one per panel); "AstroCast in
-use" (six screenshots); "Documentation" (the two guides); "See what you get" (the samples); the
+use" (six screenshots); "Documentation" (the two guides); "See what you get" (the natal
+sample's chart wheel, then the samples); the
 prompt library; the map's background; system requirements; checking your download; common
 questions; the footer.
 
@@ -150,6 +154,10 @@ from `docs/USER_GUIDE.md` and `docs/PROMPT_LIBRARY_GUIDE.md`.
 
 Each screenshot on the main page is a link to its own full-size PNG.
 
+`images/sample-wheel-natal-v1.png` and `.webp` are not a screenshot and did not come from
+`docs/images/`: they are the natal sample's chart wheel, and "The samples" says how they were
+made.
+
 ## The samples
 
 "See what you get" on the main page links to sample pages: reports AstroCast wrote, each
@@ -231,11 +239,45 @@ pages, the samples index and the ten listed sample pages.
   rectification pair has its own, and its report's download is worded as an excerpt
   (`MarkdownText`); the solar return reading has a note of its own too, which says how the
   reading is shown and that it is the assistant's second delivery.
+  A sample's entry in `$Samples` can also carry a picture (`Figure`: the base name of its PNG
+  and WebP pair in `AstroCast/images/`, the full-size file in `AstroCast/samples/files/`, the
+  alternative text, the label of the link around the picture, and the caption). The script
+  writes it directly under the page's note, before the download links (on a reading page,
+  before the box that leads to the PDF), in the main page's markup for a screenshot: a
+  `figure` (class `sample-figure`) whose picture is a link (class `shot-link`) to the
+  full-size file, then the caption, which ends with a link to that file with its type and
+  size. The width and height it writes are read from the PNG, and it stops if a file is
+  missing or the WebP's size differs. Only the natal report has one.
+- **The chart wheel.** The natal report's page, under its note, and the main page's samples
+  section, above the cards, show Eleanor Hartwell's natal chart as a wheel. AstroCast draws
+  no wheel itself, and both captions say so. An AI assistant, Codex, drew it on 2026-11-20
+  with prompt P27, Chart Graphic v1.6, of the prompt library, from an export of the same
+  chart made that day, on the one-line request quoted in the sample page's caption. The
+  software was Kerykeion 5.12.9 (AGPL-3.0, the licence family AstroCast itself is under),
+  with CairoSVG 2.9.1 for the PNG. By the assistant's account the positions and cusps were
+  taken from the export and not recalculated. Claude checked the picture's printed
+  positions, angles and cusps against `natal-report.md` to the second before it went in.
+  - `AstroCast/samples/files/natal-wheel-v1.png` is the picture as delivered, byte for byte
+    (4800 by 3920 pixels). The picture on both pages is a link to it.
+  - `AstroCast/images/sample-wheel-natal-v1.png` and `sample-wheel-natal-v1.webp`, the pair
+    the pages show, are a smaller copy Claude made of it (1600 pixels wide, Lanczos), not
+    redrawn.
+  - Those two carry a content credential (C2PA) signed by Anthropic, added by Claude's file
+    transfer when it delivered them. It says that Claude provided the file and may have
+    created or modified its contents, and it is left in the files. The full-size picture
+    carries none.
+  - The sample page's figure is written by the build script (`Figure`, above); the main
+    page's is written by hand in `index.html`, with one rule in its inline style
+    (`.sample-wheel`). `samples-v1.css` has the sample page's rules (`.sample-figure`,
+    `.shot-link`).
 - **The downloads** are in `AstroCast/samples/files/`: the PDFs, and for each report the
   Markdown file as AstroCast wrote it (for the rectification report, the excerpt:
   `rectification-report-v1.md`; its reading's PDF is `rectification-reading-v1.pdf`). The
   solar return's two are `solar-return-report-v1.md` and `solar-return-reading-v1.pdf`. They
-  are byte copies with versioned names (`natal-report-v1.pdf`).
+  are byte copies with versioned names (`natal-report-v1.pdf`). `natal-wheel-v1.png`, the
+  natal chart's wheel at full size, is there too, a byte copy of the picture as delivered;
+  its smaller copy for the pages is the pair `sample-wheel-natal-v1.png` and
+  `sample-wheel-natal-v1.webp` in `AstroCast/images/`.
 - **A changed sample gets a new versioned file name.** Replace its source in `samples-src/`,
   add the new download as `...-v2`, change the name in the script's `$Samples` table, remove
   the old file, and run the script. The pages themselves are HTML and are always fetched
@@ -264,10 +306,13 @@ So every asset carries a version in its name (`help-v1.css`, `samples-v1.css`,
 `shot-map-v1.png`, `AstroCast_User_Guide-v1.pdf`, `natal-report-v1.pdf`). **A changed asset gets a new versioned name** (`-v2`), and the
 pages that use it are changed to match; the HTML is always fetched fresh, so the new name
 takes effect at once. Never replace the contents of a versioned file under the same name.
-`favicon.ico` is requested by that fixed name and cannot be versioned. Two exceptions are on
+`favicon.ico` is requested by that fixed name and cannot be versioned. Three exceptions are on
 record. On 2026-11-17 the Prompt Library Guide's PDF was replaced under its `-v1` name, by
 Steve's decision, because the site had not yet been uploaded and no copy was cached anywhere.
 On 2026-11-18 `samples-v1.css` gained rules under its name for the same reason.
+On 2026-11-20 `samples-v1.css` gained the rules of the sample pages' figure (`.sample-figure`,
+`.shot-link`) under its name, the site still not uploaded: asked for the site's address that
+day, the host answered with its "not found" redirect.
 Once the site is uploaded, the rule has no exception.
 
 ## The upload

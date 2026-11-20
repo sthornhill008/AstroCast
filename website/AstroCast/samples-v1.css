@@ -90,6 +90,19 @@ li { margin-bottom: 8px; }
 }
 .note-box p:last-child { margin-bottom: 0; }
 
+/* A picture that goes with a sample, under its note: the main page's
+   screenshot box (the figure, figure img and figcaption rules of index.html),
+   here at most 760px wide and centred in the column. The picture is a link
+   to its full-size file; the focus ring goes round the picture. */
+.sample-figure {
+    max-width: 760px; margin: 0 auto 28px; padding: 12px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+}
+.sample-figure img { display: block; width: 100%; height: auto; border-radius: 4px; }
+.sample-figure figcaption { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+.shot-link { display: block; border-radius: 4px; }
+.shot-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
 /* On a reading page: the box that leads to the PDF the assistant delivered,
    and the heading that says the page's own text is the same reading as text. */
 .delivered {

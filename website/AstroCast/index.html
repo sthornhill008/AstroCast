@@ -130,6 +130,8 @@
         figure { margin: 0; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
         figure img { display: block; width: 100%; height: auto; border-radius: 4px; }
         figcaption { margin-top: 10px; color: var(--muted); font-size: 1rem; line-height: 1.5; }
+        /* The chart wheel in the samples section: not as wide as the column, and centred. */
+        .sample-wheel { max-width: 760px; margin: 0 auto 28px; }
         /* Each picture is a link to its full-size file; the focus ring goes round the picture. */
         .shot-link { display: block; border-radius: 4px; }
         .shot-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
@@ -595,6 +597,16 @@
             <section id="samples" aria-labelledby="samples-h">
                 <h2 id="samples-h">See what you get</h2>
                 <p class="lede">AstroCast writes the report. An AI assistant, given the report and a prompt, presents it, organises it and highlights the patterns in it. The prompts are an aid to an astrologer, not a replacement for one. These are real examples; each page says what it shows and how it was made.</p>
+                <figure class="sample-wheel">
+                    <a class="shot-link" href="samples/files/natal-wheel-v1.png" aria-label="Open the full-size picture: the chart wheel of the natal sample">
+                        <picture>
+                            <source srcset="images/sample-wheel-natal-v1.webp" type="image/webp">
+                            <img src="images/sample-wheel-natal-v1.png" width="1600" height="1307" loading="lazy"
+                                 alt="Chart wheel of an invented person's natal chart, with coloured aspect lines, a list of the positions and house cusps, and an aspect grid.">
+                        </picture>
+                    </a>
+                    <figcaption>The natal sample as a chart wheel. AstroCast does not draw wheels itself: an AI assistant drew this one from the chart's report, with the chart graphic prompt of the prompt library. <a href="samples/natal-report/index.html">See it beside its report</a>.</figcaption>
+                </figure>
                 <div class="samples-grid">
                     <div class="feature">
                         <h3>Three months of transits</h3>

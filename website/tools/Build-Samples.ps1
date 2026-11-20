@@ -53,6 +53,14 @@
     page" list and the sample. The download line below the sample is a plain link with the
     button's text. A report page keeps its download links above and below the sample.
 
+    A sample may carry a picture (the entry's Figure): the natal report shows its chart as a
+    wheel, which an AI assistant drew, since AstroCast draws none. The script writes it directly
+    under the note, before the download links or the box that leads to the PDF: a figure (class
+    "sample-figure") whose picture, a WebP with a PNG behind it from website\AstroCast\images,
+    is a link to the full-size file in website\AstroCast\samples\files; then the caption, which
+    ends with a link to that file that gives its type and size. The width and height written
+    are read from the PNG, and the build stops if the WebP's differ.
+
     Nothing in a sample's text is rewritten. The script makes no network call. The pages come
     out the same on every run from the same sources, files and pandoc version; they were made
     with pandoc 3.8.2.1. Text is written as ASCII (other characters as numeric references) with
@@ -128,12 +136,26 @@ $siteAddress = 'https://www.sthornhill.com/AstroCast/'
 # which the button to the PDF states beside the file's size: set it when the PDF is replaced.
 # Delivered, optional, is the sentence above that button in place of the standard one
 # ($DeliveredText); the rectification reading has its own, which names the PDF's chart.
+#
+# Figure, optional, is a picture shown directly under the page's note. Its fields: Image, the
+# base name of the PNG and WebP pair in images\; File, the full-size file in samples\files\,
+# which the picture and the caption's last link open; Alt, the alternative text, and Label, the
+# aria-label of the link around the picture, both plain text; Caption, the caption as HTML, to
+# which the link to the full-size file, with its type and size, is added. The picture's width
+# and height are read from the PNG. Only the natal report has one: its chart as a wheel, which
+# an AI assistant drew, since AstroCast draws no wheel itself.
 $Samples = @(
     @{ Key = 'natal-report'; Kind = 'report'; Title = 'Sample report: a natal chart'
        Subtitle = 'Eleanor Hartwell, an invented person'; Pair = 'natal-reading'
        Made = 'In the program it comes from the <strong>Chart</strong> panel: <strong>Calculate &amp; Save</strong>, then <strong>Save Markdown</strong>.'
        Pdf = 'natal-report-v1.pdf'; Markdown = 'natal-report-v1.md'
-       Description = 'A natal chart report exactly as AstroCast 1.7.1 wrote it, for an invented person.' },
+       Description = 'A natal chart report exactly as AstroCast 1.7.1 wrote it, for an invented person.'
+       Figure = @{
+           Image = 'sample-wheel-natal-v1'; File = 'natal-wheel-v1.png'
+           Label = 'Open the full-size picture: the chart wheel'
+           Alt = 'Chart wheel of Eleanor Hartwell''s natal chart, with coloured aspect lines, a list of the positions and house cusps, and an aspect grid. Scorpio rises; the Sun, Venus and Neptune are in Libra in the eleventh house; Saturn, Pluto and Mars are in Leo in the ninth; the Moon is in Gemini in the seventh. The report below gives every value as text.'
+           Caption = '<strong>The same chart as a wheel.</strong> AstroCast does not draw wheels itself. An AI assistant, Codex, drew this one from the chart''s AstroCast report with prompt P27, Chart Graphic v1.6, of the AstroCast prompt library, using the Kerykeion library. The positions and cusps it prints are the report''s. It was asked for in one line: "Create a graphic chart wheel for this natal chart using the uploaded prompt. The output should be a full chart .png image with colored aspect lines."'
+       } },
     @{ Key = 'natal-reading'; Kind = 'reading'; Title = 'Sample reading: a natal chart'
        Subtitle = 'Eleanor Hartwell, an invented person'; Pair = 'natal-report'
        Assistant = 'Codex'; Prompt = 'P01, Enhanced Birth Interpretation v3.7'
@@ -477,6 +499,103 @@ function Get-DownloadLinks {
     return '            <p class="downloads">' + ($links -join ' ') + '</p>'
 }
 
+function Get-ImageSize {
+    <#
+    .SYNOPSIS
+        The pixel width and height of a PNG or WebP file, read from the file's own header.
+    .PARAMETER Path
+        The file.
+    .OUTPUTS
+        A hashtable: Width and Height.
+    #>
+    param([Parameter(Mandatory = $true)][string]$Path)
+    [byte[]]$b = [System.IO.File]::ReadAllBytes($Path)
+    $ascii = [System.Text.Encoding]::ASCII
+    if ($b.Length -ge 24 -and $b[0] -eq 0x89 -and $ascii.GetString($b, 1, 3) -eq 'PNG' -and $ascii.GetString($b, 12, 4) -eq 'IHDR') {
+        return @{
+            Width = ([int]$b[16] -shl 24) -bor ([int]$b[17] -shl 16) -bor ([int]$b[18] -shl 8) -bor [int]$b[19]
+            Height = ([int]$b[20] -shl 24) -bor ([int]$b[21] -shl 16) -bor ([int]$b[22] -shl 8) -bor [int]$b[23]
+        }
+    }
+    if ($b.Length -ge 30 -and $ascii.GetString($b, 0, 4) -eq 'RIFF' -and $ascii.GetString($b, 8, 4) -eq 'WEBP') {
+        switch ($ascii.GetString($b, 12, 4)) {
+            'VP8 ' {
+                if ($b[23] -eq 0x9D -and $b[24] -eq 0x01 -and $b[25] -eq 0x2A) {
+                    return @{
+                        Width = ([int]$b[26] -bor ([int]$b[27] -shl 8)) -band 0x3FFF
+                        Height = ([int]$b[28] -bor ([int]$b[29] -shl 8)) -band 0x3FFF
+                    }
+                }
+            }
+            'VP8L' {
+                if ($b[20] -eq 0x2F) {
+                    [long]$bits = [long]$b[21] -bor ([long]$b[22] -shl 8) -bor ([long]$b[23] -shl 16) -bor ([long]$b[24] -shl 24)
+                    return @{ Width = [int]($bits -band 0x3FFF) + 1; Height = [int](($bits -shr 14) -band 0x3FFF) + 1 }
+                }
+            }
+            'VP8X' {
+                return @{
+                    Width = ([int]$b[24] -bor ([int]$b[25] -shl 8) -bor ([int]$b[26] -shl 16)) + 1
+                    Height = ([int]$b[27] -bor ([int]$b[28] -shl 8) -bor ([int]$b[29] -shl 16)) + 1
+                }
+            }
+        }
+    }
+    throw "The size of $Path cannot be read: it is not a PNG or WebP file this script knows."
+}
+
+function Get-FigureHtml {
+    <#
+    .SYNOPSIS
+        A sample's picture, as the figure written directly under the page's note.
+    .DESCRIPTION
+        The main page's markup for a screenshot: a figure (class "sample-figure") holding a link
+        (class "shot-link") to the full-size file around a picture, a WebP source with a PNG img
+        behind it, then the caption. The caption ends with a link to the full-size file whose
+        text gives the file's type and size. The width and height written are the PNG's own,
+        read from the file; the build stops if a file is missing or the WebP's size differs.
+    .PARAMETER Sample
+        The sample's entry, which has a Figure.
+    .PARAMETER Prefix
+        The relative path from the page to the samples folder.
+    .PARAMETER Root
+        The relative path from the page to the site's root folder.
+    #>
+    param(
+        [Parameter(Mandatory = $true)][hashtable]$Sample,
+        [Parameter(Mandatory = $true)][string]$Prefix,
+        [Parameter(Mandatory = $true)][string]$Root
+    )
+    [hashtable]$figure = $Sample.Figure
+    foreach ($field in @('Image', 'File', 'Alt', 'Label', 'Caption')) {
+        if (-not $figure.ContainsKey($field) -or -not $figure[$field]) { throw "The figure of $($Sample.Key) needs its $field." }
+    }
+    [string]$pngPath = Join-Path (Join-Path $siteRoot 'images') ($figure.Image + '.png')
+    [string]$webpPath = Join-Path (Join-Path $siteRoot 'images') ($figure.Image + '.webp')
+    [string]$filePath = Join-Path $filesRoot $figure.File
+    foreach ($path in @($pngPath, $webpPath, $filePath)) {
+        if (-not (Test-Path -LiteralPath $path)) { throw "Missing picture for $($Sample.Key): $path" }
+    }
+    $png = Get-ImageSize -Path $pngPath
+    $webp = Get-ImageSize -Path $webpPath
+    if ($png.Width -ne $webp.Width -or $png.Height -ne $webp.Height) {
+        throw "The picture of $($Sample.Key) is $($png.Width) by $($png.Height) pixels as PNG and $($webp.Width) by $($webp.Height) as WebP: the pair must be one picture."
+    }
+    $invariant = [System.Globalization.CultureInfo]::InvariantCulture
+    [string]$fileHref = $Prefix + 'files/' + $figure.File
+    [string]$fileType = [System.IO.Path]::GetExtension($figure.File).TrimStart('.').ToUpperInvariant()
+    return "            <figure class=`"sample-figure`">`n" +
+        '                <a class="shot-link" href="' + $fileHref + '" aria-label="' + (ConvertTo-Attribute -Text $figure.Label) + '">' + "`n" +
+        "                    <picture>`n" +
+        '                        <source srcset="' + $Root + 'images/' + $figure.Image + '.webp" type="image/webp">' + "`n" +
+        '                        <img src="' + $Root + 'images/' + $figure.Image + '.png" width="' + $png.Width.ToString($invariant) + '" height="' + $png.Height.ToString($invariant) + '" loading="lazy"' + "`n" +
+        '                             alt="' + (ConvertTo-Attribute -Text $figure.Alt) + '">' + "`n" +
+        "                    </picture>`n" +
+        "                </a>`n" +
+        '                <figcaption>' + $figure.Caption + ' <a href="' + $fileHref + '">Open the full-size picture (' + $fileType + ', ' + (Get-SizeText -Path $filePath) + ')</a>.</figcaption>' + "`n" +
+        '            </figure>'
+}
+
 function Get-PageHead {
     <#
     .SYNOPSIS
@@ -666,12 +785,14 @@ foreach ($sample in $Samples) {
     [string]$downloads = Get-DownloadLinks -Sample $sample -Prefix '../'
     # Under the note: a report's download links, or a reading's box, button and text-version label.
     [string]$lead = if ($sample.Kind -eq 'report') { $downloads } else { Get-DeliveredLead -Sample $sample -Prefix '../' }
+    # A sample's picture, when it has one, stands directly under the note and above that.
+    [string]$figureHtml = if ($sample.ContainsKey('Figure')) { (Get-FigureHtml -Sample $sample -Prefix '../' -Root '../../') + "`n`n" } else { '' }
     [string]$crumbs = "                <li><a href=`"../../index.html`">AstroCast</a></li>`n                <li><a href=`"../index.html`">Samples</a></li>`n                <li aria-current=`"page`">$($sample.Title)</li>"
     [string]$more = '            <p class="more-links">' + $(if ($pairLink) { $pairLink + ' ' } else { '' }) + '<a href="../index.html">All samples</a> <a href="../../index.html#download">Download AstroCast</a></p>'
 
     [bool]$unlisted = $sample.ContainsKey('NoIndex') -and $sample.NoIndex
     [string]$page = (Get-PageHead -Title $sample.Title -Subtitle $sample.Subtitle -Description $sample.Description -Canonical ('samples/' + $sample.Key + '/') -Root '../../' -Crumbs $crumbs -NoIndex:$unlisted) +
-        "            <div class=`"note-box`">`n$note`n            </div>`n`n$lead`n`n$toc" +
+        "            <div class=`"note-box`">`n$note`n            </div>`n`n$figureHtml$lead`n`n$toc" +
         "            <article class=`"sample`">`n" + $rendered.Html + "`n            </article>`n`n$downloads`n$more" +
         (Get-PageFoot -Root '../../' -SamplesIndex '../index.html')
     Write-Page -Path (Join-Path $samplesRoot ($sample.Key + '\index.html')) -Html $page

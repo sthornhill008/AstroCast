@@ -38,7 +38,8 @@ https://github.com/sthornhill008/AstroCast/releases
   natal-report, natal-reading, solar-return-report,
   solar-return-reading, timeline-report, timeline-reading,
   rectification-report, rectification-reading, synastry-report,
-  synastry-reading.
+  synastry-reading. The natal report's page also shows the chart as
+  a wheel, which an assistant drew with prompt P27.
 - [User Guide (PDF)](https://www.sthornhill.com/AstroCast/docs/AstroCast_User_Guide-v1.pdf)
 - [Prompt Library Guide (PDF)](https://www.sthornhill.com/AstroCast/docs/AstroCast_Prompt_Library_Guide-v1.pdf)
 
