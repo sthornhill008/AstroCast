@@ -320,3 +320,15 @@ Once the site is uploaded, the rule has no exception.
 Steve uploads by hand, with WinSCP: the whole of `website\AstroCast` to the server folder
 `/public/AstroCast`. Nothing else in `website\` is uploaded. After a release, upload the files
 the release step changed (`index.html`, `llms.txt`, and any help page it names).
+
+**Uploaded ahead of the release (2026-11-20).** The site is uploaded from 2026-11-20, three
+days before the release, to test the server's settings and to have a link to show, while the
+repository stays private until the release on 2026-11-23. Until then the download buttons
+and the other links to the repository lead to GitHub's "not found" page. The main page says
+so in a release-day notice: two paragraphs (one at the top of the page's content, one in the
+download section above the buttons) and one style rule in `index.html`, each between the
+markers `release-notice-start` and `release-notice-end`. The notice is removed at the
+release: the three marked parts come out, each with its two marker lines, and the page
+without them is, byte for byte, the page as it stood before the notice (commit `5dcd3e1`).
+The server root's `robots.txt` is not uploaded before the release, so that the sitemap is
+not advertised early.
