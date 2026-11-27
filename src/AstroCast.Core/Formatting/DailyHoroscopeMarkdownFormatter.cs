@@ -90,7 +90,7 @@ public static class DailyHoroscopeMarkdownFormatter
 
         AppendHeader(sb, result, days, effectiveSource, interpretationContext, timeZoneId);
         AppendNatalChartSummary(sb, result, unknownBirthTime);
-        AppendSlowMovingBackdrop(sb, result, timeZoneId);
+        AppendSlowMovingBackdrop(sb, result, timeZoneId, unknownBirthTime);
         AppendDailySnapshots(sb, days, unknownBirthTime);
         AppendFooter(sb, result, days.Count == 0);
 
@@ -221,7 +221,13 @@ public static class DailyHoroscopeMarkdownFormatter
     /// <param name="sb">The document being written.</param>
     /// <param name="result">The transit calculation result.</param>
     /// <param name="timeZoneId">The zone the days are on; the natal chart's zone when null.</param>
-    private static void AppendSlowMovingBackdrop(StringBuilder sb, TransitResult result, string? timeZoneId)
+    /// <param name="unknownBirthTime">
+    /// Whether the Birth Time Source is Unknown: the table then has no House column, as the Exact and Active
+    /// tables have none (branch ExportText, 1.7.2; finding N15). Until 1.7.2 the backdrop printed a house all
+    /// the same.
+    /// </param>
+    private static void AppendSlowMovingBackdrop(
+        StringBuilder sb, TransitResult result, string? timeZoneId, bool unknownBirthTime)
     {
         sb.AppendLine("---");
         sb.AppendLine();
@@ -240,13 +246,28 @@ public static class DailyHoroscopeMarkdownFormatter
             return;
         }
 
-        sb.AppendLine("| Transit | Aspect | Natal Target | House | In Orb |");
-        sb.AppendLine("|---------|--------|--------------|-------|--------|");
+        if (unknownBirthTime)
+        {
+            sb.AppendLine("| Transit | Aspect | Natal Target | In Orb |");
+            sb.AppendLine("|---------|--------|--------------|--------|");
+        }
+        else
+        {
+            sb.AppendLine("| Transit | Aspect | Natal Target | House | In Orb |");
+            sb.AppendLine("|---------|--------|--------------|-------|--------|");
+        }
 
         foreach (ActiveTransit transit in slowTransits)
         {
             string inOrbRange = FormatLifecycleDateRange(transit, result, timeZoneId);
-            sb.AppendLine(Inv, $"| TR {DailyHoroscopeService.FormatPlanetName(transit.TransitPlanet)} | {transit.AspectAbbreviation} | NA {transit.NatalTarget} | {transit.NatalHouseNumber} | {inOrbRange} |");
+            if (unknownBirthTime)
+            {
+                sb.AppendLine($"| TR {DailyHoroscopeService.FormatPlanetName(transit.TransitPlanet)} | {transit.AspectAbbreviation} | NA {transit.NatalTarget} | {inOrbRange} |");
+            }
+            else
+            {
+                sb.AppendLine(Inv, $"| TR {DailyHoroscopeService.FormatPlanetName(transit.TransitPlanet)} | {transit.AspectAbbreviation} | NA {transit.NatalTarget} | {transit.NatalHouseNumber} | {inOrbRange} |");
+            }
         }
 
         sb.AppendLine();
@@ -386,11 +407,11 @@ public static class DailyHoroscopeMarkdownFormatter
             sb.AppendLine();
         }
 
-        // Entering orb
+        // Entering orb; no house when the birth time is unknown (branch ExportText, 1.7.2; finding N15)
         if (day.EnteringToday.Count > 0)
         {
             string entering = string.Join(", ", day.EnteringToday.Select(s =>
-                string.Create(Inv, $"{s.TransitPlanet} {s.AspectAbbrev} {s.NatalTarget} (H{s.NatalHouse}){AtTime(s.EntryTime)}")));
+                string.Create(Inv, $"{s.TransitPlanet} {s.AspectAbbrev} {s.NatalTarget}{(unknownBirthTime ? string.Empty : $" (H{s.NatalHouse})")}{AtTime(s.EntryTime)}")));
             sb.AppendLine($"**Entering orb:** {entering}");
             sb.AppendLine();
         }
@@ -399,7 +420,7 @@ public static class DailyHoroscopeMarkdownFormatter
         if (day.ExitingToday.Count > 0)
         {
             string exiting = string.Join(", ", day.ExitingToday.Select(s =>
-                string.Create(Inv, $"{s.TransitPlanet} {s.AspectAbbrev} {s.NatalTarget} (H{s.NatalHouse}){AtTime(s.ExitTime)}")));
+                string.Create(Inv, $"{s.TransitPlanet} {s.AspectAbbrev} {s.NatalTarget}{(unknownBirthTime ? string.Empty : $" (H{s.NatalHouse})")}{AtTime(s.ExitTime)}")));
             sb.AppendLine($"**Exiting orb:** {exiting}");
             sb.AppendLine();
         }

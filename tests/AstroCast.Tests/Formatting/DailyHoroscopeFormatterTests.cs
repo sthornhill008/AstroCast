@@ -535,6 +535,48 @@ public sealed class DailyHoroscopeFormatterTests
         md.Should().Contain("TR Mercury opp NA Saturn (H1)");
     }
 
+    /// <summary>
+    /// With the Birth Time Source Unknown the export prints no house at the three places that kept one (branch
+    /// ExportText, 1.7.2; finding N15): the entering and exiting lines carry no "(H7)", and the backdrop table
+    /// has no House column, as the Exact and Active tables already had none. A house means nothing without a
+    /// birth time.
+    /// </summary>
+    [Fact]
+    public void ToMarkdown_UnknownBirthTime_PrintsNoHouseInTheBackdropOrTheOrbLines()
+    {
+        TransitResult result = CreateTestTransitResult(includeActiveTransits: true);
+        DailyTransitSnapshot enteringSnapshot = CreateSnapshot(
+            transitPlanet: "TR Mars", aspect: "conjunction", aspectAbbrev: "cnj",
+            natalTarget: "NA Venus", natalHouse: 7, transitHouse: 7);
+        DailyTransitSnapshot exitingSnapshot = CreateSnapshot(
+            transitPlanet: "TR Mercury", aspect: "opposition", aspectAbbrev: "opp",
+            natalTarget: "NA Saturn", natalHouse: 1, transitHouse: 7);
+        List<DailyHoroscopeDay> days =
+        [
+            CreateTestDay(new DateOnly(2026, 3, 13),
+                enteringToday: [enteringSnapshot],
+                exitingToday: [exitingSnapshot]),
+        ];
+
+        string md = DailyHoroscopeMarkdownFormatter.ToMarkdown(result, days, "Unknown");
+        string[] lines = [.. md.Split('\n').Select(l => l.TrimEnd('\r'))];
+
+        lines.Should().Contain("**Entering orb:** TR Mars cnj NA Venus")
+            .And.Contain("**Exiting orb:** TR Mercury opp NA Saturn");
+        md.Should().NotContain("(H");
+
+        int backdrop = Array.IndexOf(lines, "## Slow-Moving Transit Backdrop");
+        lines[backdrop + 2].Should().Be("| Transit | Aspect | Natal Target | In Orb |");
+        string[] rows = [.. lines.Skip(backdrop + 4).TakeWhile(l => l.StartsWith("| TR ", StringComparison.Ordinal))];
+        rows.Should().NotBeEmpty().And.OnlyContain(r => r.Count(c => c == '|') == 5, "a row holds four cells, none a house");
+
+        // a known birth time keeps all three
+        string known = DailyHoroscopeMarkdownFormatter.ToMarkdown(result, days, "Birth Certificate");
+        known.Should().Contain("TR Mars cnj NA Venus (H7)")
+            .And.Contain("TR Mercury opp NA Saturn (H1)")
+            .And.Contain("| Transit | Aspect | Natal Target | House | In Orb |");
+    }
+
     [Fact]
     public void ToMarkdown_EnteringExiting_OmittedWhenEmpty()
     {
