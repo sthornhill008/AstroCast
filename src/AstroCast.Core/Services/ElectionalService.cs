@@ -629,7 +629,7 @@ public class ElectionalService : IElectionalService
 
         if (breakdown.MoonScore >= 70.0)
         {
-            strengths.Add($"Moon in {moon.Sign}, {moon.Phase}, well-aspected");
+            strengths.Add($"Moon in {moon.Sign}, {moon.Phase.DisplayName}, well-aspected");
         }
 
         if (breakdown.AscendantScore >= 70.0)
@@ -640,7 +640,7 @@ public class ElectionalService : IElectionalService
 
         if (breakdown.SignificatorScore >= 70.0)
         {
-            strengths.Add($"Significator well-placed for {electionType}");
+            strengths.Add($"Significator well-placed for {electionType.DisplayName}");
         }
 
         if (breakdown.PlanetaryHourScore >= 70.0)

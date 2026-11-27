@@ -29,7 +29,7 @@
 ### Lord's Natal Aspects
 
 - Venus Sextile Saturn (orb 0°28′, Sp)  
-- Venus SemiSextile ASC (orb 0°31′, Ap)  
+- Venus Semi-Sextile ASC (orb 0°31′, Ap)  
 - Venus Trine Moon (orb 2°24′, Ap)  
 - Venus Trine Uranus (orb 6°06′, Ap)  
 

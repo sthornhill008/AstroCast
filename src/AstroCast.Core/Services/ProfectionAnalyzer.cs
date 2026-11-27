@@ -264,7 +264,7 @@ public static class ProfectionAnalyzer
 
             string apSp = aspect.IsApplying ? "Ap" : "Sp";
             lordAspects.Add(
-                $"{lordName} {aspect.Aspect.Type} {otherBody} (orb {PositionFormatter.FormatOrb(aspect.Orb)}, {apSp})");
+                $"{lordName} {aspect.Aspect.Type.DisplayName} {otherBody} (orb {PositionFormatter.FormatOrb(aspect.Orb)}, {apSp})");
         }
 
         // Step 9 — Build 12-year profection table: row h carries the sign h − 1 after the Ascendant's

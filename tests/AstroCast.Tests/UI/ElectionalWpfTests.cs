@@ -227,7 +227,8 @@ public sealed class ElectionalWpfTests
         // Assert
         markdown.Should().Contain("# Electional Report",
             "markdown should contain the H1 title");
-        markdown.Should().Contain("**Election Type:** BusinessLaunch",
+        // the type's display name since branch ExportText (1.7.2; finding N11), until then "BusinessLaunch"
+        markdown.Should().Contain("**Election Type:** Business Launch",
             "markdown should contain the election type");
         markdown.Should().Contain("**Election Goal:** Launch new product line",
             "markdown should contain the election goal");

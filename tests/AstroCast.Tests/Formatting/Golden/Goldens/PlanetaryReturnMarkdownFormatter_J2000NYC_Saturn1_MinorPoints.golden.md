@@ -29,7 +29,7 @@
 
 ### Lord's Natal Aspects
 
-- Venus SemiSextile Mercury (orb 0°19′, Sp)  
+- Venus Semi-Sextile Mercury (orb 0°19′, Sp)  
 - Venus Sextile Neptune (orb 1°37′, Ap)  
 - Venus Trine True Node (orb 2°23′, Ap)  
 - Venus Square Mars (orb 3°36′, Sp)  

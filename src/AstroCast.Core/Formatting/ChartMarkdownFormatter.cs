@@ -970,7 +970,7 @@ public static class ChartMarkdownFormatter
     /// </summary>
     /// <param name="angle">The angle type to format.</param>
     /// <returns>A string: "Rising", "Culminating", "Setting", or "Anti-Culm.".</returns>
-    private static string FormatAngleType(AngleType angle) => angle switch
+    internal static string FormatAngleType(AngleType angle) => angle switch
     {
         AngleType.Rising => "Rising",
         AngleType.Culminating => "Culminating",

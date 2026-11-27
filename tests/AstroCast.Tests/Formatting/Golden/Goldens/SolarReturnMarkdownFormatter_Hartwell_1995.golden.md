@@ -26,8 +26,8 @@
 
 ### Lord's Natal Aspects
 
-- Mars SemiSquare Moon (orb 0°03′, Sp)  
-- Mars SemiSextile MC (orb 0°32′, Sp)  
+- Mars Semi-Square Moon (orb 0°03′, Sp)  
+- Mars Semi-Sextile MC (orb 0°32′, Sp)  
 - Mars Square Mercury (orb 2°33′, Sp)  
 - Mars Trine Jupiter (orb 6°14′, Sp)  
 - Mars Square Chiron (orb 6°53′, Ap)  

@@ -118,6 +118,24 @@ public sealed class ParanMarkdownFormatterTests
             "output should contain paran count");
     }
 
+    /// <summary>
+    /// The lower culmination prints as "Anti-Culm.", the name the chart export's Parans table gives it, not
+    /// the code's "AntiCulminating" (branch ExportText, 1.7.2; found beside finding N11).
+    /// </summary>
+    [Fact]
+    public void Format_Should_NameTheLowerCulminationAsTheChartExportDoes()
+    {
+        // Arrange -- the fourth crossing of the sample is on the lower meridian
+        ParanResult result = CreateSampleResult(paranCount: 1, crossingCount: 4);
+
+        // Act
+        string markdown = ParanMarkdownFormatter.Format(result, "Test");
+
+        // Assert
+        markdown.Should().Contain("| Moon | Anti-Culm. |").And.NotContain("AntiCulminating");
+        markdown.Should().Contain("| Moon | Rising |").And.Contain("| Saturn | Culminating |");
+    }
+
     #endregion
 
     #region Helpers

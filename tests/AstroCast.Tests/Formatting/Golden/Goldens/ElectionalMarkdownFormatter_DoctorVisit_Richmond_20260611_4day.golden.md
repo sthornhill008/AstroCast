@@ -106,8 +106,8 @@
 ## Candidate instant 1 — Fri, 12 Jun 2026 5:00 PM
 
 **Score:** 82.25  
-**Moon:** Taurus, WaningCrescent (early-phase), not void, Moon sextile Jupiter (applying, 6°29′)  
-**Ascendant:** Scorpio, ruler Mars in House 7  
+**Moon:** Taurus, Waning Crescent (early-phase), not void, Moon sextile Jupiter (applying, 6°29′)  
+**Ascendant:** Scorpio, ruler Mars in the 7th house  
 **Planetary Hour:** Moon (Day hour 10)
 
 ### Score Breakdown
@@ -125,7 +125,7 @@
 
 ### Strengths
 
-- Moon in Taurus, WaningCrescent, well-aspected
+- Moon in Taurus, Waning Crescent, well-aspected
 - Significator well-placed for Other
 - Favorable planetary hour (Moon)
 - No malefic interference
@@ -524,8 +524,8 @@ None within 5° of angles.
 ## Candidate instant 2 — Thu, 11 Jun 2026 9:00 PM
 
 **Score:** 80.2  
-**Moon:** Taurus, WaningCrescent (early-phase), not void, Moon sextile Mercury (applying, 7°36′)  
-**Ascendant:** Sagittarius, ruler Jupiter in House 7  
+**Moon:** Taurus, Waning Crescent (early-phase), not void, Moon sextile Mercury (applying, 7°36′)  
+**Ascendant:** Sagittarius, ruler Jupiter in the 7th house  
 **Planetary Hour:** Moon (Night hour 1)
 
 ### Score Breakdown
@@ -543,7 +543,7 @@ None within 5° of angles.
 
 ### Strengths
 
-- Moon in Taurus, WaningCrescent, well-aspected
+- Moon in Taurus, Waning Crescent, well-aspected
 - Significator well-placed for Other
 - Favorable planetary hour (Moon)
 - No malefic interference

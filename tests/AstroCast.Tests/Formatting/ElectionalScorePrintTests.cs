@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 using AstroCast.Core.Enums;
 using AstroCast.Core.Formatting;
@@ -107,9 +108,53 @@ public sealed class ElectionalScorePrintTests
     {
         List<string> lines = Lines(ElectionalMarkdownFormatter.ToMarkdown(NoCandidates(0)));
 
-        int electionType = lines.IndexOf("**Election Type:** BusinessLaunch");
+        // the type prints by its display name since branch ExportText (1.7.2; finding N11), until then "BusinessLaunch"
+        int electionType = lines.IndexOf("**Election Type:** Business Launch");
         electionType.Should().BeGreaterThanOrEqualTo(0, "every export states its election type");
         lines[electionType + 1].Should().Be("**Score ceiling:** 93.5 (each of the seven dimensions at its highest)");
+    }
+
+    /// <summary>
+    /// A candidate's summary lines print display names, not the code's (branch ExportText, 1.7.2; finding N11):
+    /// the Moon's phase in words ("Waning Crescent", not "WaningCrescent"), and the Ascendant ruler's house as
+    /// the other exports write it ("in the 7th house", not "in House 7").
+    /// </summary>
+    [Fact]
+    public void ToMarkdown_Candidate_PrintsDisplayNames_NotCodeNames()
+    {
+        ElectionalResult result = Richmond();
+        List<string> lines = Lines(ElectionalMarkdownFormatter.ToMarkdown(result));
+
+        List<string> moonLines = [.. lines.Where(l => l.StartsWith("**Moon:**", StringComparison.Ordinal))];
+        moonLines.Should().HaveCount(result.Candidates.Count);
+        for (int i = 0; i < moonLines.Count; i++)
+        {
+            MoonCondition moon = result.Candidates[i].Moon;
+            moonLines[i].Should().StartWith($"**Moon:** {moon.Sign}, {moon.Phase.DisplayName} ({moon.PhasePosition}-phase), ");
+        }
+
+        moonLines.Should().OnlyContain(l => !Regex.IsMatch(l, "(Waxing|Waning)(Crescent|Gibbous)|NewMoon|FullMoon|(First|Last)Quarter"));
+        lines.Where(l => l.StartsWith("**Ascendant:**", StringComparison.Ordinal))
+            .Should().HaveCount(result.Candidates.Count)
+            .And.OnlyContain(l => Regex.IsMatch(l, @", ruler \w+ in the \d+(st|nd|rd|th) house$"));
+        string.Join('\n', lines).Should().NotContain(" in House ");
+    }
+
+    /// <summary>The Moon's phases by their display names, each two words (finding N11).</summary>
+    /// <param name="phase">The phase.</param>
+    /// <param name="expected">Its display name.</param>
+    [Theory]
+    [InlineData(MoonPhaseType.NewMoon, "New Moon")]
+    [InlineData(MoonPhaseType.WaxingCrescent, "Waxing Crescent")]
+    [InlineData(MoonPhaseType.FirstQuarter, "First Quarter")]
+    [InlineData(MoonPhaseType.WaxingGibbous, "Waxing Gibbous")]
+    [InlineData(MoonPhaseType.FullMoon, "Full Moon")]
+    [InlineData(MoonPhaseType.WaningGibbous, "Waning Gibbous")]
+    [InlineData(MoonPhaseType.LastQuarter, "Last Quarter")]
+    [InlineData(MoonPhaseType.WaningCrescent, "Waning Crescent")]
+    public void MoonPhase_DisplayName_IsInWords(MoonPhaseType phase, string expected)
+    {
+        phase.DisplayName.Should().Be(expected);
     }
 
     /// <summary>

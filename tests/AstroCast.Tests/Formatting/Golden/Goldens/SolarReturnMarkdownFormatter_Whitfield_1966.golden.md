@@ -27,7 +27,7 @@
 ### Lord's Natal Aspects
 
 - Moon Sesquiquadrate Jupiter (orb 0°26′, Ap)  
-- Moon SemiSquare Neptune (orb 0°45′, Ap)  
+- Moon Semi-Square Neptune (orb 0°45′, Ap)  
 - Moon Conjunction Mercury (orb 1°09′, Ap)  
 - Moon Sextile Saturn (orb 3°25′, Sp)  
 

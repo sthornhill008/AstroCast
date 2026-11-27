@@ -101,16 +101,5 @@ public sealed class MoonConditionInfo
     /// Human-readable label for the Moon phase
     /// (e.g., "New Moon", "Waxing Crescent", "Full Moon").
     /// </summary>
-    public string PhaseLabel => Phase switch
-    {
-        MoonPhaseType.NewMoon => "New Moon",
-        MoonPhaseType.WaxingCrescent => "Waxing Crescent",
-        MoonPhaseType.FirstQuarter => "First Quarter",
-        MoonPhaseType.WaxingGibbous => "Waxing Gibbous",
-        MoonPhaseType.FullMoon => "Full Moon",
-        MoonPhaseType.WaningGibbous => "Waning Gibbous",
-        MoonPhaseType.LastQuarter => "Last Quarter",
-        MoonPhaseType.WaningCrescent => "Waning Crescent",
-        _ => Phase.ToString(),
-    };
+    public string PhaseLabel => Phase.DisplayName;
 }

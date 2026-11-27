@@ -215,6 +215,31 @@ public sealed class ProfectionAnalyzerTests
         result.LordNatalAspects.Should().BeEmpty();
     }
 
+    /// <summary>
+    /// The lord's aspects name each aspect in words, "Semi-Sextile" and "Semi-Square", not by the code's
+    /// "SemiSextile" and "SemiSquare" (branch ExportText, 1.7.2; finding N11). A one-word name is unchanged.
+    /// </summary>
+    /// <param name="type">The aspect.</param>
+    /// <param name="expected">Its name as the line prints it.</param>
+    [Theory]
+    [InlineData(AspectType.SemiSextile, "Semi-Sextile")]
+    [InlineData(AspectType.SemiSquare, "Semi-Square")]
+    [InlineData(AspectType.Sesquiquadrate, "Sesquiquadrate")]
+    [InlineData(AspectType.Quincunx, "Quincunx")]
+    [InlineData(AspectType.Trine, "Trine")]
+    public void Analyze_LordNatalAspects_NameTheAspectInWords(AspectType type, string expected)
+    {
+        ChartResult chart = CreateChart(
+            birthDate: new DateTime(1980, 1, 1),
+            ascendant: 15.0, // lord = Mars
+            aspects: [CreateAspect("Mars", 45.0, "Jupiter", 75.0, type, 1.0, isApplying: true)]);
+
+        ProfectionYearResult result = ProfectionAnalyzer.Analyze(chart, new DateTime(1980, 1, 1));
+
+        result.LordNatalAspects.Should().ContainSingle()
+            .Which.Should().Be($"Mars {expected} Jupiter (orb 1°00′, Ap)");
+    }
+
     #endregion
 
     #region Profection Table

@@ -133,7 +133,7 @@ public static class ElectionalMarkdownFormatter
             ? result.NatalChart.ResolvedOffsetLabel
             : natalInput.TimeZone;
         sb.AppendLine(CultureInfo.InvariantCulture, $"**Natal Date:** {natalInput.LocalDateTime:yyyy-MM-dd}, {natalInput.LocalDateTime:HH:mm:ss} {natalClock}, {natalInput.LocationName}  ");
-        sb.AppendLine($"**Election Type:** {input.ElectionType}  ");
+        sb.AppendLine($"**Election Type:** {input.ElectionType.DisplayName}  ");
         sb.AppendLine(CultureInfo.InvariantCulture, $"**Score ceiling:** {ElectionalScorer.ScoreCeiling(input.ElectionType):0.##} (each of the seven dimensions at its highest)  ");
         sb.AppendLine($"**Election Goal:** {input.ElectionGoal}  ");
         sb.AppendLine(CultureInfo.InvariantCulture, $"**Date Range:** {input.RangeStart:yyyy-MM-dd} to {input.RangeEnd:yyyy-MM-dd}  ");
@@ -464,14 +464,14 @@ public static class ElectionalMarkdownFormatter
             ? string.Create(CultureInfo.InvariantCulture, $"void-of-course (since {candidate.Moon.VoidStartLocal:HH:mm}, ends {candidate.Moon.VoidEndLocal:HH:mm})")
             : "not void";
         string applyingAspect = BuildMoonApplyingAspectDisplay(candidate);
-        sb.AppendLine($"**Moon:** {candidate.Moon.Sign}, {candidate.Moon.Phase} ({candidate.Moon.PhasePosition}-phase), {voidStatus}, {applyingAspect}  ");
+        sb.AppendLine($"**Moon:** {candidate.Moon.Sign}, {candidate.Moon.Phase.DisplayName} ({candidate.Moon.PhasePosition}-phase), {voidStatus}, {applyingAspect}  ");
 
         // Ascendant line
         ZodiacSign ascSign = (ZodiacSign)((int)(candidate.Chart.Houses.Ascendant / 30.0) + 1);
         string rulerPlanet = SignRulers.TryGetValue(ascSign, out string? ruler) ? ruler : "Unknown";
         PlanetPosition? rulerPosition = candidate.Chart.Positions
             .FirstOrDefault(p => string.Equals(p.Name, rulerPlanet, StringComparison.OrdinalIgnoreCase));
-        string rulerHouse = rulerPosition?.House.HasValue == true ? string.Create(CultureInfo.InvariantCulture, $"House {rulerPosition.House.Value}") : "unknown";
+        string rulerHouse = rulerPosition?.House.HasValue == true ? $"the {OrdinalHouse(rulerPosition.House.Value)} house" : "unknown";
         sb.AppendLine($"**Ascendant:** {ascSign}, ruler {rulerPlanet} in {rulerHouse}  ");
 
         // Planetary hour
@@ -828,6 +828,21 @@ public static class ElectionalMarkdownFormatter
         sb.AppendLine("---");
         sb.AppendLine($"*Engine: {result.NatalChart.EngineVersion}*");
     }
+
+    /// <summary>
+    /// Formats a house number with its ordinal suffix ("1st", "2nd", "10th"), as the chart export does: a
+    /// candidate's Ascendant line reads "in the 7th house" (branch ExportText, 1.7.2; finding N11), where
+    /// until then it read "in House 7".
+    /// </summary>
+    /// <param name="house">The house number.</param>
+    /// <returns>The ordinal.</returns>
+    private static string OrdinalHouse(int house) => house switch
+    {
+        1 => "1st",
+        2 => "2nd",
+        3 => "3rd",
+        _ => string.Create(CultureInfo.InvariantCulture, $"{house}th"),
+    };
 
     #endregion
 }

@@ -70,8 +70,8 @@ public static class ParanMarkdownFormatter
                 string posA = FormatShortLongitude(paran.LongitudeA);
                 string posB = FormatShortLongitude(paran.LongitudeB);
                 sb.AppendLine(
-                    Inv, $"| {paran.BodyAName} | {paran.AngleA} | {posA} | " +
-                    $"{paran.BodyBName} | {paran.AngleB} | {posB} | {paran.OrbMinutes:F2} |");
+                    Inv, $"| {paran.BodyAName} | {ChartMarkdownFormatter.FormatAngleType(paran.AngleA)} | {posA} | " +
+                    $"{paran.BodyBName} | {ChartMarkdownFormatter.FormatAngleType(paran.AngleB)} | {posB} | {paran.OrbMinutes:F2} |");
             }
 
             sb.AppendLine();
@@ -87,7 +87,7 @@ public static class ParanMarkdownFormatter
         {
             string pos = FormatShortLongitude(crossing.Longitude);
             sb.AppendLine(
-                Inv, $"| {crossing.BodyName} | {crossing.Angle} | {pos} | {crossing.JulianDayUt:F6} |");
+                Inv, $"| {crossing.BodyName} | {ChartMarkdownFormatter.FormatAngleType(crossing.Angle)} | {pos} | {crossing.JulianDayUt:F6} |");
         }
 
         sb.AppendLine();

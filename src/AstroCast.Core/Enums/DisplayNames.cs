@@ -11,9 +11,10 @@ namespace AstroCast.Core.Enums;
 /// The house-system names were <c>ChartEngine.GetHouseSystemName</c>'s private table, which sets
 /// <c>ChartResult.HouseSystemName</c> for every export, and the relationship names were
 /// <c>SynastryMarkdownFormatter.FormatRelationshipType</c>'s; both moved here unchanged, so no export moves.
-/// The election-type names are new and used on screen only: the electional export prints the enum name,
-/// "BusinessLaunch", in 1.4.0 (scoping decision 5). The primary-direction key's names (branch Primary, 1.5.0) are
-/// for the Directions panel and the exports' Key line.
+/// The election-type names were new in 1.4.0 and used on screen only; the electional export prints them since
+/// branch ExportText (1.7.2; finding N11), where until then it printed the enum name, "BusinessLaunch". The
+/// primary-direction key's names (branch Primary, 1.5.0) are for the Directions panel and the exports' Key
+/// line. The Moon's phases and the aspects have theirs since branch ExportText.
 /// </para>
 /// <para>
 /// Names are English, the same under every culture, as Core's text is.
@@ -107,6 +108,48 @@ public static class DisplayNames
             PrimaryDirectionKey.Ptolemy => "Ptolemy (1\u00b0 a year)",
             PrimaryDirectionKey.SolarArcRightAscension => "True solar arc in right ascension",
             _ => key.ToString(),
+        };
+    }
+
+    /// <summary>Display names for <see cref="MoonPhaseType"/>.</summary>
+    /// <param name="phase">The Moon's phase.</param>
+    extension(MoonPhaseType phase)
+    {
+        /// <summary>
+        /// Gets the phase's name in words, "Waning Crescent", as the chart export's Moon Conditions print it
+        /// (the names <c>MoonConditionInfo.PhaseLabel</c> held, moved here unchanged). The electional export
+        /// prints it too since branch ExportText (1.7.2; finding N11); until then a candidate's Moon line and
+        /// its strengths printed the enum name, "WaningCrescent".
+        /// </summary>
+        public string DisplayName => phase switch
+        {
+            MoonPhaseType.NewMoon => "New Moon",
+            MoonPhaseType.WaxingCrescent => "Waxing Crescent",
+            MoonPhaseType.FirstQuarter => "First Quarter",
+            MoonPhaseType.WaxingGibbous => "Waxing Gibbous",
+            MoonPhaseType.FullMoon => "Full Moon",
+            MoonPhaseType.WaningGibbous => "Waning Gibbous",
+            MoonPhaseType.LastQuarter => "Last Quarter",
+            MoonPhaseType.WaningCrescent => "Waning Crescent",
+            _ => phase.ToString(),
+        };
+    }
+
+    /// <summary>Display names for <see cref="AspectType"/>.</summary>
+    /// <param name="aspect">The aspect.</param>
+    extension(AspectType aspect)
+    {
+        /// <summary>
+        /// Gets the aspect's name in words, "Semi-Sextile" and "Semi-Square" where the enum's names run two
+        /// words together; the one-word names are the enum's own. The Annual Profection's Lord's Natal Aspects
+        /// print it (branch ExportText, 1.7.2; finding N11): until then "Venus SemiSextile Mercury". The JSON
+        /// keeps the enum name.
+        /// </summary>
+        public string DisplayName => aspect switch
+        {
+            AspectType.SemiSquare => "Semi-Square",
+            AspectType.SemiSextile => "Semi-Sextile",
+            _ => aspect.ToString(),
         };
     }
 }

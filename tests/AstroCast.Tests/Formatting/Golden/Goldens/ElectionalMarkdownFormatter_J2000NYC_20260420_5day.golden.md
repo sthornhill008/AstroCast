@@ -2,7 +2,7 @@
 
 **Name:** J2000 NYC Fixture  
 **Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City  
-**Election Type:** BusinessLaunch  
+**Election Type:** Business Launch  
 **Score ceiling:** 93.5 (each of the seven dimensions at its highest)  
 **Election Goal:** Launch a new software product.  
 **Date Range:** 2026-04-20 to 2026-04-25  
@@ -106,8 +106,8 @@
 ## Candidate instant 1 — Thu, 23 Apr 2026 12:15 AM
 
 **Score:** 88.5  
-**Moon:** Cancer, WaxingCrescent (late-phase), not void, Moon sextile Venus (applying, 7°46′)  
-**Ascendant:** Sagittarius, ruler Jupiter in House 7  
+**Moon:** Cancer, Waxing Crescent (late-phase), not void, Moon sextile Venus (applying, 7°46′)  
+**Ascendant:** Sagittarius, ruler Jupiter in the 7th house  
 **Planetary Hour:** Jupiter (Night hour 6)
 
 ### Score Breakdown
@@ -125,9 +125,9 @@
 
 ### Strengths
 
-- Moon in Cancer, WaxingCrescent, well-aspected
+- Moon in Cancer, Waxing Crescent, well-aspected
 - Strong Ascendant in Sagittarius
-- Significator well-placed for BusinessLaunch
+- Significator well-placed for Business Launch
 - Favorable planetary hour (Jupiter)
 - No malefic interference
 
@@ -528,8 +528,8 @@
 ## Candidate instant 2 — Thu, 23 Apr 2026 2:15 PM
 
 **Score:** 85.5  
-**Moon:** Cancer, WaxingCrescent (late-phase), not void, Moon sextile Venus (applying, 0°19′)  
-**Ascendant:** Leo, ruler Sun in House 9  
+**Moon:** Cancer, Waxing Crescent (late-phase), not void, Moon sextile Venus (applying, 0°19′)  
+**Ascendant:** Leo, ruler Sun in the 9th house  
 **Planetary Hour:** Jupiter (Day hour 8)
 
 ### Score Breakdown
@@ -547,9 +547,9 @@
 
 ### Strengths
 
-- Moon in Cancer, WaxingCrescent, well-aspected
+- Moon in Cancer, Waxing Crescent, well-aspected
 - Strong Ascendant in Leo
-- Significator well-placed for BusinessLaunch
+- Significator well-placed for Business Launch
 - Favorable planetary hour (Jupiter)
 - No malefic interference
 
@@ -954,8 +954,8 @@ None within 5° of angles.
 ## Candidate instant 3 — Tue, 21 Apr 2026 1:30 PM
 
 **Score:** 84.25  
-**Moon:** Cancer, WaxingCrescent (early-phase), not void, Moon sextile Sun (applying, 1°19′)  
-**Ascendant:** Leo, ruler Sun in House 9  
+**Moon:** Cancer, Waxing Crescent (early-phase), not void, Moon sextile Sun (applying, 1°19′)  
+**Ascendant:** Leo, ruler Sun in the 9th house  
 **Planetary Hour:** Jupiter (Day hour 7)
 
 ### Score Breakdown
@@ -973,9 +973,9 @@ None within 5° of angles.
 
 ### Strengths
 
-- Moon in Cancer, WaxingCrescent, well-aspected
+- Moon in Cancer, Waxing Crescent, well-aspected
 - Strong Ascendant in Leo
-- Significator well-placed for BusinessLaunch
+- Significator well-placed for Business Launch
 - Favorable planetary hour (Jupiter)
 - No malefic interference
 

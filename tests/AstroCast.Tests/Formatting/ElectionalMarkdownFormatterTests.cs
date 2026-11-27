@@ -302,8 +302,8 @@ public sealed class ElectionalMarkdownFormatterTests
         // Act
         string markdown = ElectionalMarkdownFormatter.ToMarkdown(result);
 
-        // Assert
-        markdown.Should().Contain("BusinessLaunch");
+        // Assert -- the type's display name since branch ExportText (1.7.2; finding N11), until then "BusinessLaunch"
+        markdown.Should().Contain("**Election Type:** Business Launch").And.NotContain("BusinessLaunch");
         markdown.Should().Contain("Launch new product");
     }
 
