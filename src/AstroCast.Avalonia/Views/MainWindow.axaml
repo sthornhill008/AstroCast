@@ -2797,7 +2797,7 @@
                             <TextBox Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="2"
                                      Classes="formTextBox"
                                      Text="{Binding Electional.EarliestTimeText}"
-                                     ToolTip.Tip="Earliest acceptable local time in HH:mm format (e.g., 09:00). Leave empty for any time. Together with Latest this limits candidates to local times within the window."
+                                     ToolTip.Tip="Earliest acceptable local time in HH:mm format (e.g., 09:00). Leave both Earliest and Latest empty for any time; fill in both to limit candidates to local times within the window."
                                      AutomationProperties.Name="Earliest time" />
 
                             <!-- Row 13: Latest Time -->
@@ -2805,7 +2805,7 @@
                             <TextBox Grid.Row="13" Grid.Column="1" Grid.ColumnSpan="2"
                                      Classes="formTextBox"
                                      Text="{Binding Electional.LatestTimeText}"
-                                     ToolTip.Tip="Latest acceptable local time in HH:mm format (e.g., 17:00). Leave empty for any time. Together with Earliest this limits candidates to local times within the window."
+                                     ToolTip.Tip="Latest acceptable local time in HH:mm format (e.g., 17:00). Leave both Earliest and Latest empty for any time; fill in both to limit candidates to local times within the window."
                                      AutomationProperties.Name="Latest time" />
 
                             <!-- Row 14: Allowed Days -->

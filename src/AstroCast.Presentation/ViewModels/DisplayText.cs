@@ -110,6 +110,52 @@ public static class DisplayText
     internal static string Reading(DateTime reading) =>
         reading.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
+    /// <summary>
+    /// Gets the text the status bar shows for an exception: its message, without the framework's own additions
+    /// to an argument exception's (branch InputChecks, 1.7.2, finding N6).
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The framework ends an <see cref="ArgumentException"/>'s message with " (Parameter 'name')" when the
+    /// exception names its parameter, and adds a line "Actual value was ..." to an
+    /// <see cref="ArgumentOutOfRangeException"/>'s when it carries the value. Both describe the code, not what the
+    /// user entered, so the status bar leaves them out; the log keeps the whole exception.
+    /// </para>
+    /// <para>
+    /// What is dropped is exactly what the framework added: the text an exception of the same kind, with the same
+    /// parameter name and value and an empty message, reads as. So a message that merely ends in such words, on an
+    /// exception that names no parameter, is unchanged, and the wording follows the framework's, whatever it is.
+    /// </para>
+    /// <para>
+    /// Until 1.7.2 only the electional search dropped the parameter suffix, and nothing the value's line: reversed
+    /// transit dates read "The period's end is before its start. (Parameter 'end')" and, on a second line, "Actual
+    /// value was 12/1/2026."
+    /// </para>
+    /// </remarks>
+    /// <param name="exception">The exception a command caught.</param>
+    /// <returns>The message to show.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="exception"/> is null.</exception>
+    public static string ErrorMessage(Exception exception)
+    {
+        ArgumentNullException.ThrowIfNull(exception);
+
+        string message = exception.Message;
+
+        // The framework's own tail for this exception: what its twin with an empty message reads as
+        string tail = exception switch
+        {
+            ArgumentOutOfRangeException { ActualValue: { } actualValue } outOfRange =>
+                new ArgumentOutOfRangeException(outOfRange.ParamName, actualValue, string.Empty).Message,
+            ArgumentException { ParamName: { Length: > 0 } paramName } =>
+                new ArgumentException(string.Empty, paramName).Message,
+            _ => string.Empty,
+        };
+
+        return tail.Length > 0 && message.EndsWith(tail, StringComparison.Ordinal)
+            ? message[..^tail.Length]
+            : message;
+    }
+
     /// <summary>Names a planetary-return find mode as the Find by box's tooltip does.</summary>
     /// <param name="mode">The find mode.</param>
     /// <returns>"By Year" or "By Return #".</returns>

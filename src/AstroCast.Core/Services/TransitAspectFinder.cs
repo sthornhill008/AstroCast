@@ -161,7 +161,7 @@ public sealed class TransitAspectFinder
     /// 12:00 UT report sample.
     /// </returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="startDate"/> is not strictly before <paramref name="endDate"/>,
+    /// Thrown if <paramref name="startDate"/> is after <paramref name="endDate"/>,
     /// if either boundary is <see cref="DateOnly.MinValue"/> or <see cref="DateOnly.MaxValue"/>,
     /// or if the range exceeds 100 years. The cap defends against malformed inputs
     /// (e.g. default-constructed or NaN-derived dates) that could otherwise cause the scan
@@ -235,9 +235,14 @@ public sealed class TransitAspectFinder
     private const int MaxScanRangeDays = 365 * 100;
 
     /// <summary>
-    /// Validates that the scan range is well-formed: strictly ordered, not using
+    /// Validates that the scan range is well-formed: its end not before its start, not using
     /// sentinel boundary values, and not exceeding the <see cref="MaxScanRangeDays"/> cap.
     /// </summary>
+    /// <remarks>
+    /// Both bounds are whole days of the report, so a start and an end on the same date are a report of one
+    /// day, with its one 12:00 UT sample (branch InputChecks, 1.7.2, finding N6). Until 1.7.2 the start had to
+    /// be strictly before the end, and a one-day report was refused.
+    /// </remarks>
     /// <param name="startDate">Inclusive start of the scan window.</param>
     /// <param name="endDate">Inclusive end of the scan window.</param>
     /// <exception cref="ArgumentException">
@@ -246,10 +251,10 @@ public sealed class TransitAspectFinder
     /// </exception>
     private static void ValidateScanRange(DateOnly startDate, DateOnly endDate)
     {
-        if (startDate >= endDate)
+        if (startDate > endDate)
         {
             throw new ArgumentException(
-                $"Scan range start ({startDate:O}) must be strictly before end ({endDate:O}).",
+                $"Scan range start ({startDate:O}) must not be after end ({endDate:O}).",
                 nameof(startDate));
         }
 

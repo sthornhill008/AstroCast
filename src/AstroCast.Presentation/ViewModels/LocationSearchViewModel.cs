@@ -305,7 +305,7 @@ public sealed class LocationSearchViewModel : ChildViewModelBase
         }
         catch (Exception ex)
         {
-            Parent.StatusText = $"Location lookup error: {ex.Message}";
+            Parent.StatusText = $"Location lookup error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to look up {Context}", _logContext);
         }
     }

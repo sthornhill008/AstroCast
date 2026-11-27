@@ -548,7 +548,7 @@ public sealed class TransitAspectFinderTests
             includeMinorAspects: false, TestHouseCusps);
 
         act.Should().Throw<ArgumentException>()
-           .WithMessage("*strictly before*");
+           .WithMessage("*must not be after*");
     }
 
     /// <summary>

@@ -998,4 +998,98 @@ public sealed class TransitServiceTests
     }
 
     #endregion
+    #region Branch InputChecks — a one-day report (N6)
+
+    /// <summary>
+    /// A report of one day, its start and end the same date, is a report (branch InputChecks, 1.7.2, finding N6):
+    /// every transit and midpoint activation April 2026's report lists with an exact pass on a day of the month is
+    /// listed by that day's own report, with the same pass, inside the period. Until 1.7.2 the aspect finder
+    /// refused a range whose start was not strictly before its end, though every scan takes the end date as a
+    /// whole day.
+    /// </summary>
+    [Fact]
+    public void Calculate_OneDay_ListsTheTransitsAndActivationsExactThatDay()
+    {
+        TransitResult month = _transitService.Calculate(Input(new DateOnly(2026, 4, 1), new DateOnly(2026, 4, 30)));
+        List<(string Row, DateTime Exact)> exactInTheMonth = [.. ExactPassesInThePeriod(month)];
+        exactInTheMonth.Should().NotBeEmpty("April 2026 holds exact passes for J2000 NYC");
+        exactInTheMonth.Select(pass => pass.Row).Should().Contain(row => row.Contains(" = ", StringComparison.Ordinal))
+            .And.Contain(row => !row.Contains(" = ", StringComparison.Ordinal), "the month holds both kinds of row");
+
+        Dictionary<DateOnly, List<(string Row, DateTime Exact)>> oneDayReports = [];
+        foreach ((string row, DateTime exact) in exactInTheMonth)
+        {
+            DateOnly day = DateOnly.FromDateTime(exact);
+            if (!oneDayReports.TryGetValue(day, out List<(string Row, DateTime Exact)>? listed))
+            {
+                TransitResult oneDay = _transitService.Calculate(Input(day, day));
+                oneDay.ReportStartDate.Should().Be(day);
+                oneDay.ReportEndDate.Should().Be(day);
+                oneDay.MidpointDate.Should().Be(day);
+                listed = [.. ExactPassesInThePeriod(oneDay)];
+                oneDayReports[day] = listed;
+            }
+
+            listed.Should().Contain(
+                pass => pass.Row == row && (pass.Exact - exact).Duration() <= FiveSeconds,
+                $"{row} is exact on {exact:yyyy-MM-dd HH:mm:ss} UT, inside the one-day report of that date");
+        }
+    }
+
+    /// <summary>
+    /// The one-day report's Markdown names the day as its whole period, and the timeline and the daily horoscope
+    /// made of the same result are written too, the daily horoscope with its one day.
+    /// </summary>
+    [Fact]
+    public void Calculate_OneDay_TheReportsHeaderHasThatDay()
+    {
+        DateOnly day = new(2026, 4, 15);
+
+        TransitResult oneDay = _transitService.Calculate(Input(day, day));
+        string report = AstroCast.Core.Formatting.TransitMarkdownFormatter.ToMarkdown(oneDay);
+        string timeline = AstroCast.Core.Formatting.TransitTimelineMarkdownFormatter.ToMarkdown(oneDay);
+        IReadOnlyList<DailyHoroscopeDay> days =
+            new DailyHoroscopeService(_ephemeris, new VoidOfCourseScanner(_ephemeris)).BuildDays(oneDay, "America/New_York");
+
+        report.Should().Contain("**Report Period:** 2026-04-15 to 2026-04-15");
+        report.Should().Contain("### At Report Start (2026-04-15)");
+        oneDay.ActiveTransits.Should().NotBeEmpty("the slow planets are in orb of natal points at noon that day");
+        timeline.Should().Contain("2026-04-15");
+        days.Should().ContainSingle().Which.Date.Should().Be(day);
+    }
+
+    /// <summary>A period whose end is before its start is still refused by the scan.</summary>
+    [Fact]
+    public void Calculate_EndBeforeStart_IsRefused()
+    {
+        Action act = () => _transitService.Calculate(Input(new DateOnly(2026, 4, 15), new DateOnly(2026, 4, 14)));
+
+        act.Should().Throw<ArgumentException>().WithMessage("*must not be after*");
+    }
+
+    /// <summary>
+    /// The exact passes a result lists inside its own period: a transit's as "Saturn Square Sun", a midpoint
+    /// activation's as "Saturn = Sun/ASC".
+    /// </summary>
+    /// <param name="result">The transit result.</param>
+    /// <returns>Each row's name with the instant of one exact pass.</returns>
+    private static IEnumerable<(string Row, DateTime Exact)> ExactPassesInThePeriod(TransitResult result)
+    {
+        static bool InPeriod(TransitLifecycleEvent e) =>
+            e.EventType == TransitLifecycleEventType.Exact && !e.BeforeReportPeriod && !e.BeyondReportPeriod;
+
+        foreach (ActiveTransit transit in result.ActiveTransits)
+        {
+            foreach (TransitLifecycleEvent e in transit.Lifecycle.Where(InPeriod))
+                yield return ($"{transit.TransitPlanet} {transit.AspectName} {transit.NatalTarget}", e.Date);
+        }
+
+        foreach (TransitMidpointActivation activation in result.MidpointActivations)
+        {
+            foreach (TransitLifecycleEvent e in activation.Lifecycle.Where(InPeriod))
+                yield return ($"{activation.TransitPlanet} = {activation.MidpointBody1}/{activation.MidpointBody2}", e.Date);
+        }
+    }
+
+    #endregion
 }

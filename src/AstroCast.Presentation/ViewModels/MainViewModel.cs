@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
@@ -745,7 +746,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             // returns at its early exit. Then the line, so the error has the last word.
             string chartState = current.Input.IncludeMinorPoints ? "on" : "off";
             ChartEntry.IncludeMinorPoints = current.Input.IncludeMinorPoints;
-            StatusText = $"Points error: {ex.Message}; the box is back to {chartState}.";
+            StatusText = $"Points error: {DisplayText.ErrorMessage(ex)}; the box is back to {chartState}.";
             _logger.Error(
                 ex,
                 "Failed to recast the chart for the Points box ({State}); the box is back to {ChartState}",
@@ -1749,7 +1750,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Database error: {ex.Message}";
+            StatusText = $"Database error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to initialise database");
         }
     }
@@ -1858,7 +1859,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Export error: {ex.Message}";
+            StatusText = $"Export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export charts database");
         }
     }
@@ -1898,12 +1899,12 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (System.Text.Json.JsonException ex)
         {
-            StatusText = $"Import error: Invalid JSON format — {ex.Message}";
+            StatusText = $"Import error: Invalid JSON format — {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to import charts: invalid JSON");
         }
         catch (Exception ex)
         {
-            StatusText = $"Import error: {ex.Message}";
+            StatusText = $"Import error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to import charts database");
         }
     }
@@ -2094,12 +2095,12 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (TimeZoneNotFoundException ex)
         {
-            StatusText = $"Invalid timezone: {ex.Message}";
+            StatusText = $"Invalid timezone: {DisplayText.ErrorMessage(ex)}";
             _logger.Warning(ex, "Invalid timezone specified");
         }
         catch (Exception ex)
         {
-            StatusText = $"Error: {ex.Message}";
+            StatusText = $"Error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate and save chart");
         }
     }
@@ -2140,7 +2141,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"PDF export error: {ex.Message}";
+            StatusText = $"PDF export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export PDF");
         }
         finally
@@ -2178,7 +2179,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Markdown export error: {ex.Message}";
+            StatusText = $"Markdown export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export Markdown");
         }
     }
@@ -2211,7 +2212,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"JSON export error: {ex.Message}";
+            StatusText = $"JSON export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export the chart JSON");
         }
     }
@@ -2278,7 +2279,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Export error: {ex.Message}";
+            StatusText = $"Export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export both formats");
         }
         finally
@@ -2352,7 +2353,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Load error: {ex.Message}";
+            StatusText = $"Load error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to load chart {Id}", entity.Id);
         }
 
@@ -2391,7 +2392,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Delete error: {ex.Message}";
+            StatusText = $"Delete error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to delete chart {Id}", entity.Id);
         }
     }
@@ -2427,7 +2428,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Search error: {ex.Message}";
+            StatusText = $"Search error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to search charts");
         }
     }
@@ -2496,7 +2497,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Synastry error: {ex.Message}";
+            StatusText = $"Synastry error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate synastry");
         }
         finally
@@ -2537,7 +2538,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Synastry export error: {ex.Message}";
+            StatusText = $"Synastry export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export synastry Markdown");
         }
     }
@@ -2549,6 +2550,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private async Task CalculateTransitAsync(object? _)
     {
         if (LastResult is null) return;
+
+        // The panel's own check, before anything starts; the same date twice is a report of one day (1.7.2)
+        if (RefuseEndDateBeforeStart(Transits.StartDate, Transits.EndDate)) return;
 
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.Transits);
         RaiseActiveOperationChanged();
@@ -2600,7 +2604,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Transit error: {ex.Message}";
+            StatusText = $"Transit error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate transits");
         }
         finally
@@ -2684,7 +2688,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Transit export error: {ex.Message}";
+            StatusText = $"Transit export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export transit Markdown");
         }
     }
@@ -2739,7 +2743,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Daily horoscope export error: {ex.Message}";
+            StatusText = $"Daily horoscope export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export daily horoscope Markdown");
         }
     }
@@ -2792,7 +2796,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Transit timeline export error: {ex.Message}";
+            StatusText = $"Transit timeline export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export transit timeline Markdown");
         }
     }
@@ -2803,6 +2807,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// </summary>
     private async Task CalculateElectionalAsync(object? _)
     {
+        // The panel's own check, before anything starts; the same date twice is a search of one day (1.7.2)
+        if (RefuseEndDateBeforeStart(Electional.StartDate, Electional.EndDate)) return;
+
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.Electional);
         RaiseActiveOperationChanged();
         IsCalculating = true;
@@ -2901,21 +2908,11 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 return;
             }
 
-            // Parse time constraints if provided
-            TimeConstraint? timeConstraint = null;
-            if (TimeOnly.TryParse(Electional.EarliestTimeText, out TimeOnly earliest)
-                && TimeOnly.TryParse(Electional.LatestTimeText, out TimeOnly latest))
+            // The time window: both boxes empty for none, both filled for the window; anything else stops here
+            if (!TryReadElectionalTimeWindow(out TimeConstraint? timeConstraint, out string? windowError))
             {
-                // Midnight-wrapping windows are not supported by the candidate
-                // sampler — reject with a validation message instead of running
-                // a search that can never match.
-                if (earliest > latest)
-                {
-                    StatusText = "Invalid time window: earliest must not be later than latest (windows may not wrap midnight).";
-                    return;
-                }
-
-                timeConstraint = new TimeConstraint { Earliest = earliest, Latest = latest };
+                StatusText = windowError;
+                return;
             }
 
             ElectionalInput input = new()
@@ -2959,16 +2956,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             // An ArgumentException naming its parameter ends its message with the framework's own
-            // " (Parameter '…')", which says nothing to the user; the line gives the message without it.
-            string message = ex.Message;
-            if (ex is ArgumentException { ParamName: { } paramName }
-                && new ArgumentException(string.Empty, paramName).Message is { Length: > 0 } suffix
-                && message.EndsWith(suffix, StringComparison.Ordinal))
-            {
-                message = message[..^suffix.Length];
-            }
-
-            StatusText = $"Electional error: {message}";
+            // " (Parameter '…')", which says nothing to the user; the line gives the message without it,
+            // through the one helper every status line uses since 1.7.2.
+            StatusText = $"Electional error: {DisplayText.ErrorMessage(ex)}";
             Electional.ElectionalResult = null;
             _logger.Error(ex, "Failed to calculate electional chart");
         }
@@ -3012,7 +3002,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Electional export error: {ex.Message}";
+            StatusText = $"Electional export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export electional Markdown");
         }
     }
@@ -3125,7 +3115,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Composite error: {ex.Message}";
+            StatusText = $"Composite error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate composite chart");
         }
         finally
@@ -3173,7 +3163,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Composite export error: {ex.Message}";
+            StatusText = $"Composite export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export composite Markdown");
         }
     }
@@ -3227,7 +3217,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Davison error: {ex.Message}";
+            StatusText = $"Davison error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate the Davison chart");
         }
         finally
@@ -3275,7 +3265,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Davison export error: {ex.Message}";
+            StatusText = $"Davison export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export Davison Markdown");
         }
     }
@@ -3326,7 +3316,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Solar return error: {ex.Message}";
+            StatusText = $"Solar return error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate solar return");
         }
         finally
@@ -3372,7 +3362,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Solar return export error: {ex.Message}";
+            StatusText = $"Solar return export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export solar return Markdown");
         }
     }
@@ -3384,6 +3374,15 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private async Task CalculateLunarReturnAsync(object? _)
     {
         if (LastResult is null) return;
+
+        // The panel's own check, before anything starts (1.7.2). The range's bounds are two midnights, so the
+        // same date twice holds no time and stays refused, as the engine refuses it, in the user's words.
+        if (RefuseEndDateBeforeStart(Returns.LunarReturnStartDate, Returns.LunarReturnEndDate)) return;
+        if (Returns.LunarReturnEndDate <= Returns.LunarReturnStartDate)
+        {
+            StatusText = EndDateNotAfterStartMessage;
+            return;
+        }
 
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.LunarReturn);
         RaiseActiveOperationChanged();
@@ -3424,7 +3423,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Lunar return error: {ex.Message}";
+            StatusText = $"Lunar return error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate lunar returns");
         }
         finally
@@ -3471,7 +3470,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Lunar return export error: {ex.Message}";
+            StatusText = $"Lunar return export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export lunar return Markdown");
         }
     }
@@ -3537,7 +3536,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Planetary return error: {ex.Message}";
+            StatusText = $"Planetary return error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate planetary return");
         }
         finally
@@ -3586,7 +3585,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Planetary return export error: {ex.Message}";
+            StatusText = $"Planetary return export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export planetary return Markdown");
         }
     }
@@ -3654,7 +3653,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Cycle timeline error: {ex.Message}";
+            StatusText = $"Cycle timeline error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate cycle timeline");
         }
         finally
@@ -3699,7 +3698,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Cycle timeline export error: {ex.Message}";
+            StatusText = $"Cycle timeline export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export cycle timeline Markdown");
         }
     }
@@ -3710,6 +3709,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// </summary>
     private async Task FindGreatConjunctionsAsync(object? _)
     {
+        // The panel's own check, before anything starts (1.7.2)
+        if (RefuseEndYearBeforeStart(Cycles.GCStartYear, Cycles.GCEndYear)) return;
+
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.GreatConjunctions);
         RaiseActiveOperationChanged();
         IsCalculating = true;
@@ -3740,7 +3742,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Great conjunction error: {ex.Message}";
+            StatusText = $"Great conjunction error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to find great conjunctions");
         }
         finally
@@ -3780,7 +3782,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Great conjunction export error: {ex.Message}";
+            StatusText = $"Great conjunction export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export great conjunction series");
         }
     }
@@ -3792,6 +3794,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// </summary>
     private async Task FindSynodicCyclesAsync(object? _)
     {
+        // The panel's own check, before anything starts (1.7.2)
+        if (RefuseEndYearBeforeStart(Cycles.SynodicStartYear, Cycles.SynodicEndYear)) return;
+
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.SynodicCycle);
         RaiseActiveOperationChanged();
         IsCalculating = true;
@@ -3828,7 +3833,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Synodic cycle error: {ex.Message}";
+            StatusText = $"Synodic cycle error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to find synodic cycles");
         }
         finally
@@ -3870,7 +3875,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Synodic cycle export error: {ex.Message}";
+            StatusText = $"Synodic cycle export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export synodic cycle series");
         }
     }
@@ -3914,7 +3919,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Ingress error: {ex.Message}";
+            StatusText = $"Ingress error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to find ingresses");
         }
         finally
@@ -3966,7 +3971,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Cardinal ingress error: {ex.Message}";
+            StatusText = $"Cardinal ingress error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate cardinal ingresses");
         }
         finally
@@ -4006,7 +4011,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Ingress series export error: {ex.Message}";
+            StatusText = $"Ingress series export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export ingress series");
         }
     }
@@ -4043,7 +4048,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Cardinal ingress export error: {ex.Message}";
+            StatusText = $"Cardinal ingress export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export cardinal ingresses");
         }
     }
@@ -4096,7 +4101,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Lunation error: {ex.Message}";
+            StatusText = $"Lunation error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to find lunations");
         }
         finally
@@ -4148,7 +4153,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Lunation chart error: {ex.Message}";
+            StatusText = $"Lunation chart error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate lunation charts");
         }
         finally
@@ -4188,7 +4193,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Lunation export error: {ex.Message}";
+            StatusText = $"Lunation export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export lunation series");
         }
     }
@@ -4213,6 +4218,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// </summary>
     private async Task FindMundaneAspectsAsync(object? _)
     {
+        // The panel's own check, before anything starts (1.7.2)
+        if (RefuseEndYearBeforeStart(Mundane.MAStartYear, Mundane.MAEndYear)) return;
+
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.MundaneAspects);
         RaiseActiveOperationChanged();
         IsCalculating = true;
@@ -4247,12 +4255,12 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (ArgumentException ex)
         {
-            StatusText = $"Mundane aspect error: {ex.Message}";
+            StatusText = $"Mundane aspect error: {DisplayText.ErrorMessage(ex)}";
             _logger.Warning(ex, "Invalid mundane aspect parameters");
         }
         catch (Exception ex)
         {
-            StatusText = $"Mundane aspect error: {ex.Message}";
+            StatusText = $"Mundane aspect error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to find mundane aspects");
         }
         finally
@@ -4294,7 +4302,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Mundane aspect export error: {ex.Message}";
+            StatusText = $"Mundane aspect export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export mundane aspect series");
         }
     }
@@ -4318,6 +4326,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// </summary>
     private async Task FindEclipsesAsync(object? _)
     {
+        // The panel's own check, before anything starts (1.7.2)
+        if (RefuseEndYearBeforeStart(Mundane.EclipseStartYear, Mundane.EclipseEndYear)) return;
+
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.Eclipses);
         RaiseActiveOperationChanged();
         IsCalculating = true;
@@ -4350,7 +4361,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Eclipse error: {ex.Message}";
+            StatusText = $"Eclipse error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to find eclipses");
         }
         finally
@@ -4390,7 +4401,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Eclipse export error: {ex.Message}";
+            StatusText = $"Eclipse export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export eclipse series");
         }
     }
@@ -4414,6 +4425,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
     private async Task CalculateRITimelineAsync(object? _)
     {
         if (LastResult is null) return;
+
+        // The panel's own check, before anything starts (1.7.2)
+        if (RefuseEndYearBeforeStart(this.ReturnIngressTimeline.StartYear, this.ReturnIngressTimeline.EndYear)) return;
 
         CancellationToken token = _cancelRegistry.StartOperation(OperationKeys.ReturnIngressTimeline);
         RaiseActiveOperationChanged();
@@ -4468,7 +4482,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Timeline error: {ex.Message}";
+            StatusText = $"Timeline error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate Return & Ingress Timeline");
         }
         finally
@@ -4509,7 +4523,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Timeline export error: {ex.Message}";
+            StatusText = $"Timeline export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export Return & Ingress Timeline");
         }
     }
@@ -4607,6 +4621,115 @@ public sealed class MainViewModel : INotifyPropertyChanged
         !string.IsNullOrWhiteSpace(ChartEntry.Name) &&
         !string.IsNullOrWhiteSpace(ChartEntry.TimeZone) &&
         !string.IsNullOrWhiteSpace(ChartEntry.LocationName);
+
+    /// <summary>The status line for a date range whose end date is before its start date.</summary>
+    internal const string EndDateBeforeStartMessage = "The end date is before the start date.";
+
+    /// <summary>
+    /// The status line for a date range that needs time between its bounds and has none: the lunar return
+    /// search's, whose bounds are two midnights.
+    /// </summary>
+    internal const string EndDateNotAfterStartMessage = "The end date must be after the start date.";
+
+    /// <summary>The status line for a year range whose end year is before its start year.</summary>
+    internal const string EndYearBeforeStartMessage = "The end year is before the start year.";
+
+    /// <summary>
+    /// Checks a panel's two dates before its command starts (branch InputChecks, 1.7.2, finding N6): when the end
+    /// date is before the start date the status line says so and the caller returns without calling the engine.
+    /// </summary>
+    /// <remarks>
+    /// The same date twice is a range of one day, which the transit report and the electional search both take:
+    /// each reads its end date as a whole day. Until 1.7.2 no panel checked its dates, and a reversed range was
+    /// refused by the engine in the code's words.
+    /// </remarks>
+    /// <param name="start">The panel's start date.</param>
+    /// <param name="end">The panel's end date.</param>
+    /// <returns><see langword="true"/> when the range was refused and the status line set.</returns>
+    private bool RefuseEndDateBeforeStart(DateTime start, DateTime end)
+    {
+        if (end.Date >= start.Date)
+            return false;
+
+        StatusText = EndDateBeforeStartMessage;
+        return true;
+    }
+
+    /// <summary>
+    /// Checks a panel's two years before its command starts (branch InputChecks, 1.7.2, finding N6): when the end
+    /// year is before the start year the status line says so and the caller returns without calling the engine.
+    /// The same year twice is a range of one year.
+    /// </summary>
+    /// <param name="startYear">The panel's start year.</param>
+    /// <param name="endYear">The panel's end year.</param>
+    /// <returns><see langword="true"/> when the range was refused and the status line set.</returns>
+    private bool RefuseEndYearBeforeStart(int startYear, int endYear)
+    {
+        if (endYear >= startYear)
+            return false;
+
+        StatusText = EndYearBeforeStartMessage;
+        return true;
+    }
+
+    /// <summary>
+    /// Reads the Electional panel's two time boxes as its time window (branch InputChecks, 1.7.2, finding N6).
+    /// </summary>
+    /// <remarks>
+    /// Both boxes empty is no window; both holding a time of day is the window; anything else is refused with a
+    /// message naming the box at fault. A time of day is read as the Chart panel's Time box is
+    /// (<see cref="ChartEntryViewModel.TryParseTimeOfDay"/>): hours and minutes with a colon, seconds optional, in
+    /// every culture. A window whose earliest time is after its latest would wrap midnight, which the search does
+    /// not support, and keeps its own refusal. Until 1.7.2 the boxes were read in the machine's culture, and a
+    /// window with one box empty or mistyped was dropped in silence, so the whole day was searched.
+    /// </remarks>
+    /// <param name="window">The window, or null when both boxes are empty or the boxes were refused.</param>
+    /// <param name="error">The message for the status line when the boxes were refused; otherwise null.</param>
+    /// <returns><see langword="true"/> when the boxes were read; <see langword="false"/> when they were refused.</returns>
+    private bool TryReadElectionalTimeWindow(out TimeConstraint? window, [NotNullWhen(false)] out string? error)
+    {
+        window = null;
+        error = null;
+
+        bool earliestEmpty = string.IsNullOrWhiteSpace(Electional.EarliestTimeText);
+        bool latestEmpty = string.IsNullOrWhiteSpace(Electional.LatestTimeText);
+        if (earliestEmpty && latestEmpty)
+            return true;
+
+        if (earliestEmpty || latestEmpty)
+        {
+            error = $"The {(earliestEmpty ? "Earliest" : "Latest")} time is empty. "
+                + "Fill in both Earliest and Latest, or leave both empty.";
+            return false;
+        }
+
+        if (!ChartEntryViewModel.TryParseTimeOfDay(Electional.EarliestTimeText, out TimeSpan earliest, out string? _))
+        {
+            error = "The Earliest time is not a time of day. Use HH:mm.";
+            return false;
+        }
+
+        if (!ChartEntryViewModel.TryParseTimeOfDay(Electional.LatestTimeText, out TimeSpan latest, out string? _))
+        {
+            error = "The Latest time is not a time of day. Use HH:mm.";
+            return false;
+        }
+
+        // Midnight-wrapping windows are not supported by the candidate sampler: reject with a
+        // validation message instead of running a search that can never match.
+        if (earliest > latest)
+        {
+            error = "Invalid time window: earliest must not be later than latest (windows may not wrap midnight).";
+            return false;
+        }
+
+        window = new TimeConstraint
+        {
+            Earliest = TimeOnly.FromTimeSpan(earliest),
+            Latest = TimeOnly.FromTimeSpan(latest),
+        };
+        return true;
+    }
 
     /// <summary>
     /// Refresh the saved charts list from the database using current filters,
@@ -4907,7 +5030,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Relocation error: {ex.Message}";
+            StatusText = $"Relocation error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate relocation");
         }
         finally
@@ -4950,7 +5073,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Relocation export error: {ex.Message}";
+            StatusText = $"Relocation export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export relocation Markdown");
         }
     }
@@ -5003,7 +5126,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Primary directions error: {ex.Message}";
+            StatusText = $"Primary directions error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate primary directions");
         }
         finally
@@ -5046,7 +5169,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Primary directions export error: {ex.Message}";
+            StatusText = $"Primary directions export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export primary directions Markdown");
         }
     }
@@ -5106,7 +5229,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Astrocartography error: {ex.Message}";
+            StatusText = $"Astrocartography error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to calculate astrocartography");
         }
         finally
@@ -5151,7 +5274,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Astrocartography export error: {ex.Message}";
+            StatusText = $"Astrocartography export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export astrocartography Markdown");
         }
     }
@@ -5254,7 +5377,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            StatusText = $"Medical export error: {ex.Message}";
+            StatusText = $"Medical export error: {DisplayText.ErrorMessage(ex)}";
             _logger.Error(ex, "Failed to export medical Markdown");
         }
     }
