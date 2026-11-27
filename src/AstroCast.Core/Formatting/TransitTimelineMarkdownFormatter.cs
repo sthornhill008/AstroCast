@@ -509,7 +509,11 @@ public static class TransitTimelineMarkdownFormatter
     }
 
     /// <summary>
-    /// Extracts sign ingress events from the transit result.
+    /// Extracts sign ingress events from the transit result. The position is the boundary crossed: 0 degrees
+    /// of the sign entered for a direct ingress, and 0 degrees of the sign being left for a retrograde one,
+    /// whose description says "(retrograde)" after the two signs (branch ExportText, 1.7.2; finding Q12 of the
+    /// prompt audit). Until 1.7.2 the position was 0 degrees of the sign entered whatever the direction, so
+    /// Mars going back from Virgo into Leo printed "0°00' Leo" for a crossing of 0 degrees of Virgo.
     /// </summary>
     private static void ExtractIngresses(
         List<TimelineEvent> events, IReadOnlyList<TransitIngress> ingresses)
@@ -517,18 +521,30 @@ public static class TransitTimelineMarkdownFormatter
         foreach (TransitIngress ingress in ingresses)
         {
             string transitLabel = FormatPlanetName(ingress.Planet);
+            bool retrograde = IsRetrogradeIngress(ingress);
 
             events.Add(new TimelineEvent
             {
                 SortDate = ingress.Date.ToDateTime(TimeOnly.Parse("12:00", Inv)),
                 DateDisplay = CalendarDateFormatter.Format(ingress.Date, "yyyy-MM-dd"),
                 Transit = transitLabel,
-                Description = $"Ingress {ingress.FromSign} \u2192 {ingress.ToSign}",
-                PositionDisplay = $"0\u00b000' {ingress.ToSign}",
+                Description = $"Ingress {ingress.FromSign} \u2192 {ingress.ToSign}{(retrograde ? " (retrograde)" : string.Empty)}",
+                PositionDisplay = $"0\u00b000' {(retrograde ? ingress.FromSign : ingress.ToSign)}",
                 OrbDisplay = "",
             });
         }
     }
+
+    /// <summary>
+    /// Whether an ingress is retrograde: the sign entered is the one before the sign left in the zodiac (Leo
+    /// from Virgo, Pisces from Aries). Signs that are not named as the enum names them read as direct.
+    /// </summary>
+    /// <param name="ingress">The ingress.</param>
+    /// <returns>True for a retrograde ingress.</returns>
+    private static bool IsRetrogradeIngress(TransitIngress ingress) =>
+        Enum.TryParse(ingress.FromSign, out ZodiacSign from)
+        && Enum.TryParse(ingress.ToSign, out ZodiacSign to)
+        && ((int)from + 10) % 12 + 1 == (int)to;
 
     /// <summary>
     /// Extracts transit-to-transit aspect events from the transit result.

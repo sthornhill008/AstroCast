@@ -422,6 +422,47 @@ public sealed class TransitTimelineMarkdownFormatterTests
         md.Should().Contain("2026-03-10");
     }
 
+    /// <summary>
+    /// A retrograde ingress prints the boundary it crossed, 0 degrees of the sign being left, and says so
+    /// (branch ExportText, 1.7.2; finding Q12 of the prompt audit): Mars going back from Virgo into Leo crosses
+    /// 0 degrees of Virgo. Until 1.7.2 every ingress printed 0 degrees of the sign entered, whatever the
+    /// direction, so this row read "0\u00b000' Leo". A direct ingress is unchanged.
+    /// </summary>
+    [Fact]
+    public void ToMarkdown_RetrogradeIngress_PrintsTheBoundaryCrossed_AndSaysRetrograde()
+    {
+        List<TransitIngress> ingresses =
+        [
+            new TransitIngress
+            {
+                Planet = TransitBody.Mars,
+                FromSign = "Virgo",
+                ToSign = "Leo",
+                Date = new DateOnly(2027, 2, 21),
+            },
+            new TransitIngress
+            {
+                Planet = TransitBody.Jupiter,
+                FromSign = "Taurus",
+                ToSign = "Gemini",
+                Date = new DateOnly(2027, 3, 10),
+            },
+            new TransitIngress
+            {
+                Planet = TransitBody.Neptune,
+                FromSign = "Aries",
+                ToSign = "Pisces",
+                Date = new DateOnly(2027, 3, 12),
+            },
+        ];
+
+        string md = TransitTimelineMarkdownFormatter.ToMarkdown(CreateTransitResult(ingresses: ingresses));
+
+        md.Should().Contain("| 2027-02-21 | Mars | Ingress Virgo \u2192 Leo (retrograde) | 0\u00b000' Virgo |");
+        md.Should().Contain("| 2027-03-10 | Jupiter | Ingress Taurus \u2192 Gemini | 0\u00b000' Gemini |");
+        md.Should().Contain("| 2027-03-12 | Neptune | Ingress Aries \u2192 Pisces (retrograde) | 0\u00b000' Aries |");
+    }
+
     #endregion
 
     #region Midpoint Activation Tests
