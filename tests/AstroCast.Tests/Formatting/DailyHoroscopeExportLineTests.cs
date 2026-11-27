@@ -154,6 +154,22 @@ public sealed class DailyHoroscopeExportLineTests
     }
 
     /// <summary>
+    /// The Report Period's day count takes the singular for one day: "(1 day)", and "(3 days)" for three
+    /// (branch ExportText, 1.7.2; finding N12). Until 1.7.2 a one-day report read "(1 days)".
+    /// </summary>
+    /// <param name="lastDay">The report's last day of September 2026; its first is the 3rd.</param>
+    /// <param name="expected">The count as the line prints it.</param>
+    [Theory]
+    [InlineData(3, "(1 day)")]
+    [InlineData(5, "(3 days)")]
+    public void ReportPeriod_DayCount_FollowsItsNumber(int lastDay, string expected)
+    {
+        string[] lines = Export(DailyHoroscopeServiceTests.HartwellInput(), new DateOnly(2026, 9, 3), new DateOnly(2026, 9, lastDay));
+
+        lines.Should().Contain(line => line.TrimEnd() == $"**Report Period:** 2026-09-03 to 2026-09-{lastDay:00} {expected}");
+    }
+
+    /// <summary>
     /// The export of a chart's daily horoscope, as the heads write it, split into lines.
     /// </summary>
     /// <param name="natalInput">The natal chart's input.</param>

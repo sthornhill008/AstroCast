@@ -153,7 +153,7 @@ public static class DailyHoroscopeMarkdownFormatter
             : input.TimeZone;
         sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}");
         sb.AppendLine($"**Birth Time Source:** {birthTimeSource}");
-        sb.AppendLine(Inv, $"**Report Period:** {FormatDate(result.ReportStartDate)} to {FormatDate(result.ReportEndDate)} ({dayCount} days)");
+        sb.AppendLine(Inv, $"**Report Period:** {FormatDate(result.ReportStartDate)} to {FormatDate(result.ReportEndDate)} ({dayCount} {(dayCount == 1 ? "day" : "days")})");
         if (CalendarDateFormatter.IsJulian(result.NatalChart.UtcDateTime) || result.ReportStartDate < CalendarDateFormatter.GregorianCalendarStartDate)
             sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
         sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");

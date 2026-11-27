@@ -959,6 +959,53 @@ public sealed class TransitTimelineMarkdownFormatterTests
         md.Should().Contain("Transit house: 10th");
     }
 
+    /// <summary>
+    /// A window of one day reads "Duration: 1 day" (branch ExportText, 1.7.2; found beside finding N12). Until
+    /// 1.7.2 it read "1 days".
+    /// </summary>
+    [Fact]
+    public void ToMarkdown_TransitWindowOfOneDay_ReadsOneDay()
+    {
+        List<ActiveTransit> transits =
+        [
+            new ActiveTransit
+            {
+                TransitPlanet = TransitBody.Mars,
+                NatalTarget = "Sun",
+                NatalTargetSymbol = "SU",
+                AspectName = "Conjunction",
+                AspectAbbreviation = "cnj",
+                TransitLongitudeAtStart = 280.5,
+                TransitSignAtStart = "Capricorn",
+                NatalLongitude = 280.0,
+                NatalSign = "Capricorn",
+                NatalHouseNumber = 10,
+                OrbAtStartDegrees = 0.5,
+                OrbDirection = "applying",
+                TransitHouseNumber = 10,
+                Lifecycle =
+                [
+                    new TransitLifecycleEvent
+                    {
+                        EventType = TransitLifecycleEventType.Entry,
+                        Date = new DateTime(2026, 3, 1, 8, 0, 0, DateTimeKind.Utc),
+                    },
+                    new TransitLifecycleEvent
+                    {
+                        EventType = TransitLifecycleEventType.Exit,
+                        Date = new DateTime(2026, 3, 2, 11, 0, 0, DateTimeKind.Utc),
+                    },
+                ],
+            },
+        ];
+
+        TransitResult result = CreateTransitResult(activeTransits: transits);
+
+        string md = TransitTimelineMarkdownFormatter.ToMarkdown(result);
+
+        md.Should().Contain("Duration: 1 day |");
+    }
+
     #endregion
 
     #region Position Column Tests

@@ -120,7 +120,7 @@ Age 2: Sun major period (1964–1974), Venus sub-period (1966-05-10–1967-10-14
 
 ### Summary
 
-Zodiacal Releasing from Spirit (Aries): Currently in a Aries Level 1 period (1964–1979, 15y, Cadent), ruled by Mars. Level 2: Gemini sub-period (1966-10-26–1968-06-17, ruled by Mercury, Succedent). This is a background period — quieter, preparatory themes.
+Zodiacal Releasing from Spirit (Aries): Currently in an Aries Level 1 period (1964–1979, 15y, Cadent), ruled by Mars. Level 2: Gemini sub-period (1966-10-26–1968-06-17, ruled by Mercury, Succedent). This is a background period — quieter, preparatory themes.
 
 ---
 

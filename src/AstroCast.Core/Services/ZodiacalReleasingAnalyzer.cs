@@ -452,7 +452,10 @@ public static class ZodiacalReleasingAnalyzer
               $"ruled by {l2.Ruler}, {l2.Angularity}).")
             : string.Empty;
 
-        return string.Create(Inv, $"Zodiacal Releasing from Spirit ({spiritSign}): Currently in a {l1.Sign} " +
+        // "an Aries", "an Aquarius": the article follows the sign's first letter (branch ExportText, 1.7.2)
+        string article = l1.Sign.Length > 0 && "AEIOU".Contains(l1.Sign[0]) ? "an" : "a";
+
+        return string.Create(Inv, $"Zodiacal Releasing from Spirit ({spiritSign}): Currently in {article} {l1.Sign} " +
                $"Level 1 period ({CalendarDateFormatter.Format(l1.StartDate, "yyyy")}–{CalendarDateFormatter.Format(l1.EndDate, "yyyy")}, {(int)l1.Years}y, " +
                $"{l1.Angularity}), ruled by {l1.Ruler}.{l2Part}{peakNote}");
     }

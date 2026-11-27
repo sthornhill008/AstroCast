@@ -266,7 +266,7 @@ public static class TransitTimelineMarkdownFormatter
             {
                 int durationDays = (int)(exit.Date - entry.Date).TotalDays;
                 sb.AppendLine(
-                    Inv, $"- Duration: {durationDays} days | " +
+                    Inv, $"- Duration: {durationDays} {(durationDays == 1 ? "day" : "days")} | " +
                     $"Natal house: {FormatOrdinal(transit.NatalHouseNumber)} | " +
                     $"Transit house: {FormatOrdinal(transit.TransitHouseNumber)}");
             }

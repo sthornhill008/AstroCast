@@ -99,6 +99,28 @@ public sealed class ElectionalShortfallHeaderTests
     }
 
     /// <summary>
+    /// A separation of exactly one hour reads "1 hour apart", as the Separation line already reads "at least
+    /// 1 hour" (branch ExportText, 1.7.2; found beside finding N12). Until 1.7.2: "1 hours apart".
+    /// </summary>
+    [Fact]
+    public void ToMarkdown_OneHourSeparationAndRequestUnmet_Should_ReadOneHour()
+    {
+        // Arrange -- one day cannot hold a hundred moments an hour apart
+        ElectionalInput input = BuildInput(
+            new DateOnly(2026, 6, 12), new DateOnly(2026, 6, 12),
+            candidateCount: 100, separationHours: 1.0);
+
+        // Act
+        ElectionalResult result = _service.Calculate(input);
+        string markdown = ElectionalMarkdownFormatter.ToMarkdown(result);
+
+        // Assert
+        result.IsRequestUnmet.Should().BeTrue();
+        CandidatesHeaderLine(markdown).TrimEnd().Should().EndWith(
+            "could not supply 100 qualifying moments at least 1 hour apart");
+    }
+
+    /// <summary>
     /// With separation disabled, a shortfall is still reported but the wording
     /// must not blame a separation rule that was not applied.
     /// </summary>

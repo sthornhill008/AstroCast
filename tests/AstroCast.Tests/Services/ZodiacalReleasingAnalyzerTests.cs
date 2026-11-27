@@ -273,6 +273,26 @@ public sealed class ZodiacalReleasingAnalyzerTests
         result.Summary.Should().Contain("Angular");
     }
 
+    /// <summary>
+    /// The article before the Level 1 sign follows its first letter: "an Aries" and "an Aquarius", "a" before
+    /// the other ten (branch ExportText, 1.7.2; finding N12). Until 1.7.2 every sign read "a": "a Aries".
+    /// </summary>
+    /// <param name="spiritLongitude">The Lot of Spirit's longitude, whose sign is the first Level 1 period's.</param>
+    /// <param name="expected">The article and the sign the summary prints.</param>
+    [Theory]
+    [InlineData(10.0, "an Aries")]
+    [InlineData(310.0, "an Aquarius")]
+    [InlineData(40.0, "a Taurus")]
+    [InlineData(280.0, "a Capricorn")]
+    public void Analyze_Summary_ArticleFollowsTheSign(double spiritLongitude, string expected)
+    {
+        ChartResult chart = CreateChart(spiritLongitude: spiritLongitude, fortuneLongitude: 10.0);
+
+        ZodiacalReleasingResult result = ZodiacalReleasingAnalyzer.Analyze(chart, new DateTime(1980, 1, 1));
+
+        result.Summary.Should().Contain($"Currently in {expected} Level 1 period (");
+    }
+
     #endregion
 
     #region Fields

@@ -40,8 +40,9 @@ public static class ReturnIngressTimelineFormatter
         int returnCount = timeline.Returns.Count;
         int ingressCount = timeline.Ingresses.Count;
 
+        // Each noun follows its count: "1 return, 1 ingress" (branch ExportText, 1.7.2)
         sb.AppendLine(
-            Inv, $"**Events Found:** {timeline.Count} ({returnCount} returns, {ingressCount} ingresses)  ");
+            Inv, $"**Events Found:** {timeline.Count} ({returnCount} {(returnCount == 1 ? "return" : "returns")}, {ingressCount} {(ingressCount == 1 ? "ingress" : "ingresses")})  ");
         // A search that did not run says so rather than naming no planets (E2-3).
         sb.AppendLine($"**Return Planets:** {(timeline.ReturnPlanets.Count > 0 ? string.Join(", ", timeline.ReturnPlanets) : "not searched")}  ");
         sb.AppendLine($"**Ingress Planets:** {(timeline.IngressPlanets.Count > 0 ? string.Join(", ", timeline.IngressPlanets) : "not searched")}  ");

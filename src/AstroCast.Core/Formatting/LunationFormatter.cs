@@ -34,8 +34,11 @@ public static class LunationFormatter
         sb.AppendLine(Inv, $"**Period:** {series.ScanStart:yyyy-MM-dd} to {series.ScanEnd:yyyy-MM-dd}  ");
         if (series.Lunations.Count > 0 && CalendarDateFormatter.IsJulian(series.Lunations.Min(l => l.ExactUtc)))
             sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
+        // Each noun follows its count: "1 New Moon, 1 Full Moon" (branch ExportText, 1.7.2)
+        int newMoonCount = series.NewMoons.Count;
+        int fullMoonCount = series.FullMoons.Count;
         sb.AppendLine(Inv, $"**Lunations Found:** {series.Count} " +
-            $"({series.NewMoons.Count} New Moons, {series.FullMoons.Count} Full Moons)  ");
+            $"({newMoonCount} New {(newMoonCount == 1 ? "Moon" : "Moons")}, {fullMoonCount} Full {(fullMoonCount == 1 ? "Moon" : "Moons")})  ");
         sb.AppendLine(Inv, $"**Lunations near a node:** {series.PossibleEclipses.Count}");
         sb.AppendLine();
         sb.AppendLine("---");

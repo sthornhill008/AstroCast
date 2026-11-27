@@ -209,7 +209,7 @@ public static class ElectionalMarkdownFormatter
 
         string reason = separationHours > 0.0
             ? string.Create(CultureInfo.InvariantCulture, $"the date range could not supply {requested} qualifying moments at least "
-              + $"{separationHours.ToString("0.##", CultureInfo.InvariantCulture)} hours apart")
+              + $"{separationHours.ToString("0.##", CultureInfo.InvariantCulture)} {(separationHours == 1.0 ? "hour" : "hours")} apart")
             : string.Create(CultureInfo.InvariantCulture, $"the date range could not supply {requested} qualifying moments");
 
         return string.Create(CultureInfo.InvariantCulture, $"{delivered} of {requested} requested \u2014 {reason}");

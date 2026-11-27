@@ -3,7 +3,7 @@
 **Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast X.Y.Z (SwissEph VER)  
 **Period:** 2024-01-01 to 2024-06-30  
-**Lunations Found:** 2 (1 New Moons, 1 Full Moons)  
+**Lunations Found:** 2 (1 New Moon, 1 Full Moon)  
 **Lunations near a node:** 1
 
 ---
