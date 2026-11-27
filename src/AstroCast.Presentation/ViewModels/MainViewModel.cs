@@ -1864,13 +1864,60 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    /// <summary>The status line for an Import Backup file that is one chart's JSON export.</summary>
+    internal const string ImportSingleChartExportMessage = "This file is one chart's JSON export, not a chart backup.";
+
+    /// <summary>The status line for an Import Backup file that is JSON but not a chart backup.</summary>
+    internal const string ImportNotABackupMessage = "This file is not an AstroCast chart backup.";
+
+    /// <summary>The status line for an Import Backup file that is not JSON at all.</summary>
+    internal const string ImportNotJsonMessage = "This file is not valid JSON.";
+
+    /// <summary>
+    /// Says, in the user's words, what a file is that Import Backup could not read as a chart backup (branch
+    /// InputChecks, 1.7.2, finding N17).
+    /// </summary>
+    /// <remarks>
+    /// A backup is the array of saved charts Export Backup writes. One chart's JSON export, which Export JSON
+    /// writes, is an object holding a <c>chart</c> object and a <c>positions</c> array, and is named for what it
+    /// is; any other JSON is not a backup; text that does not parse is not JSON. Until 1.7.2 all three read
+    /// "Import error: Invalid JSON format" followed by the serializer's own message.
+    /// </remarks>
+    /// <param name="text">The file's text.</param>
+    /// <returns>The sentence for the status line.</returns>
+    internal static string DescribeFileThatIsNotABackup(string text)
+    {
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(text);
+            JsonElement root = document.RootElement;
+            bool singleChartExport = root.ValueKind == JsonValueKind.Object
+                && root.TryGetProperty("chart", out JsonElement chart) && chart.ValueKind == JsonValueKind.Object
+                && root.TryGetProperty("positions", out JsonElement positions) && positions.ValueKind == JsonValueKind.Array;
+
+            return singleChartExport ? ImportSingleChartExportMessage : ImportNotABackupMessage;
+        }
+        catch (JsonException)
+        {
+            return ImportNotJsonMessage;
+        }
+    }
+
     /// <summary>
     /// Import charts from a JSON file using the file-open dialog.
     /// Upserts each chart (updates existing by name, inserts new).
     /// Shows a confirmation dialog before importing.
     /// </summary>
+    /// <remarks>
+    /// A file that is not a chart backup imports nothing, and the status line says what it is
+    /// (<see cref="DescribeFileThatIsNotABackup"/>); the log keeps the serializer's exception. The repository
+    /// reads the whole file before it saves the first chart, so a backup with one broken chart imports none.
+    /// </remarks>
     private async Task ImportDatabaseAsync(object? _)
     {
+        // The file's text, kept for the refusal's wording when it is not a backup
+        string? json = null;
+
         try
         {
             string? path = await _fileDialogService.ShowOpenAsync(
@@ -1890,7 +1937,16 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 if (!confirmed) return;
 
                 StatusText = "Importing charts...";
-                string json = await File.ReadAllTextAsync(path);
+                json = await File.ReadAllTextAsync(path);
+
+                // An empty file is no JSON at all, and the repository refuses it with an argument error
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    StatusText = ImportNotJsonMessage;
+                    _logger.Warning("Import refused: {Path} is empty", path);
+                    return;
+                }
+
                 int count = await _repository.ImportFromJsonAsync(json);
                 await RefreshSavedChartsAsync();
                 StatusText = $"Imported {count} chart(s) from {path}";
@@ -1899,8 +1955,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
         }
         catch (System.Text.Json.JsonException ex)
         {
-            StatusText = $"Import error: Invalid JSON format — {DisplayText.ErrorMessage(ex)}";
-            _logger.Error(ex, "Failed to import charts: invalid JSON");
+            // Not a chart backup: the sentence says what the file is, the log keeps the serializer's detail
+            StatusText = DescribeFileThatIsNotABackup(json ?? string.Empty);
+            _logger.Error(ex, "Failed to import charts: {Reason}", StatusText);
         }
         catch (Exception ex)
         {
