@@ -1861,7 +1861,9 @@ on what a `Button` is.
   1.7.0 is tagged `v1.7.0`. 1.7.1 is tagged `v1.7.1`, after branches Fixtures, SvgExclude, Public,
   UserGuide, GuideWin and NoKey: the first public release, the tree of the public repository's `99245d3`.
   1.7.2 is open: branch Prompts (2026-11-14), the prompt library in `prompts/` with
-  `docs/PROMPT_LIBRARY_GUIDE.md`, then branch Review, the read-through before the repository turned public.
+  `docs/PROMPT_LIBRARY_GUIDE.md`, then branch Review, the read-through before the repository turned public;
+  then branch InputChecks (2026-11-27), the first branch of the 1.7.2 plan: seven input and message fixes
+  from the 1.7.2 code audit (see *Input Checks* below), made on Maple.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
@@ -1924,8 +1926,9 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4297 in `tests/AstroCast.Tests` and 145 in
-  `tests/AstroCast.UiTests` at SvgExclude, all passing on macOS (4296 and 145 at Fixtures
+- **Total tests:** 4411 in `tests/AstroCast.Tests` and 145 in
+  `tests/AstroCast.UiTests` at InputChecks, all passing on Windows (4297 and 145 at SvgExclude,
+  all passing on macOS; 4296 and 145 at Fixtures
   and at DavisonPanel; 4287 and 142 at Davison;
   4257 and 142 at TiesAndGuards;
   4251 and 142 at ElectionalPicker;
@@ -2254,6 +2257,70 @@ calculated at.
   through `ChartEntryViewModel.TryParseUtcOffsetHours`: decimal hours with a point in
   any culture, as latitude and longitude are read, within −14 to +14, refusing
   anything else with a message like a bad latitude's. "-5,5" is refused, never −55.
+
+## Input Checks (branch InputChecks, 1.7.2)
+
+What the forms accept, and what the status line says when they refuse: seven findings of the
+1.7.2 code audit (N1, N5, N6, N7, N16, N17, N18), with the 1.7.2 plan's rulings.
+
+- **The Time box is a time of day (N1).** `ChartEntryViewModel.TryParseTimeOfDay`, beside
+  `TryParseUtcOffsetHours`: hours and minutes with a colon, seconds optional (`H:mm`, `HH:mm`,
+  `H:mm:ss`, `HH:mm:ss`), 00:00:00 to 23:59:59, trimmed, a colon in every culture. Everything
+  else is refused with "Invalid time format. Use HH:mm:ss." ("Invalid natal time format. Use
+  HH:mm:ss." when the electional search casts from the form). Calculate & Save, the electional
+  cast from the form, the electional time window and the form's offset label (which falls back
+  to noon) read through it. Until 1.7.2 the box was read by `TimeSpan.TryParse`: "9" was nine
+  days, so the chart was cast and saved for midnight nine days on, and "-5:00" was five hours
+  before midnight.
+- **One builder for the form's chart (N5).** `MainViewModel.BuildChartInputFromForm` is the one
+  place the form becomes a `ChartInput`; Calculate & Save and the electional search's cast from
+  the form both call it, each after its own checks with its own messages. Until 1.7.2 the
+  electional cast built an input of its own, always "Birth" in Placidus houses with no horary
+  fields, and that chart became the Chart panel's chart.
+- **Refusals in plain words (N6).** `DisplayText.ErrorMessage(exception)` is the text every
+  status line prints for an exception (58 sites in `MainViewModel`, 1 in
+  `LocationSearchViewModel`): the message without the framework's " (Parameter '...')" suffix
+  and without its "Actual value was ..." line, taken off exactly as the framework put them on;
+  the logs keep the exception. Each panel checks its own range before it starts, without
+  calling the engine: "The end date is before the start date." (Transits, Electional, lunar
+  returns) and "The end year is before the start year." (great conjunctions, synodic cycles,
+  mundane aspects, eclipses, the return and ingress timeline).
+  - *A one-day transit report is allowed* (Steve's ruling): every scan already read the end
+    date as a whole day, and `TransitAspectFinder.ValidateScanRange` now refuses only an end
+    before the start. The lunar return range is two midnights and still needs its end after its
+    start; the panel says "The end date must be after the start date."
+  - *The electional time window:* both boxes empty is no window; both holding a time of day
+    (N1's forms) is the window; anything else stops before the search and names the box ("The
+    Latest time is empty. Fill in both Earliest and Latest, or leave both empty.", "The Earliest
+    time is not a time of day. Use HH:mm."). Until 1.7.2 a half-filled or mistyped window was
+    dropped in silence and the whole day searched. Both heads' two tooltips say so.
+- **Invariant times and file names (N7).** Set to now writes `HH:mm:ss` in the invariant
+  culture (the dot fi-FI writes is refused by the box's own check). A default file name's date
+  goes through `MainViewModel.FileNameDate` (`yyyyMMdd`, invariant: the backup, the transit
+  report, the daily horoscope, the transit timeline, the electional export) or the invariant
+  `yyyy-MM-dd` (the lunar return), where th-TH wrote 2569 for 2026. Nothing inside a report
+  changed.
+- **The place lookup (N16).** A failure that carries an HTTP status code reads "The
+  place-search service answered {code}; try again in a minute. You can enter coordinates
+  manually."; with none, the sentence about the connection stays. The warning logs the code and
+  the exception. The four panels share `LocationSearchViewModel`.
+- **Import Backup (N17).** `MainViewModel.DescribeFileThatIsNotABackup`: "This file is one
+  chart's JSON export, not a chart backup." (an object holding a `chart` object and a
+  `positions` array), "This file is not an AstroCast chart backup." (any other JSON), "This file
+  is not valid JSON." (text that does not parse, an empty file included). Nothing is imported:
+  the repository reads the whole file before its first save.
+- **Saved charts by name (N18).** Sorted by name, the list is ordered after the read by
+  `MainViewModel.OrderedByName`: the comparison of `CultureInfo.CurrentCulture` with
+  `IgnoreCase | IgnoreNonSpace`, stable, reversed by the A-Z button; the three pickers always
+  read A to Z; other sort keys stay as the database reads them. Until 1.7.2 the order was
+  SQLite's, by bytes: "Zoe Carter" before "anna lind", and a name with an accented capital after
+  both. **Left for 1.8.0:** the Search box (`LIKE ... COLLATE NOCASE`) and the same-name check on
+  save (`Name = @Name COLLATE NOCASE`), which ignore case for the letters a to z only.
+
+`TimeOfDayEntryTests`, `MainViewModelTests` (`Electional_NatalFromTheForm_*`),
+`StatusBarErrorTextTests`, `RangeCheckTests`, `TransitServiceTests` (`Calculate_OneDay_*`),
+`PanelExportTests.DefaultNames_UnderTheThaiCalendar_CarryGregorianDates`,
+`LocationSearchStatusTests`, `ImportBackupTests` and `SavedChartsNameOrderTests` hold it.
 
 ## Base Map (CARTO key, 1.3.3)
 
