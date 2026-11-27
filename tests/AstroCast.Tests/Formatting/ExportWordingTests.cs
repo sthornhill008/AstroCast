@@ -71,7 +71,7 @@ public sealed class ExportWordingTests
         for (int i = 0; i < returns; i++)
             entries.Add(TimelineEntry("Return", "Return #1", day: 1 + i));
         for (int i = 0; i < ingresses; i++)
-            entries.Add(TimelineEntry("Ingress", "Sign Entry", day: 15 + i));
+            entries.Add(TimelineEntry("Ingress", "Enters Taurus", day: 15 + i));
 
         string md = ReturnIngressTimelineFormatter.ToMarkdown(Timeline(entries));
 

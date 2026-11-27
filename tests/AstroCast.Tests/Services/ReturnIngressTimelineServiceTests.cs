@@ -248,6 +248,50 @@ public sealed class ReturnIngressTimelineServiceTests
         });
     }
 
+    /// <summary>
+    /// An ingress row's label names the sign entered, and says when the crossing was retrograde (branch
+    /// ExportText, 1.7.2; finding N13). Chiron crossed 0 degrees of Taurus going back into Aries on 2026-09-18:
+    /// the position stays the boundary's, and the label reads "Enters Aries (retrograde)". Until 1.7.2 every
+    /// such row read "Sign Entry" beside the boundary's position, so a retrograde crossing read as an entry
+    /// into the sign being left.
+    /// </summary>
+    [Fact]
+    public void Calculate_IngressLabels_NameTheSignEntered_AndARetrogradeCrossing()
+    {
+        ReturnIngressTimeline timeline = _service.Calculate(
+            null, 2026, 2027,
+            includeReturns: false, includeIngresses: true,
+            ingressPlanets: [CelestialBodyId.Chiron]);
+
+        ReturnIngressTimelineEntry back = timeline.Ingresses.Should()
+            .ContainSingle(e => e.ExactUtc.Date == new DateTime(2026, 9, 18)).Subject;
+        back.Sign.Should().Be("Aries");
+        back.PositionFormatted.Should().Be("00°00′00″ Taurus");
+        back.Label.Should().Be("Enters Aries (retrograde)");
+
+        timeline.Ingresses.Where(e => e.Sign == "Taurus").Should().NotBeEmpty()
+            .And.OnlyContain(e => e.Label == "Enters Taurus");
+        ReturnIngressTimelineFormatter.ToMarkdown(timeline).Should().Contain(
+            "| 2026-09-18 01:50:41 | Ingress | Chiron | 00°00′00″ Taurus | Enters Aries (retrograde) |");
+    }
+
+    /// <summary>
+    /// The Sun's four cardinal ingresses keep their season names; its other eight read "Enters {sign}" (finding
+    /// N13). The Sun is never retrograde.
+    /// </summary>
+    [Fact]
+    public void Calculate_SunIngressLabels_KeepTheSeasonNames_AndNameTheOtherSigns()
+    {
+        ReturnIngressTimeline timeline = _service.Calculate(
+            null, 2026, 2026,
+            includeReturns: false, includeIngresses: true,
+            ingressPlanets: [CelestialBodyId.Sun]);
+
+        timeline.Ingresses.Select(e => e.Label).Should().Equal(
+            "Enters Aquarius", "Enters Pisces", "Vernal Equinox", "Enters Taurus", "Enters Gemini", "Summer Solstice",
+            "Enters Leo", "Enters Virgo", "Autumnal Equinox", "Enters Scorpio", "Enters Sagittarius", "Winter Solstice");
+    }
+
     #endregion
 
     #region Combined Timeline Tests

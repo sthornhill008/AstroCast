@@ -14,17 +14,17 @@
 | # | Date (UTC) | Event | Planet | Position | Label |
 |---|------------|-------|--------|----------|-------|
 | 1 | 2026-01-03 02:43:54 | Return | Mercury | 01°53′21″ Capricorn | Return #26 |
-| 2 | 2026-01-26 17:34:29 | Ingress | Neptune | 00°00′00″ Aries | Sign Entry |
-| 3 | 2026-02-14 00:11:39 | Ingress | Saturn | 00°00′00″ Aries | Sign Entry |
+| 2 | 2026-01-26 17:34:29 | Ingress | Neptune | 00°00′00″ Aries | Enters Aries |
+| 3 | 2026-02-14 00:11:39 | Ingress | Saturn | 00°00′00″ Aries | Enters Aries |
 | 4 | 2026-02-28 00:13:43 | Return | Mars | 27°57′47″ Aquarius | Return #14 |
-| 5 | 2026-04-26 00:51:33 | Ingress | Uranus | 00°00′00″ Gemini | Sign Entry |
-| 6 | 2026-06-19 21:20:23 | Ingress | Chiron | 00°00′00″ Taurus | Sign Entry |
-| 7 | 2026-06-30 05:52:22 | Ingress | Jupiter | 00°00′00″ Leo | Sign Entry |
-| 8 | 2026-09-18 01:50:41 | Ingress | Chiron | 00°00′00″ Taurus | Sign Entry |
+| 5 | 2026-04-26 00:51:33 | Ingress | Uranus | 00°00′00″ Gemini | Enters Gemini |
+| 6 | 2026-06-19 21:20:23 | Ingress | Chiron | 00°00′00″ Taurus | Enters Taurus |
+| 7 | 2026-06-30 05:52:22 | Ingress | Jupiter | 00°00′00″ Leo | Enters Leo |
+| 8 | 2026-09-18 01:50:41 | Ingress | Chiron | 00°00′00″ Taurus | Enters Aries (retrograde) |
 | 9 | 2026-12-26 23:07:41 | Return | Mercury | 01°53′21″ Capricorn | Return #27 |
 | 10 | 2027-01-08 20:48:21 | Return | Venus | 01°33′56″ Sagittarius | Return #27 |
-| 11 | 2027-04-14 14:58:07 | Ingress | Chiron | 00°00′00″ Taurus | Sign Entry |
-| 12 | 2027-07-26 04:49:11 | Ingress | Jupiter | 00°00′00″ Virgo | Sign Entry |
+| 11 | 2027-04-14 14:58:07 | Ingress | Chiron | 00°00′00″ Taurus | Enters Taurus |
+| 12 | 2027-07-26 04:49:11 | Ingress | Jupiter | 00°00′00″ Virgo | Enters Virgo |
 | 13 | 2027-11-02 13:50:03 | Return | Venus | 01°33′56″ Sagittarius | Return #28 |
 | 14 | 2027-12-19 16:34:28 | Return | Mercury | 01°53′21″ Capricorn | Return #28 |
 

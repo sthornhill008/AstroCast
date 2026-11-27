@@ -337,9 +337,10 @@ public sealed class ReturnIngressTimelineService : IReturnIngressTimelineService
 
                     // Determine label. The sign entered is the one that begins at the boundary
                     // when the body crosses it moving forward, the one that ends there when it
-                    // crosses retrograde (T2-6).
-                    string label = GetIngressLabel(planet, longitude);
+                    // crosses retrograde (T2-6); the label names it, and says so when the
+                    // crossing is retrograde (branch ExportText, 1.7.2; finding N13).
                     string signName = SignEntered(sign, pos.SpeedInLongitude).ToString();
+                    string label = GetIngressLabel(planet, longitude, signName, pos.SpeedInLongitude < 0.0);
                     string posFormatted = PositionFormatter.FormatLongitude(longitude);
 
                     entries.Add(new ReturnIngressTimelineEntry
@@ -381,15 +382,23 @@ public sealed class ReturnIngressTimelineService : IReturnIngressTimelineService
     }
 
     /// <summary>
-    /// Get the ingress label. For Sun at cardinal points, use season names;
-    /// otherwise, use "Sign Entry".
+    /// Get the ingress label. For Sun at cardinal points, use season names; otherwise the sign entered,
+    /// "Enters Taurus", with "(retrograde)" after it when the body crossed the boundary going backward:
+    /// "Enters Aries (retrograde)" for a crossing of 0 degrees of Taurus (branch ExportText, 1.7.2; finding
+    /// N13). Until 1.7.2 every such label read "Sign Entry", so beside the boundary's position a retrograde
+    /// crossing read as an entry into the sign being left.
     /// </summary>
-    private static string GetIngressLabel(CelestialBodyId planet, double longitude)
+    /// <param name="planet">The body.</param>
+    /// <param name="longitude">The boundary crossed, the position the row prints.</param>
+    /// <param name="signEntered">The sign entered, as <see cref="SignEntered"/> gives it.</param>
+    /// <param name="retrograde">Whether the body's speed in longitude was negative at the crossing.</param>
+    /// <returns>The label.</returns>
+    private static string GetIngressLabel(CelestialBodyId planet, double longitude, string signEntered, bool retrograde)
     {
         if (planet == CelestialBodyId.Sun && SeasonNames.TryGetValue(longitude, out string? seasonName))
             return seasonName;
 
-        return "Sign Entry";
+        return retrograde ? $"Enters {signEntered} (retrograde)" : $"Enters {signEntered}";
     }
 
     #endregion

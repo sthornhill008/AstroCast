@@ -52,7 +52,7 @@ public sealed class ReturnIngressTimelineEntry
 
     /// <summary>
     /// For returns: the return label (e.g., "Return #26" or "Return #4 (first of 3 passes)").
-    /// For ingresses: the ingress label (e.g., "Sign Entry", "Vernal Equinox").
+    /// For ingresses: the ingress label (e.g., "Enters Taurus", "Enters Aries (retrograde)", "Vernal Equinox").
     /// </summary>
     public required string Label { get; init; }
 
