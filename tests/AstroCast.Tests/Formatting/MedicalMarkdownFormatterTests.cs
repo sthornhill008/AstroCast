@@ -126,6 +126,36 @@ public sealed class MedicalMarkdownFormatterTests
     }
 
     /// <summary>
+    /// The medical export prints its correspondences once (branch ExportText, 1.7.2; finding N14): the natal chart
+    /// it embeds leaves its own Medical Astrology Correspondences section out, and the line that says the tables
+    /// are not medical advice, which stood only in that section, heads the export's own sections (Steve's
+    /// ruling). Until 1.7.2 the temperament, the planetary correspondences, the zodiacal anatomy and the health
+    /// houses printed twice, in two wordings.
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Format_PrintsItsCorrespondencesOnce_UnderTheNotMedicalAdviceLine()
+    {
+        const string basis = "*Traditional correspondences for educational and historical study. Not medical advice.*";
+        (ChartResult chart, HealthProfile profile) = CreateTestData();
+
+        List<string> lines = Lines(MedicalMarkdownFormatter.Format(chart, profile));
+
+        lines.Should().NotContain("## Medical Astrology Correspondences");
+        lines.Count(l => l == basis).Should().Be(1);
+        int at = lines.IndexOf(basis);
+        lines[at - 1].Should().BeEmpty();
+        lines[at + 1].Should().BeEmpty();
+        lines[at + 2].Should().Be("## Temperament Assessment");
+        lines.Count(l => l.StartsWith("| Element | Temperament | Qualities | Score |", StringComparison.Ordinal)).Should().Be(1);
+        lines.Count(l => l.StartsWith("## Zodiacal Anatomy", StringComparison.Ordinal)).Should().Be(1);
+        lines.Should().NotContain("### Zodiacal Anatomy", "that is the sub-heading of the chart's own section");
+
+        // the chart's own export keeps its section, with the line
+        ChartMarkdownFormatter.ToMarkdown(chart).Should().Contain("## Medical Astrology Correspondences").And.Contain(basis);
+    }
+
+    /// <summary>
     /// Output contains zodiacal anatomy section with body region tables.
     /// </summary>
     [Fact]

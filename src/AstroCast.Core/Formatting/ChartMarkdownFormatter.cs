@@ -65,6 +65,12 @@ public static class ChartMarkdownFormatter
     /// (R8): the primary-direction, medical, electional, ingress, lunation and great-conjunction exports. A chart
     /// without the five prints no section either way, so every export with the switch off is as before (R9).
     /// </param>
+    /// <param name="medicalCorrespondences">
+    /// When true (the default), the chart prints its <c>## Medical Astrology Correspondences</c> section. The
+    /// medical export passes false (branch ExportText, 1.7.2; finding N14): it prints its own, fuller sections
+    /// after the chart it embeds, under <see cref="MedicalBasisLine"/>, and until 1.7.2 a reader met two
+    /// versions of each table.
+    /// </param>
     /// <returns>
     /// A Markdown-formatted chart report. Every orb prints as truncated <c>D°MM′</c> through
     /// <see cref="PositionFormatter.FormatOrb"/> (branch O-D3, 1.3.4): the angular, aspect, declination,
@@ -78,7 +84,8 @@ public static class ChartMarkdownFormatter
         bool includeTemperament = true,
         ChartResult? timeLordsChart = null,
         bool composite = false,
-        bool minorPoints = true)
+        bool minorPoints = true,
+        bool medicalCorrespondences = true)
     {
         ArgumentNullException.ThrowIfNull(result);
 
@@ -470,8 +477,11 @@ public static class ChartMarkdownFormatter
             AppendParanSection(sb, result.Parans);
         }
 
-        // Medical Astrology Correspondences
-        AppendMedicalSection(sb, result, includeTemperament);
+        // Medical Astrology Correspondences (left out of the chart the medical export embeds)
+        if (medicalCorrespondences)
+        {
+            AppendMedicalSection(sb, result, includeTemperament);
+        }
 
         // Footer
         sb.AppendLine("---");
@@ -1734,6 +1744,13 @@ public static class ChartMarkdownFormatter
     #region Medical Astrology
 
     /// <summary>
+    /// The line that heads the medical correspondences, in the chart export's section and, since branch
+    /// ExportText (1.7.2; finding N14, Steve's ruling), once at the head of the medical export's own sections.
+    /// </summary>
+    internal const string MedicalBasisLine =
+        "*Traditional correspondences for educational and historical study. Not medical advice.*";
+
+    /// <summary>
     /// Appends medical astrology correspondence tables after the last chart
     /// section and before the footer. Contains temperament, planetary body
     /// correspondences, zodiacal anatomy, and health houses.
@@ -1748,7 +1765,7 @@ public static class ChartMarkdownFormatter
     {
         sb.AppendLine("## Medical Astrology Correspondences");
         sb.AppendLine();
-        sb.AppendLine("*Traditional correspondences for educational and historical study. Not medical advice.*");
+        sb.AppendLine(MedicalBasisLine);
         sb.AppendLine();
 
         // Temperament

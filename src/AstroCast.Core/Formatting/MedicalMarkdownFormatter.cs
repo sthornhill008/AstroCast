@@ -67,6 +67,12 @@ public static class MedicalMarkdownFormatter
         sb.Append(FormatChartSection(chartResult, timeProvider));
         sb.AppendLine();
 
+        // The export's own sections, under the line that says what they are. The embedded chart leaves its
+        // Medical Astrology Correspondences section out, which carried the line and a shorter copy of the
+        // tables below (branch ExportText, 1.7.2; finding N14).
+        sb.AppendLine(ChartMarkdownFormatter.MedicalBasisLine);
+        sb.AppendLine();
+
         // Section 3: Temperament Calculation
         sb.AppendLine("## Temperament Assessment");
         sb.AppendLine();
@@ -231,7 +237,7 @@ public static class MedicalMarkdownFormatter
     private static string FormatChartSection(ChartResult chart, TimeProvider? timeProvider)
     {
         // Never the five minor points (R8)
-        string fullMarkdown = ChartMarkdownFormatter.ToMarkdown(chart, timeProvider: timeProvider, minorPoints: false);
+        string fullMarkdown = ChartMarkdownFormatter.ToMarkdown(chart, timeProvider: timeProvider, minorPoints: false, medicalCorrespondences: false);
 
         string[] lines = MarkdownLineSplitter.SplitLines(fullMarkdown);
 

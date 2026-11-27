@@ -414,54 +414,7 @@ Zodiacal Releasing from Spirit (Scorpio): Currently in a Sagittarius Level 1 per
 | Neptune | Culminating | 03°12′09″ Aquarius | True Node | Anti-Culm. | 03°56′18″ Leo | 3.25 |
 | Neptune | Setting | 03°12′36″ Aquarius | True Node | Rising | 03°55′36″ Leo | 3.62 |
 
-## Medical Astrology Correspondences
-
 *Traditional correspondences for educational and historical study. Not medical advice.*
-
-### Temperament
-
-**Dominant:** Melancholic | **Secondary:** Phlegmatic
-
-| Element | Temperament | Qualities | Score |
-|---------|-------------|-----------|-------|
-| Fire | Choleric | Hot & Dry | 1 |
-| Earth | Melancholic | Cold & Dry | 8 |
-| Air | Sanguine | Hot & Moist | 3 |
-| Water | Phlegmatic | Cold & Moist | 4 |
-
-Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 3pts, Moon dispositor sign 2pts, Sun sign 1pt, each body in houses 1, 4, 7 or 10 1pt.
-
-### Planetary Body Correspondences
-
-| Planet | Sign | House | Body Regions | Health Role |
-|--------|------|-------|-------------|-------------|
-| Sun | Capricorn | 1 | Heart and circulatory centre; Thymus gland; Right eye (male) / Left eye (female); Vital force | Constitutional vitality, core life force, and recovery power. |
-| Moon | Scorpio | 10 | Stomach and gastric function; Breasts and uterus; Lymphatic system; Left eye (male) / Right eye (female) | Emotional health, fluid balance, and nurturing functions. |
-| Mercury | Capricorn | 12 | Nervous system; Lungs and respiratory passages; Thyroid gland; Hands and dexterity | Nervous communication, coordination, and respiratory function. |
-| Venus | Sagittarius | 11 | Kidneys and renal system; Throat and vocal cords; Venous circulation; Sugar metabolism | Balance, harmony, and venous circulation. |
-| Mars | Aquarius | 2 | Muscles and muscular system; Blood and iron metabolism; Adrenal glands; Inflammatory response | Physical energy, inflammation, and surgical response. |
-| Jupiter | Aries | 3 | Liver and hepatic function; Arterial system; Pituitary gland; Fat metabolism | Growth, expansion, and liver function. |
-| Saturn | Taurus | 4 | Bones and skeletal system; Teeth and dental health; Joints and cartilage; Skin and connective tissue | Structure, restriction, and chronic conditions. |
-| Uranus | Aquarius | 2 | Nervous system (higher); Ankles and lower legs; Pituitary gland (electrical); Accidents and sudden onset | Sudden onset, electrical impulses, and nervous tension. |
-| Neptune | Aquarius | 1 | Pineal gland; Lymphatic and immune system; Feet; Drug sensitivity | Sensitivity, immunity, and drug response. |
-| Pluto | Sagittarius | 11 | Reproductive organs (generative); Eliminative system; Cellular regeneration; Endocrine system (deep) | Regeneration, transformation, and deep healing. |
-
-### Zodiacal Anatomy
-
-| Sign | Reason | Body Regions | Focus Areas |
-|------|--------|-------------|-------------|
-| Capricorn | Ascendant, Sun sign | Knees and joints; Skeletal system; Teeth; Skin structure | Focus areas: knees, joints, bones, teeth. Traditionally associated with joint stiffness, fractures, and dental issues. |
-| Scorpio | Moon sign | Reproductive system; Eliminative system; Blood and blood cells; Nose | Focus areas: reproductive organs, eliminative system, blood. Traditionally associated with regenerative processes and toxin buildup. |
-| Sagittarius | Stellium (3 planets) | Hips and thighs; Liver; Sciatic nerve; Pituitary gland | Focus areas: hips, thighs, liver, sciatic nerve. Traditionally associated with sports injuries, liver conditions, and sciatica. |
-| Aquarius | Stellium (3 planets) | Ankles and calves; Circulatory system; Shins and lower legs; Nervous system (higher) | Focus areas: ankles, calves, circulation, nervous system. Traditionally associated with circulatory issues and ankle injuries. |
-
-### Health Houses
-
-| House | Meaning | Cusp Sign | Planets | Sign Body Regions |
-|-------|---------|-----------|---------|-------------------|
-| 6th | Daily health, acute illness | Gemini | None | Arms and hands; Lungs and bronchi; Shoulders; Nervous system |
-| 8th | Chronic conditions, surgery | Leo | None | Heart; Spine and upper back; Spinal cord; Circulatory vitality |
-| 12th | Hidden illness, immunity | Sagittarius | Mercury | Hips and thighs; Liver; Sciatic nerve; Pituitary gland |
 
 ## Temperament Assessment
 
