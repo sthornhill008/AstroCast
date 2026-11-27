@@ -682,7 +682,7 @@ None within 5° of angles.
 
 ### Summary
 
-At age 55, Secondary Fixture is in a 8th house profection year. The profected house is the 8th (Aries), making Mars the lord of the year. Mars is natally Fall (-4) in Cancer in the 10th house, under the beams. This year activates themes of: Death, inheritance, shared resources, transformation, surgery, debt. A debilitated lord of the year signals significant challenges in death matters and areas ruled by Mars.
+At age 55, Secondary Fixture is in an 8th house profection year. The profected house is the 8th (Aries), making Mars the lord of the year. Mars is natally Fall (-4) in Cancer in the 10th house, under the beams. This year activates themes of: Death, inheritance, shared resources, transformation, surgery, debt. A debilitated lord of the year signals significant challenges in death matters and areas ruled by Mars.
 
 ## Firdaria
 

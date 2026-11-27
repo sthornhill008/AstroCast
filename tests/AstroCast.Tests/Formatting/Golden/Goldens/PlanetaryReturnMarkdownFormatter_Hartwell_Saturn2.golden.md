@@ -52,7 +52,7 @@
 
 ### Summary
 
-At age 58, Eleanor Hartwell is in a 11th house profection year. The profected house is the 11th (Virgo), making Mercury the lord of the year. Mercury is natally Peregrine (0) in Scorpio in the 12th house. This year activates themes of: Friends, groups, hopes and wishes, community, income from career. A peregrine lord suggests a year where friends themes lack a strong guiding force — outcomes depend heavily on transits and direction.
+At age 58, Eleanor Hartwell is in an 11th house profection year. The profected house is the 11th (Virgo), making Mercury the lord of the year. Mercury is natally Peregrine (0) in Scorpio in the 12th house. This year activates themes of: Friends, groups, hopes and wishes, community, income from career. A peregrine lord suggests a year where friends themes lack a strong guiding force — outcomes depend heavily on transits and direction.
 
 ## Firdaria (at Return Ingress)
 

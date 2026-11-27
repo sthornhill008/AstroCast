@@ -365,6 +365,15 @@ public static class ProfectionAnalyzer
     };
 
     /// <summary>
+    /// The indefinite article before a house's ordinal, by its sound: "an" before 8th and 11th, "a" before
+    /// the other ten (branch ExportText, 1.7.2; until then every year read "a", so "a 8th house profection
+    /// year").
+    /// </summary>
+    /// <param name="house">The house number, 1 to 12.</param>
+    /// <returns>"an" or "a".</returns>
+    private static string ArticleForOrdinal(int house) => house is 8 or 11 ? "an" : "a";
+
+    /// <summary>
     /// Builds the narrative summary paragraph for the profection year.
     /// </summary>
     private static string BuildSummary(
@@ -395,7 +404,7 @@ public static class ProfectionAnalyzer
         else
             assessment = $"A peregrine lord suggests a year where {activatedThemes.Split(',')[0].Trim().ToLowerInvariant()} themes lack a strong guiding force — outcomes depend heavily on transits and direction.";
 
-        return string.Create(CultureInfo.InvariantCulture, $"At age {age}, {name} is in a {houseOrdinal} house profection year. " +
+        return string.Create(CultureInfo.InvariantCulture, $"At age {age}, {name} is in {ArticleForOrdinal(profectedHouse)} {houseOrdinal} house profection year. " +
                $"The profected house is the {houseOrdinal} ({profectedSign}), " +
                $"making {lordName} the lord of the year. " +
                $"{lordName} is natally {lordDignityLabel} in {lordNatalSign} in the {lordHouseOrdinal} house") +

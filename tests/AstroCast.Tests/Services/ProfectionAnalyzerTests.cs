@@ -343,6 +343,30 @@ public sealed class ProfectionAnalyzerTests
         result.Summary.Should().Contain("Self");
     }
 
+    /// <summary>
+    /// The article before the ordinal follows its sound: "an 8th" and "an 11th", and "a" before the other ten
+    /// (branch ExportText, 1.7.2; finding A2). Until 1.7.2 every year read "a": "a 8th house profection year".
+    /// </summary>
+    /// <param name="age">The age; its year is house age + 1.</param>
+    /// <param name="expected">The article and the ordinal the summary prints.</param>
+    [Theory]
+    [InlineData(0, "a 1st")]
+    [InlineData(1, "a 2nd")]
+    [InlineData(2, "a 3rd")]
+    [InlineData(6, "a 7th")]
+    [InlineData(7, "an 8th")]
+    [InlineData(9, "a 10th")]
+    [InlineData(10, "an 11th")]
+    [InlineData(11, "a 12th")]
+    public void Analyze_Summary_ArticleFollowsTheOrdinal(int age, string expected)
+    {
+        ChartResult chart = CreateChart(birthDate: new DateTime(1980, 1, 1));
+
+        ProfectionYearResult result = ProfectionAnalyzer.Analyze(chart, new DateTime(1980 + age, 6, 1));
+
+        result.Summary.Should().Contain($"is in {expected} house profection year.");
+    }
+
     #endregion
 
     #region Result Fields
