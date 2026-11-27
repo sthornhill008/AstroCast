@@ -245,4 +245,29 @@ public static class PositionFormatter
         sb.AppendLine("---");
         sb.AppendLine();
     }
+
+    /// <summary>
+    /// Whether the text built so far already ends with a rule, a "---" line with nothing after it but line
+    /// endings: the check the transit report's footer makes, shared so every footer that opens with a rule
+    /// can make it (branch ExportText, 1.7.2; findings A2 and N9).
+    /// </summary>
+    /// <param name="sb">The builder holding the export so far.</param>
+    /// <returns>True when the last line that is not empty is a rule.</returns>
+    internal static bool EndsWithRule(System.Text.StringBuilder sb)
+    {
+        string text = sb.ToString().TrimEnd('\r', '\n');
+        return text.EndsWith("\n---", StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Appends a footer's opening rule unless the export already ends with one, so a section that closes with
+    /// its own rule (the cross-chart declination table) and the footer after it print one rule, not two
+    /// (branch ExportText, 1.7.2; findings A2 and N9).
+    /// </summary>
+    /// <param name="sb">The builder holding the export so far.</param>
+    internal static void AppendRuleUnlessPresent(System.Text.StringBuilder sb)
+    {
+        if (!EndsWithRule(sb))
+            sb.AppendLine("---");
+    }
 }

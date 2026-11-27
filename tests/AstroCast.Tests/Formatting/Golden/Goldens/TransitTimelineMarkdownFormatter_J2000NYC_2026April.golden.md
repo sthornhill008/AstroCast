@@ -718,8 +718,6 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 
 ---
 
----
-
 *Data from AstroCast (Swiss Ephemeris, Tropical, Placidus). All times refined to sub-minute UTC precision via binary search (~1 arc-second). Entry/exit times mark the orb boundary crossing.*
 
 *Engine: AstroCast X.Y.Z (SwissEph VER)*

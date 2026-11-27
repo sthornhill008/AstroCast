@@ -699,14 +699,21 @@ public static class TransitTimelineMarkdownFormatter
     #region Footer
 
     /// <summary>
-    /// Appends the document footer with precision notes.
+    /// Appends the document footer with precision notes. One rule stands before it: the Clusters section
+    /// closes with its own rule and blank line, so the footer adds its rule and blank line only when the
+    /// export does not already end with one (branch ExportText, 1.7.2; finding N9). Until 1.7.2 a timeline
+    /// that listed a cluster printed two rules.
     /// </summary>
     /// <param name="sb">The string builder to append to.</param>
     /// <param name="houseSystemName">The house system name to display in the footer.</param>
     private static void AppendFooter(StringBuilder sb, string houseSystemName)
     {
-        sb.AppendLine("---");
-        sb.AppendLine();
+        if (!PositionFormatter.EndsWithRule(sb))
+        {
+            sb.AppendLine("---");
+            sb.AppendLine();
+        }
+
         sb.AppendLine($"*Data from AstroCast (Swiss Ephemeris, Tropical, {houseSystemName}). " +
             "All times refined to sub-minute UTC precision via binary search (~1 arc-second). " +
             "Entry/exit times mark the orb boundary crossing.*");

@@ -134,6 +134,43 @@ public sealed class ExportLineEndingTests
             "a label line that another label line follows ends with two spaces");
     }
 
+    /// <summary>
+    /// No export the golden tests make prints two rules in a row, a "---" line with nothing but blank lines
+    /// between it and the next (branch ExportText, 1.7.2; findings A2 and N9). Until 1.7.2 a section that
+    /// closed with a rule was followed by a footer that opened with one: the solar, lunar and planetary
+    /// returns and the synastry export after their cross-chart declination table, and the transit timeline
+    /// after its clusters.
+    /// </summary>
+    [Fact]
+    public void EveryExport_PrintsNoTwoRulesInARow()
+    {
+        List<string> doubled = [];
+        foreach ((string goldenFileName, string text) in MakeEveryExport().DistinctBy(e => e.GoldenFileName))
+        {
+            string[] lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
+            int lastRule = -1;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i].Trim();
+                if (line.Length == 0)
+                    continue;
+
+                if (line != "---")
+                {
+                    lastRule = -1;
+                    continue;
+                }
+
+                if (lastRule >= 0)
+                    doubled.Add($"{goldenFileName} lines {lastRule + 1} and {i + 1}");
+                lastRule = i;
+            }
+        }
+
+        string.Join("; ", doubled).Should().BeEmpty(
+            "a section's closing rule and the footer's opening rule print as one rule");
+    }
+
     /// <summary>Whether a line is a <c>**Label:** value</c> line: it opens with a bold label that ends in a colon.</summary>
     /// <param name="line">The line, without its line ending.</param>
     /// <returns>True for a label line.</returns>
