@@ -255,6 +255,18 @@ public sealed class TransitsViewModel : ChildViewModelBase
     /// </summary>
     public bool ResultIncludesTransits => _transitResult is { IncludesTransits: true };
 
+    /// <summary>
+    /// Clears <see cref="TransitResult"/> when the Chart panel's chart changes; called by the parent's
+    /// <c>LastResult</c> setter, which this view model cannot observe (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// The result was made from the Chart panel's chart, so it does not outlive it: a Load, Calculate &amp; Save,
+    /// the Points recast and Clear Form each clear it, and with it the three exports made from it (the report,
+    /// the timeline and the daily horoscope), as the Relocation panel's result has cleared since 1.6.1. Nothing
+    /// happens without a result. Until 1.7.2 the result stayed, and the exports wrote the earlier chart's.
+    /// </remarks>
+    internal void OnChartPanelChartChanged() => TransitResult = null;
+
     #endregion
 
     #region Reset

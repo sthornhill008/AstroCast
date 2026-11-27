@@ -1023,8 +1023,21 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     /// <summary>Gets the most recent chart calculation result.</summary>
     /// <remarks>
+    /// <para>
     /// The Chart panel's chart. Its change raises the Relocation and Electional panels' chart-in-use lines,
     /// which name it when no saved chart is picked there.
+    /// </para>
+    /// <para>
+    /// Its change also clears every result that was made from it (branch StaleResults, 1.7.2, finding N2), each
+    /// through its panel's <c>OnChartPanelChartChanged</c>: the directions, the transit result, the synastry,
+    /// composite and Davison results, the three returns, the cycle timeline, the return and ingress timeline,
+    /// the map and the electional result, beside the relocation result (1.6.1). Load, Calculate &amp; Save, the
+    /// Points recast, the electional search's cast from the form and Clear Form all pass through here, so none
+    /// can leave a result, or an enabled Export button, for the chart that was there before. The mundane
+    /// series (ingresses, lunations, eclipses, great conjunctions, mundane aspects, synodic cycles) are made
+    /// from no chart and are not touched. Until 1.7.2 only the relocation result was cleared, and every other
+    /// export wrote the chart held in its old result.
+    /// </para>
     /// </remarks>
     public ChartResult? LastResult
     {
@@ -1035,6 +1048,13 @@ public sealed class MainViewModel : INotifyPropertyChanged
             {
                 Relocation.OnChartPanelChartChanged();
                 Electional.OnChartPanelChartChanged();
+                Directions.OnChartPanelChartChanged();
+                Transits.OnChartPanelChartChanged();
+                Synastry.OnChartPanelChartChanged();
+                Returns.OnChartPanelChartChanged();
+                Cycles.OnChartPanelChartChanged();
+                ReturnIngressTimeline.OnChartPanelChartChanged();
+                Astrocartography.OnChartPanelChartChanged();
             }
         }
     }
@@ -4650,6 +4670,10 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// raises its line, and each requests one refresh. The Relocation panel's place fields are left as they are
     /// (<c>Relocation.Clear()</c> is not called), and <c>Electional.Clear()</c> keeps its own scope. Until 1.6.1
     /// both pickers kept their pick, the Electional one since 1.4.0 and the Relocation one since branch Relocate.
+    /// The return and ingress timeline and the map lose their results as for any change of the Chart panel's
+    /// chart, and here whether or not there was a chart to change (branch StaleResults, 1.7.2, finding N2); their
+    /// own settings, the timeline's years and boxes and the map's line boxes, stay, since neither panel's
+    /// <c>Clear()</c> is called. Until 1.7.2 Clear Form left both results in place.
     /// </remarks>
     private void ClearForm()
     {
@@ -4663,6 +4687,10 @@ public sealed class MainViewModel : INotifyPropertyChanged
         Cycles.Clear();
         LastResult = null;
         HasResult = false;
+
+        // The two results Clear Form left until 1.7.2, cleared even when no chart was there to change
+        ReturnIngressTimeline.OnChartPanelChartChanged();
+        Astrocartography.OnChartPanelChartChanged();
 
         // The pickers follow the Chart panel's chart, which Clear Form has just emptied (1.6.1, branch
         // ElectionalPicker; until then both kept their pick).
@@ -4812,8 +4840,11 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// and a bound ComboBox writes null back when the list is cleared. The three
     /// Ids are therefore read before the clear, and each selection is pointed at
     /// the refilled chart with the same Id, or at nothing when that chart is gone.
-    /// The selection setters only request a command-state refresh, so the null
-    /// written in between leaves nothing else behind.
+    /// The null written in between is the refill, not a change of chart: while
+    /// <see cref="IsRefillingSavedCharts"/> is set the Person B and Electional
+    /// pickers clear no result for it, and once the refill is over each is told
+    /// the Id it held before, so a picker whose chart was deleted clears its
+    /// panel's results then (branch StaleResults, 1.7.2, finding N2).
     /// </remarks>
     private async Task RefreshSavedChartsAsync()
     {
@@ -4843,16 +4874,41 @@ public sealed class MainViewModel : INotifyPropertyChanged
         long? electionalId = Electional.SelectedNatalChart?.Id;
         long? relocationId = Relocation.SelectedNatalChart?.Id;
 
-        AllSavedCharts.Clear();
-        foreach (ChartEntity chart in all)
+        IsRefillingSavedCharts = true;
+        try
         {
-            AllSavedCharts.Add(chart);
+            AllSavedCharts.Clear();
+            foreach (ChartEntity chart in all)
+            {
+                AllSavedCharts.Add(chart);
+            }
+
+            Synastry.PersonB = FindSavedChart(personBId);
+            Electional.SelectedNatalChart = FindSavedChart(electionalId);
+            Relocation.SelectedNatalChart = FindSavedChart(relocationId);
+        }
+        finally
+        {
+            IsRefillingSavedCharts = false;
         }
 
-        Synastry.PersonB = FindSavedChart(personBId);
-        Electional.SelectedNatalChart = FindSavedChart(electionalId);
-        Relocation.SelectedNatalChart = FindSavedChart(relocationId);
+        // A picked chart the refill no longer holds was deleted: its panel's results go with it
+        Synastry.OnSavedChartsRefilled(personBId);
+        Electional.OnSavedChartsRefilled(electionalId);
     }
+
+    /// <summary>
+    /// Gets a value indicating whether <see cref="AllSavedCharts"/> is being cleared and refilled by
+    /// <see cref="RefreshSavedChartsAsync"/> (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// In the window each picker bound to the list loses its item when the list is cleared, and its two-way
+    /// binding writes null to its view model before the refresh picks the same chart again. The Person B and
+    /// Electional pickers clear their panel's results when their chart's Id changes, and read this flag so that
+    /// the null of a refill clears nothing; <c>OnSavedChartsRefilled</c> then compares the Id held before the
+    /// refill with the one held after.
+    /// </remarks>
+    internal bool IsRefillingSavedCharts { get; private set; }
 
     /// <summary>
     /// Puts the charts a query read into the saved-charts list's order: by name as a person reads names when

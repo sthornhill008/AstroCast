@@ -167,6 +167,18 @@ public sealed class DirectionsViewModel : ChildViewModelBase
     public bool HasResult => _currentResult is not null;
 
     /// <summary>
+    /// Clears <see cref="CurrentResult"/> when the Chart panel's chart changes; called by the parent's
+    /// <c>LastResult</c> setter, which this view model cannot observe (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// The result was made from the Chart panel's chart, so it does not outlive it: a Load, Calculate &amp; Save,
+    /// the Points recast and Clear Form each clear it, and with it the result line, the list and Export
+    /// Directions MD, as the Relocation panel's result has cleared since 1.6.1. Nothing happens without a result.
+    /// Until 1.7.2 the result stayed, and Export Directions MD wrote the earlier chart's report.
+    /// </remarks>
+    internal void OnChartPanelChartChanged() => CurrentResult = null;
+
+    /// <summary>
     /// Gets the result line under the panel's buttons: "{chart}: {n} directions to age {limit}, {key}", then
     /// "; {m} left out" only when m is above 0, "1 direction" in the singular; empty while there is no result.
     /// The limit and the key are the result's own, so the line says which result Export Directions MD will write

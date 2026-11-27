@@ -482,13 +482,27 @@ public sealed class ElectionalViewModel : ChildViewModelBase
     /// by hand holds until the next of either (1.6.1, item C, branch
     /// ElectionalPicker), as the Relocation picker has since 1.4.0.
     /// </summary>
+    /// <remarks>
+    /// A pick of another chart, or a pick cleared, clears <see cref="ElectionalResult"/>
+    /// (<see cref="InvalidateResult"/>; branch StaleResults, 1.7.2, finding N2), as the
+    /// Relocation picker clears its result. The chart's identity is its Id: the
+    /// saved-charts refresh re-points the picker at a new instance of the same chart,
+    /// since <see cref="ChartEntity"/> compares by reference, and that keeps the result.
+    /// In the window the bound picker also writes null while its list is refilled; the
+    /// parent's <see cref="MainViewModel.IsRefillingSavedCharts"/> says so, nothing is
+    /// cleared for it, and <see cref="OnSavedChartsRefilled"/> settles the refill.
+    /// </remarks>
     public ChartEntity? SelectedNatalChart
     {
         get => _selectedNatalChart;
         set
         {
+            bool chartChanged = _selectedNatalChart?.Id != value?.Id;
             if (SetProperty(ref _selectedNatalChart, value))
             {
+                // Parent read: only the parent knows that this write is its own refill of the list
+                if (chartChanged && !Parent.IsRefillingSavedCharts)
+                    InvalidateResult();
                 RequestCommandStateRefresh();
                 OnPropertyChanged(nameof(ChartInUseText));
             }
@@ -532,10 +546,40 @@ public sealed class ElectionalViewModel : ChildViewModelBase
     }
 
     /// <summary>
-    /// Raises <see cref="ChartInUseText"/> for a change of the Chart panel's chart, which the line names when
-    /// no saved chart is picked. Called by the parent's <c>LastResult</c> setter.
+    /// Clears <see cref="ElectionalResult"/> and raises <see cref="ChartInUseText"/> for a change of the Chart
+    /// panel's chart, which the line names when no saved chart is picked. Called by the parent's
+    /// <c>LastResult</c> setter.
     /// </summary>
-    internal void OnChartPanelChartChanged() => OnPropertyChanged(nameof(ChartInUseText));
+    /// <remarks>
+    /// Every change of the Chart panel's chart makes the result stale (branch StaleResults, 1.7.2, finding N2),
+    /// as it does the Relocation panel's: with no chart picked it is the chart the search scored against; Load
+    /// and Calculate &amp; Save re-point the picker as well; the Points recast changes what a picked chart's cast
+    /// carries; Clear Form nulls it. A refresh is requested only when a result was cleared, so Export Electional
+    /// MD re-reads <see cref="HasResult"/>. Until 1.7.2 this only raised the line, and the result stayed.
+    /// </remarks>
+    internal void OnChartPanelChartChanged()
+    {
+        bool cleared = InvalidateResult();
+        OnPropertyChanged(nameof(ChartInUseText));
+        if (cleared)
+            RequestCommandStateRefresh();
+    }
+
+    /// <summary>
+    /// Settles a refill of the saved-charts list: clears <see cref="ElectionalResult"/> when the picked chart is
+    /// no longer the one picked before the refill, which is when that chart was deleted. Called by the parent
+    /// once the refill is over (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// During the refill <see cref="SelectedNatalChart"/>'s setter clears nothing, since the picker passes
+    /// through null on its way back to the same chart; the comparison it would have made is made here.
+    /// </remarks>
+    /// <param name="pickedIdBefore">The Id of the picked chart before the refill, or null when none was picked.</param>
+    internal void OnSavedChartsRefilled(long? pickedIdBefore)
+    {
+        if (_selectedNatalChart?.Id != pickedIdBefore && InvalidateResult())
+            RequestCommandStateRefresh();
+    }
 
     /// <summary>Gets the available <see cref="Core.Enums.ElectionType"/> values for the ComboBox.</summary>
     public IReadOnlyList<ElectionType> ElectionTypes { get; } =
@@ -572,6 +616,27 @@ public sealed class ElectionalViewModel : ChildViewModelBase
     /// backing field.
     /// </summary>
     public bool HasResult => _electionalResult is not null;
+
+    /// <summary>
+    /// Clears <see cref="ElectionalResult"/> when the chart it was made from changes: the picked chart's Id, or
+    /// the Chart panel's chart (branch StaleResults, 1.7.2, finding N2). Nothing happens without a result.
+    /// </summary>
+    /// <remarks>
+    /// By the field-bypass pattern <see cref="Clear"/> uses: the field is nulled and
+    /// <see cref="ElectionalResult"/> and <see cref="HasResult"/> are raised, with no refresh request of its
+    /// own, since every caller requests one.
+    /// </remarks>
+    /// <returns><see langword="true"/> when a result was cleared.</returns>
+    private bool InvalidateResult()
+    {
+        if (_electionalResult is null)
+            return false;
+
+        _electionalResult = null;
+        OnPropertyChanged(nameof(ElectionalResult));
+        OnPropertyChanged(nameof(HasResult));
+        return true;
+    }
 
     #endregion
 

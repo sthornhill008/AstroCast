@@ -505,6 +505,62 @@ public sealed class ReturnsViewModel : ChildViewModelBase
 
     #endregion
 
+    #region Chart Panel Change
+
+    /// <summary>
+    /// Clears the panel's three results when the Chart panel's chart changes: the solar return, the lunar
+    /// returns with the one selected, and the planetary return. Called by the parent's <c>LastResult</c>
+    /// setter, which this view model cannot observe (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// Each return is cast from the Chart panel's chart, so none outlives it: a Load, Calculate &amp; Save, the
+    /// Points recast and Clear Form each clear them, and their three exports with them, as the Relocation
+    /// panel's result has cleared since 1.6.1. By the field-bypass pattern <see cref="Clear"/> uses, with one
+    /// refresh request, and none when there was nothing to clear. The panel's own inputs and the profection,
+    /// firdaria and releasing lines, which the parent writes for each chart, are left. Until 1.7.2 the results
+    /// stayed, and each export wrote the earlier chart's.
+    /// </remarks>
+    internal void OnChartPanelChartChanged()
+    {
+        bool cleared = false;
+
+        if (_currentSolarReturnResult is not null)
+        {
+            _currentSolarReturnResult = null;
+            OnPropertyChanged(nameof(CurrentSolarReturnResult));
+            OnPropertyChanged(nameof(HasSolarReturnResult));
+            cleared = true;
+        }
+
+        if (_lunarReturnResults is not null)
+        {
+            _lunarReturnResults = null;
+            OnPropertyChanged(nameof(LunarReturnResults));
+            OnPropertyChanged(nameof(HasLunarReturnResult));
+            cleared = true;
+        }
+
+        if (_selectedLunarReturn is not null)
+        {
+            _selectedLunarReturn = null;
+            OnPropertyChanged(nameof(SelectedLunarReturn));
+            cleared = true;
+        }
+
+        if (_currentPlanetaryReturnResult is not null)
+        {
+            _currentPlanetaryReturnResult = null;
+            OnPropertyChanged(nameof(CurrentPlanetaryReturnResult));
+            OnPropertyChanged(nameof(HasPlanetaryReturnResult));
+            cleared = true;
+        }
+
+        if (cleared)
+            RequestCommandStateRefresh();
+    }
+
+    #endregion
+
     #region Reset
 
     /// <summary>

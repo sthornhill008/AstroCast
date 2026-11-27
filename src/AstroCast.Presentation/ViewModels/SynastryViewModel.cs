@@ -95,13 +95,32 @@ public sealed class SynastryViewModel : ChildViewModelBase
     /// parent re-evaluates the Calculate Synastry and Calculate Composite
     /// command <c>CanExecute</c> predicates.
     /// </summary>
+    /// <remarks>
+    /// A pick of another chart, or a pick cleared, clears the panel's three results
+    /// (<see cref="InvalidateResults"/>; branch StaleResults, 1.7.2, finding N2), as the
+    /// Relocation panel's picker has cleared its result since 1.6.1. Person B's identity
+    /// is the chart's Id: the saved-charts refresh re-points the picker at a new instance
+    /// of the same chart on every save, import and delete, since <see cref="ChartEntity"/>
+    /// compares by reference, and that keeps the results. In the window the bound picker
+    /// also writes null while its list is refilled; the parent's
+    /// <see cref="MainViewModel.IsRefillingSavedCharts"/> says so, nothing is cleared for
+    /// it, and <see cref="OnSavedChartsRefilled"/> settles the refill afterwards. Until
+    /// 1.7.2 the results stayed through every change of Person B, and each export wrote
+    /// the earlier pair's.
+    /// </remarks>
     public ChartEntity? PersonB
     {
         get => _personB;
         set
         {
+            bool chartChanged = _personB?.Id != value?.Id;
             if (SetProperty(ref _personB, value))
+            {
+                // Parent read: only the parent knows that this write is its own refill of the list
+                if (chartChanged && !Parent.IsRefillingSavedCharts)
+                    InvalidateResults();
                 RequestCommandStateRefresh();
+            }
         }
     }
 
@@ -257,6 +276,83 @@ public sealed class SynastryViewModel : ChildViewModelBase
     {
         get => _davisonInterpretationContext;
         set => SetProperty(ref _davisonInterpretationContext, value);
+    }
+
+    #endregion
+
+    #region Stale Results
+
+    /// <summary>
+    /// Clears the panel's three results when the Chart panel's chart, which is Person A, changes; called by the
+    /// parent's <c>LastResult</c> setter, which this view model cannot observe (branch StaleResults, 1.7.2,
+    /// finding N2).
+    /// </summary>
+    /// <remarks>
+    /// The synastry, the composite and the Davison chart are each made from the Chart panel's chart and Person
+    /// B, so none outlives either: a Load, Calculate &amp; Save, the Points recast and Clear Form each clear
+    /// them, and their three exports with them. One refresh request, and none when there was nothing to clear.
+    /// Person B and the panel's other fields are left.
+    /// </remarks>
+    internal void OnChartPanelChartChanged()
+    {
+        if (InvalidateResults())
+            RequestCommandStateRefresh();
+    }
+
+    /// <summary>
+    /// Settles a refill of the saved-charts list: clears the three results when Person B is no longer the chart
+    /// it was before the refill, which is when that chart was deleted. Called by the parent once the refill is
+    /// over (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// During the refill <see cref="PersonB"/>'s setter clears nothing, since the picker passes through null on
+    /// its way back to the same chart; the comparison it would have made is made here, across the whole refill.
+    /// </remarks>
+    /// <param name="personBIdBefore">The Id of Person B before the refill, or null when none was picked.</param>
+    internal void OnSavedChartsRefilled(long? personBIdBefore)
+    {
+        if (_personB?.Id != personBIdBefore && InvalidateResults())
+            RequestCommandStateRefresh();
+    }
+
+    /// <summary>
+    /// Clears <see cref="SynastryResult"/>, <see cref="CompositeResult"/> and <see cref="DavisonResult"/> when a
+    /// chart they were made from changes: the Chart panel's chart, or Person B by its Id.
+    /// </summary>
+    /// <remarks>
+    /// By the field-bypass pattern <see cref="Clear"/> uses: each field held is nulled and its property and its
+    /// <c>Has</c> flag are raised, with no refresh request of its own, since every caller requests exactly one.
+    /// </remarks>
+    /// <returns><see langword="true"/> when a result was cleared.</returns>
+    private bool InvalidateResults()
+    {
+        bool cleared = false;
+
+        if (_synastryResult is not null)
+        {
+            _synastryResult = null;
+            OnPropertyChanged(nameof(SynastryResult));
+            OnPropertyChanged(nameof(HasSynastryResult));
+            cleared = true;
+        }
+
+        if (_compositeResult is not null)
+        {
+            _compositeResult = null;
+            OnPropertyChanged(nameof(CompositeResult));
+            OnPropertyChanged(nameof(HasCompositeResult));
+            cleared = true;
+        }
+
+        if (_davisonResult is not null)
+        {
+            _davisonResult = null;
+            OnPropertyChanged(nameof(DavisonResult));
+            OnPropertyChanged(nameof(HasDavisonResult));
+            cleared = true;
+        }
+
+        return cleared;
     }
 
     #endregion

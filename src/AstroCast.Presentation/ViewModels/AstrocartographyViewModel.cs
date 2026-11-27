@@ -250,6 +250,25 @@ public sealed class AstrocartographyViewModel : ChildViewModelBase
         }
     }
 
+    /// <summary>
+    /// Clears the map's result when the Chart panel's chart changes: <see cref="CurrentResult"/>, and with it
+    /// <see cref="VisibleLines"/>, the <see cref="CrossingReportText"/> read from it, and <see cref="HasResult"/>.
+    /// Called by the parent's <c>LastResult</c> setter, which this view model cannot observe, and by its Clear
+    /// Form (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// The lines are the Chart panel's chart's, so they do not outlive it: the export and the map window's
+    /// command go with them, and a map window left open draws no lines. The sixteen line boxes are left as they
+    /// are. Nothing happens without a result. Until 1.7.2 the result stayed through every change of chart, Clear
+    /// Form included, and its export wrote the earlier chart's.
+    /// </remarks>
+    internal void OnChartPanelChartChanged()
+    {
+        CurrentResult = null;
+        CrossingReportText = string.Empty;
+        HasResult = false;
+    }
+
     #endregion
 
     #region Properties \u2014 Planet Toggles

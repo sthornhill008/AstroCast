@@ -193,6 +193,18 @@ public sealed class CyclesViewModel : ChildViewModelBase
     /// </summary>
     public bool HasCycleTimeline => _currentCycleTimeline is not null;
 
+    /// <summary>
+    /// Clears <see cref="CurrentCycleTimeline"/> when the Chart panel's chart changes; called by the parent's
+    /// <c>LastResult</c> setter, which this view model cannot observe (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// The cycle timeline is made from the Chart panel's chart, so it does not outlive it, and its export goes
+    /// with it. The great-conjunction and synodic-cycle series are made from no chart and are left: only Clear
+    /// Form, through <see cref="Clear"/>, empties them. Nothing happens without a timeline. Until 1.7.2 the
+    /// timeline stayed, and its export wrote the earlier chart's.
+    /// </remarks>
+    internal void OnChartPanelChartChanged() => CurrentCycleTimeline = null;
+
     #endregion
 
     #region Great Conjunctions

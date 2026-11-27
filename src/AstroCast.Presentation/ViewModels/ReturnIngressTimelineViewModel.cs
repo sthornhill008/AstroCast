@@ -188,6 +188,22 @@ public sealed class ReturnIngressTimelineViewModel : ChildViewModelBase
         }
     }
 
+    /// <summary>
+    /// Clears <see cref="CurrentResult"/> and <see cref="HasResult"/> when the Chart panel's chart changes; called
+    /// by the parent's <c>LastResult</c> setter, which this view model cannot observe, and by its Clear Form
+    /// (branch StaleResults, 1.7.2, finding N2).
+    /// </summary>
+    /// <remarks>
+    /// The timeline is made from the Chart panel's chart and names it, so it does not outlive it; the panel's
+    /// years and boxes are left as they are. Nothing happens without a result. Until 1.7.2 the timeline stayed
+    /// through every change of chart, Clear Form included, and its export wrote the earlier chart's.
+    /// </remarks>
+    internal void OnChartPanelChartChanged()
+    {
+        CurrentResult = null;
+        HasResult = false;
+    }
+
     #endregion
 
     #region Reset

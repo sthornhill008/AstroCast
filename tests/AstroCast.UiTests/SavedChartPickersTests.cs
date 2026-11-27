@@ -159,4 +159,119 @@ public sealed class SavedChartPickersTests
             Assert.Contains(selected, combo.Items.OfType<ChartEntity>());
         }
     }
+
+    /// <summary>
+    /// A refresh of the saved charts that keeps Person B and the Electional panel's chart keeps the results made
+    /// from them (branch StaleResults, 1.7.2, finding N2): the Synastry panel's three and the electional result.
+    /// </summary>
+    /// <remarks>
+    /// Those results are cleared when their picker's chart changes, by its Id. In the window each ComboBox loses
+    /// its item while the list is refilled, and its two-way binding writes null to the view model before the
+    /// refresh picks the same chart again; the test sees that null arrive. It is the refresh, not a change of
+    /// chart, so nothing is cleared. Deleting a third chart is the refresh here: it changes no picker's chart
+    /// and not the Chart panel's.
+    /// </remarks>
+    [AvaloniaFact]
+    public async Task ARefresh_KeepsTheResultsOfThePickersItRepoints()
+    {
+        SavedChartsRepository repository = new("Alpha", "Beta", "Gamma");
+        MainViewModel vm = MainViewModelFactory.Create(repository: repository);
+        MainWindow window = new() { DataContext = vm, Width = 1400, Height = 1400 };
+        window.Show();
+        await vm.InitializeAsync();
+        Dispatcher.UIThread.RunJobs();
+
+        vm.LoadChartCommand.Execute(vm.SavedCharts.Single(c => c.Name == "Alpha"));
+        Dispatcher.UIThread.RunJobs();
+        Assert.NotNull(vm.LastResult);
+        Assert.Equal("Alpha", vm.Electional.SelectedNatalChart?.Name);
+
+        ComboBox personB = Box(window, "Person B");
+        personB.SelectedItem = personB.Items.OfType<ChartEntity>().Single(c => c.Name == "Beta");
+        Dispatcher.UIThread.RunJobs();
+        Assert.Equal("Beta", vm.Synastry.PersonB?.Name);
+
+        await RunAsync(vm.CalculateSynastryCommand);
+        await RunAsync(vm.CalculateCompositeCommand);
+        await RunAsync(vm.CalculateDavisonCommand);
+        vm.Electional.ElectionalResult = NoCandidates(vm.LastResult);
+        Assert.True(vm.Synastry.HasSynastryResult, vm.StatusText);
+        Assert.True(vm.Synastry.HasCompositeResult, vm.StatusText);
+        Assert.True(vm.Synastry.HasDavisonResult, vm.StatusText);
+
+        List<string?> personBWrites = [];
+        List<string?> electionalWrites = [];
+        vm.Synastry.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(SynastryViewModel.PersonB))
+                personBWrites.Add(vm.Synastry.PersonB?.Name);
+        };
+        vm.Electional.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(ElectionalViewModel.SelectedNatalChart))
+                electionalWrites.Add(vm.Electional.SelectedNatalChart?.Name);
+        };
+
+        vm.DeleteChartCommand.Execute(vm.SavedCharts.Single(c => c.Name == "Gamma"));
+        Dispatcher.UIThread.RunJobs();
+
+        Assert.Equal(2, vm.AllSavedCharts.Count);
+        Assert.Equal(new string?[] { null, "Beta" }, personBWrites);
+        Assert.Equal(new string?[] { null, "Alpha" }, electionalWrites);
+        Assert.True(vm.Synastry.HasSynastryResult, "The refresh cleared the synastry result.");
+        Assert.True(vm.Synastry.HasCompositeResult, "The refresh cleared the composite result.");
+        Assert.True(vm.Synastry.HasDavisonResult, "The refresh cleared the Davison result.");
+        Assert.True(vm.Electional.HasResult, "The refresh cleared the electional result.");
+        Assert.True(vm.ExportSynastryMarkdownCommand.CanExecute(null));
+        Assert.True(vm.ExportElectionalMarkdownCommand.CanExecute(null));
+    }
+
+    /// <summary>Runs a command and waits for its handler to finish, for at most 5 s.</summary>
+    /// <param name="command">The command.</param>
+    /// <returns>A task that completes when the command has finished.</returns>
+    private static async Task RunAsync(AsyncRelayCommand command)
+    {
+        command.Execute(null);
+
+        int waited = 0;
+        while (command.IsExecuting && waited < 5000)
+        {
+            await Task.Delay(10);
+            Dispatcher.UIThread.RunJobs();
+            waited += 10;
+        }
+
+        Assert.False(command.IsExecuting, "The command did not finish within 5 s.");
+        Dispatcher.UIThread.RunJobs();
+    }
+
+    /// <summary>An electional result with no candidate, as a search for the given chart would leave it.</summary>
+    /// <param name="natal">The chart the search was scored against.</param>
+    /// <returns>The result.</returns>
+    private static AstroCast.Core.Models.Electional.ElectionalResult NoCandidates(AstroCast.Core.Models.ChartResult natal)
+    {
+        AstroCast.Core.Models.Electional.ElectionalInput input = new()
+        {
+            NatalChart = natal,
+            ElectionType = AstroCast.Core.Enums.ElectionType.Other,
+            ElectionGoal = "Open a shop",
+            RangeStart = new DateOnly(2026, 6, 11),
+            RangeEnd = new DateOnly(2026, 6, 20),
+            Latitude = 37.5385,
+            Longitude = -77.4343,
+            LocationName = "Richmond, VA",
+            TimeZone = "America/New_York",
+        };
+        return new AstroCast.Core.Models.Electional.ElectionalResult
+        {
+            Input = input,
+            NatalChart = natal,
+            Candidates = [],
+            RequestedCandidateCount = input.CandidateCount,
+            SamplesWithoutPlanetaryHour = 0,
+            DisqualifiedPeriods = [],
+            VoidOfCoursePeriods = [],
+            CalculatedAt = DateTime.UtcNow,
+        };
+    }
 }
