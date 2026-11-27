@@ -207,6 +207,13 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
   changed, also runs under de-DE, sv-SE and th-TH inside a `CultureScope`
   (`tests/AstroCast.Tests/Fixtures`), against the same golden file or en-US
   expectation.
+- **An export carries the system's line ending throughout** (branch ExportText, 1.7.2;
+  Steve's ruling): CR LF on Windows, LF on macOS. Every line is ended by the builder's
+  own `AppendLine`: no line feed inside a string's own text, and an embedded chart's
+  lines are joined with `AppendLine`, never `Append('\n')`. A `**Label:** value` line
+  that another follows ends with two spaces, Markdown's hard break. The golden
+  comparison normalises line endings, so `ExportLineEndingTests` holds both rules for
+  every export the golden tests make (see *Export Text*).
 
 ## Architecture Rules
 
@@ -913,7 +920,8 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
 - **Primary directions export** (`PrimaryDirectionMarkdownFormatter`, `PrimaryDirectionSectionFormatter`
   (internal), `PositionFormatter.FormatArc`, branch PrimaryExport, 1.5.0; Steve's choices of 2026-10-18):
   Markdown only, as the transit family is. *The section*, one writer for both outputs: `## Primary
-  Directions`, a blank, then with no blank between them `**Method:** Placidus semi-arc, in zodiaco; direct
+  Directions`, a blank, then with no blank between them, each but the last ending with two spaces since
+  1.7.2 (a hard break; see *Export Text* below), `**Method:** Placidus semi-arc, in zodiaco; direct
   and converse (traditional)`, `**Key:**` and the key's `DisplayName`, `**Significators:** Ascendant,
   Midheaven, Sun, Moon, Part of Fortune; the Descendant and IC by the conjunctions of bodies and stars`
   (", Mercury to Pluto" after the
@@ -1866,10 +1874,11 @@ on what a `Button` is.
   then branch InputChecks (2026-11-27), the first branch of the 1.7.2 plan: seven input and message fixes
   from the 1.7.2 code audit (see *Input Checks* below), made on Maple, landed on `e7fd2be` and pushed the
   same day; then branch StaleResults (2026-11-27), finding N2 of that audit: every result made from the Chart
-  panel's chart clears when that chart changes (see *Stale Results* below), made on Maple and merged into
-  `master` there on `9f9c4c1` the same day, not yet pushed; then branch ReturnAges (2026-11-27), finding A1
-  of that audit: a solar return export reads its three time-lord sections for the year the return opens
-  (see *Return Ages* below), made on Maple, awaiting its landing.
+  panel's chart clears when that chart changes (see *Stale Results* below), then branch ReturnAges
+  (2026-11-27), finding A1 of that audit: a solar return export reads its three time-lord sections for the
+  year the return opens (see *Return Ages* below); both made on Maple, landed together on `655bff5` and
+  pushed the same day; then branch ExportText (2026-11-27), fourteen text faults in the exports from the
+  code audit and the prompt audit (see *Export Text* below), made on Maple, awaiting its landing.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
@@ -1932,9 +1941,9 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4504 in `tests/AstroCast.Tests` and 146 in
-  `tests/AstroCast.UiTests` at ReturnAges, all passing on Windows (4476 and 146 at StaleResults and
-  4411 and 145 at InputChecks, on Windows too; 4297 and 145 at SvgExclude,
+- **Total tests:** 4563 in `tests/AstroCast.Tests` and 146 in
+  `tests/AstroCast.UiTests` at ExportText, all passing on Windows (4504 and 146 at ReturnAges, 4476 and
+  146 at StaleResults and 4411 and 145 at InputChecks, on Windows too; 4297 and 145 at SvgExclude,
   all passing on macOS; 4296 and 145 at Fixtures
   and at DavisonPanel; 4287 and 142 at Davison;
   4257 and 142 at TiesAndGuards;
@@ -2469,9 +2478,9 @@ recommendation, and ruled on the refresh defect the scoping's probe found).
   `ChartSortField` and builds the saved-chart row, and one `DisplayTextConverter` per head shows them:
   "Whole Sign", "Parent & Child", "Business Launch", "By Year", "Event Type", and "Birth — Harrisburg,
   Pennsylvania, United States (1947-10-05 09:30:00)", the stored reading as typed through
-  `ChartMapper.ParseStoredLocalDateTime`, never `CalendarDateFormatter`. The exports are unchanged:
-  the electional export still prints "BusinessLaunch". Export Backup counts the charts in the file it
-  wrote, not the filtered list.
+  `ChartMapper.ParseStoredLocalDateTime`, never `CalendarDateFormatter`. The exports were unchanged in
+  1.4.0: the electional export printed "BusinessLaunch" until 1.7.2, and prints the display name since
+  (see *Export Text* below). Export Backup counts the charts in the file it wrote, not the filtered list.
 
 ## Relocation panel (branch Relocate, 1.4.0)
 
@@ -2816,3 +2825,81 @@ for one year, the year the return opens.
 `ReturnTimeLordYearTests` (22 names: person A's 2026, 2022 and 2032 returns, the four goldens with their
 as-of lines, and the three cultures) and `ProfectionAnalyzerTests` (6 names for the method and the
 profection's date) hold it.
+
+## Export Text (branch ExportText, 1.7.2)
+
+Text faults in the exports: findings A2, A3, A4, N8 to N15 and N21 of the 1.7.2 code audit and Q12 and Q23
+of the prompt audit, one commit for each. Wording, labels, rules and line endings; no calculation changed,
+and one printed position (Q12). No product code reads any of the strings changed.
+
+- **Line endings (A3; Steve's ruling).** An export carries the system's own line ending throughout, CR LF
+  on Windows and LF on macOS. The ten formatters that embed a chart (composite, Davison, electional, lunar
+  return, medical, planetary return, solar return, synastry, transit report, transit timeline; the primary
+  directions report through the transit report's method) joined its lines with `Append('\n')` and now join
+  with `AppendLine`; a horary chart's `**Status:** Perfected` line had a line feed inside its own text.
+  Until 1.7.2 a solar return held 166 CR LF endings and 359 bare line feeds on Windows.
+- **Hard breaks (A3, N8).** A `**Label:** value` line that another follows ends with two spaces; the last
+  of a block needs none; no blank line was added or removed. The places: the headers of the transit report,
+  the transit timeline, the daily horoscope, the electional report and the primary directions report; the
+  transit report's Secondary Progressions lines; each electional candidate's Score, Moon and Ascendant
+  lines; the primary directions section's Method, Key, Significators, Promissors and Left out lines; the
+  synodic series' Conjunctions Found line; the synastry Method and Relationship lines; the composite's
+  Reference Location line; the map export's Name and Born lines; the cycle timeline's Cycle Period line
+  before a Calendar line; and the Calendar line in each of those headers.
+- **One rule before a footer (A2, N9).** `PositionFormatter.EndsWithRule` and `AppendRuleUnlessPresent`,
+  the check the transit report's footer has always made: the solar, lunar and planetary return exports and
+  the synastry export print one rule after their cross-chart declination table, and the transit timeline
+  one after its Clusters section (its footer adds its rule and blank line only when none stands there).
+- **Articles and counts (A2, N12).** The profection summary reads "an 8th" and "an 11th house profection
+  year", the releasing summary "an Aries" and "an Aquarius Level 1 period". A count's noun follows it:
+  "(1 day)" in the daily horoscope's Report Period, "1 New Moon, 1 Full Moon" in the lunation series, "1
+  return, 1 ingress" in the return and ingress timeline, "Duration: 1 day" in the transit timeline, "at
+  least 1 hour apart" in the electional header.
+- **Display names (N11).** `DisplayNames` names the Moon's phases (`MoonPhaseType.DisplayName`, which
+  `MoonConditionInfo.PhaseLabel` reads) and the aspects (`AspectType.DisplayName`: "Semi-Sextile" and
+  "Semi-Square", the rest the enum's one word). The electional export prints a candidate's phase in words
+  in its Moon line and its strengths ("Waning Crescent"), the election type's display name in the header
+  and in "Significator well-placed for Business Launch", and the Ascendant ruler's house as "in the 7th
+  house"; the Annual Profection's Lord's Natal Aspects read "Venus Semi-Sextile Mercury"; the paran export
+  prints "Anti-Culm." as the chart's Parans table does (`ChartMarkdownFormatter.FormatAngleType`). The
+  JSON keeps the enum names. Until 1.7.2: "WaningCrescent", "BusinessLaunch", "in House 7", "SemiSextile",
+  "AntiCulminating".
+- **Ingress rows (N13, Q12).** In the return and ingress timeline an ingress row keeps its columns and its
+  position, the boundary crossed, and its Label is `Enters {sign}`, or `Enters {sign} (retrograde)` when
+  the body's speed was negative at the crossing: Chiron on 2026-09-18 reads `00°00′00″ Taurus | Enters
+  Aries (retrograde)`, where it read "Sign Entry". The Sun's four cardinal ingresses keep their season
+  names. In the transit timeline a retrograde ingress (the sign entered is the one before the sign left)
+  prints `Ingress Virgo → Leo (retrograde)` and the boundary crossed, `0°00' Virgo`, where it printed 0° of
+  the sign entered whatever the direction; a direct ingress is unchanged.
+- **Releasing summary (Q23).** The summary closes with one of three sentences, by the Level 1 period's
+  angularity: Angular " This is a peak (angular) period — heightened activity and visibility.", Succedent
+  " This is a moderately active (succedent) period — steady development between peak and background.",
+  Cadent " This is a background period — quieter, preparatory themes." Until 1.7.2 a Succedent period took
+  the Cadent sentence.
+- **Medical export (N14; Steve's ruling on the line).** `ChartMarkdownFormatter.ToMarkdown` has a seventh
+  parameter, `medicalCorrespondences` (default true); the medical export passes false, so the chart it
+  embeds prints no `## Medical Astrology Correspondences` section, and the export's own fuller sections are
+  the only copy. `ChartMarkdownFormatter.MedicalBasisLine`, "*Traditional correspondences for educational
+  and historical study. Not medical advice.*", prints once in the medical export, directly before
+  `## Temperament Assessment`. A chart export of its own is unchanged.
+- **Daily horoscope with an unknown birth time (N15).** The backdrop table has no House column and the
+  Entering orb and Exiting orb lines no "(H7)", as the natal summary and the Exact and Active tables
+  already printed no house.
+- **Relocation export (N10).** The relocated chart sits under `## Relocated Chart` without the chart
+  export's own title and footer, as the composite and Davison exports embed theirs, and the one footer
+  carries the relocated chart's `EngineVersion` ("AstroCast 1.7.2 (SwissEph 2.10.03, tzdb 2026e)").
+- **Chart PDF (A4, N21).** The document information holds a title, the chart's name and kind as the page
+  heading states them ("Eleanor Hartwell (Birth)"), and the creator "AstroCast 1.7.2"; no author and no
+  subject. The house table labels cusp 1 "(ASC)" and cusp 10 "(MC)" only when the cusp's longitude is the
+  angle's (`CuspAngleLabel`): both in Placidus, cusp 1 alone in Equal houses, neither in Whole Sign. The
+  chart ruler's house prints as an ordinal, "Ruler House: 4th".
+- **Goldens.** 34 of the 44 golden files moved, each change put to its item's commit: 128 lines gained two
+  trailing spaces (19 files); 14 files lost one rule (the two timeline goldens its blank line too); 26
+  lines changed a name (8 files); 8 ingress labels (1); 5 Succedent sentences (5); 5 article or plural
+  lines (5); the medical golden lost 47 lines and the two relocation goldens 5 each.
+- **Tests.** `ExportLineEndingTests` (4 names) runs every golden fact inside
+  `GoldenFormatterTestBase.CollectCandidates`, which hands back each export as its formatter returned it,
+  and holds the line endings, the hard breaks and the single rule for every export the golden tests make,
+  and the line endings of a horary chart that perfects. Each item also has tests that name its corrected
+  text outright, beside the tests of its formatter or analyzer (`ExportWordingTests` for the lunation
+  series and the return and ingress timeline, which had no test file of their own).
