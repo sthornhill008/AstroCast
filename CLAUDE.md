@@ -1863,7 +1863,10 @@ on what a `Button` is.
   1.7.2 is open: branch Prompts (2026-11-14), the prompt library in `prompts/` with
   `docs/PROMPT_LIBRARY_GUIDE.md`, then branch Review, the read-through before the repository turned public;
   then branch InputChecks (2026-11-27), the first branch of the 1.7.2 plan: seven input and message fixes
-  from the 1.7.2 code audit (see *Input Checks* below), made on Maple.
+  from the 1.7.2 code audit (see *Input Checks* below), made on Maple, landed on `e7fd2be` and pushed the
+  same day; then branch StaleResults (2026-11-27), finding N2 of that audit: every result made from the Chart
+  panel's chart clears when that chart changes (see *Stale Results* below), made on Maple, awaiting its
+  landing.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
@@ -1926,8 +1929,9 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4411 in `tests/AstroCast.Tests` and 145 in
-  `tests/AstroCast.UiTests` at InputChecks, all passing on Windows (4297 and 145 at SvgExclude,
+- **Total tests:** 4472 in `tests/AstroCast.Tests` and 146 in
+  `tests/AstroCast.UiTests` at StaleResults, all passing on Windows (4411 and 145 at InputChecks,
+  on Windows too; 4297 and 145 at SvgExclude,
   all passing on macOS; 4296 and 145 at Fixtures
   and at DavisonPanel; 4287 and 142 at Davison;
   4257 and 142 at TiesAndGuards;
@@ -2511,7 +2515,8 @@ as one birth chart, then a new place, in both heads, in the Chart panel's sectio
   wrote it. `RelocationViewModelTests` (the Id key, the three place boxes, one refresh),
   `RelocationChartInUseTests` (the Chart panel change disables Export), `RelocationCommandTests` (a
   cancelled run leaves the result) and the UI `RelocationPanelTests.ResultLine_HidesWhenThePlaceChanges`
-  pin it.
+  pin it. Since 1.7.2 every other result made from the Chart panel's chart clears by the same rule: see
+  *Stale Results* below.
 - **Use Natal Location left the panel** with `UseNatalLocationForRelocationCommand` and its method:
   relocating a chart to its own birthplace gives the birth chart back, and Search finds a nearby
   place. The Electional panel's own Use Natal Location stays.
@@ -2695,3 +2700,53 @@ engine's argument): a tenth panel with the settings, the whole-life list and its
 - `DirectionsViewModelTests` (19), `MainViewModelTests` (`CalculateDirections_*`, `ClearForm_ClearsTheDirections`),
   `PanelExportTests.ExportDirections_WritesTheReportUnderItsDefaultName`, the `FormatTable_*` tests and the UI
   `DirectionsPanelTests` (9), `ShellTests` (ten buttons, ten bindings, the fit) pin it.
+
+## Stale Results (branch StaleResults, 1.7.2)
+
+Finding N2 of the 1.7.2 code audit, Steve's ruling 3: a panel's result does not outlive the chart it was made
+from. The Relocation panel has cleared its result since 1.6.1 (see *Relocation panel*); every other panel now
+does, in both heads, with no change outside the view models.
+
+- **The rule.** `MainViewModel.LastResult`'s setter calls each panel's `OnChartPanelChartChanged`, so every
+  change of the Chart panel's chart (Load, Calculate & Save, the Points recast, the electional search's cast
+  from the form, Clear Form) clears every result made from that chart: the result is null, what the panel
+  shows of it is emptied, and its exports, wherever their buttons sit, are disabled until the next Calculate.
+  Until 1.7.2 only the relocation result was cleared: a user who listed directions for one chart, loaded
+  another and pressed Export Directions MD got the first chart's report.
+- **Made from the Chart panel's chart, cleared:** `Directions.CurrentResult`, with its line and list;
+  `Transits.TransitResult`, and with it the report, the timeline and the daily horoscope exports; the Synastry
+  panel's `SynastryResult`, `CompositeResult` and `DavisonResult`; the Returns panel's
+  `CurrentSolarReturnResult`, `LunarReturnResults` with `SelectedLunarReturn`, and
+  `CurrentPlanetaryReturnResult`; `Cycles.CurrentCycleTimeline`; `ReturnIngressTimeline.CurrentResult` with
+  `HasResult`; and the map, `Astrocartography.CurrentResult` with `HasResult`, `VisibleLines` and
+  `CrossingReportText` (a map window left open draws no lines). The chart exports and the medical export hold
+  no result: each reads the Chart panel's chart when it runs.
+- **Made from a chart picked on its own panel, cleared as the Relocation panel's is:**
+  `Relocation.CurrentResult` (1.6.1) and `Electional.ElectionalResult`. Both pickers follow the Chart panel
+  (Load and Calculate & Save re-point them), so each result clears on every change of the Chart panel's chart,
+  and on a pick of another chart by hand, keyed on the chart's Id.
+- **Made from no chart, never cleared by this rule:** the ingress series and the cardinal ingresses, the
+  lunation series, and the eclipse, great-conjunction, mundane-aspect and synodic-cycle series. Clear Form
+  still empties the great-conjunction and synodic series with the rest of `Cycles.Clear()`, as before.
+- **Person B.** The Synastry panel's three results also clear when Person B changes, keyed on the chart's Id
+  (`SynastryViewModel.PersonB`'s setter, `InvalidateResults`): a refresh of the saved-charts lists re-points
+  the picker at a new object for the same chart and clears nothing, and deleting Person B's chart clears
+  them. In the window each picker's ComboBox loses its item while `AllSavedCharts` is refilled, and writes
+  null to its view model before the refresh picks the same chart again: `MainViewModel.IsRefillingSavedCharts`
+  is set for the refill, the Person B and Electional setters clear nothing while it is, and
+  `OnSavedChartsRefilled(idBefore)` then compares the Id held before the refill with the one held after. The
+  Relocation picker has no such guard (noted at StaleResults, not changed): in the window its result is
+  cleared by any refresh while a chart is picked there.
+- **Clear Form** clears every chart-made result: through the six panels' `Clear()` as before, through the
+  `LastResult` setter, and by name for the two it left until 1.7.2, the return and ingress timeline and the
+  map, whether or not there was a chart to change. Those two panels' own settings (the timeline's years and
+  boxes, the map's sixteen line boxes) stay; neither panel's `Clear()` is called.
+- **A failed run and a run in flight** are as on the Relocation panel. A run that fails or is cancelled
+  leaves the earlier result, which is still a result for the chart on the Chart panel; the electional search
+  alone clears its result when it fails, as it did before. No panel guards a run in flight: a chart changed
+  while a run is under way clears the old result, and the run then lands its result for the chart it started
+  with.
+
+`StaleResultsTests` (61 names: each of the twelve results against each of the four changes, the Synastry
+panel's three against Person B, the refresh with and without the picker's null, the mundane series, Clear
+Form, a failed run) and the UI `SavedChartPickersTests.ARefresh_KeepsTheResultsOfThePickersItRepoints` hold it.
