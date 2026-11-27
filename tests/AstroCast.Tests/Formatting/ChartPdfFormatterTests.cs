@@ -155,6 +155,34 @@ public sealed class ChartPdfFormatterTests
         }
     }
 
+    /// <summary>
+    /// The PDF's document information carries a title, the chart's name and kind as the page heading states
+    /// them, and names AstroCast with its version as the creator; it names no author and no subject (branch
+    /// ExportText, 1.7.2; finding A4). Until 1.7.2 the PDF carried no title, so a reader showed the file's name.
+    /// </summary>
+    [Fact]
+    public void Pdf_CarriesItsTitleAndCreator_AndNoAuthorOrSubject()
+    {
+        ChartResult result = CreateTestResult();
+
+        using PdfDocument document = PdfDocument.Open(ChartPdfFormatter.Generate(result));
+
+        document.Information.Title.Should().Be("PDF Test (Birth)");
+        document.Information.Creator.Should().MatchRegex(@"^AstroCast \d+\.\d+\.\d+$")
+            .And.Be(result.EngineVersion[..result.EngineVersion.IndexOf(" (", StringComparison.Ordinal)]);
+        document.Information.Author.Should().BeNull();
+        document.Information.Subject.Should().BeNull();
+    }
+
+    /// <summary>A horary chart's title names its kind as its heading does: "Parcel enquiry 1001 (Horary)".</summary>
+    [Fact]
+    public void Pdf_HoraryChart_TitleNamesItsKind()
+    {
+        using PdfDocument document = PdfDocument.Open(ChartPdfFormatter.Generate(CreateHoraryResult()));
+
+        document.Information.Title.Should().Be("Parcel enquiry 1001 (Horary)");
+    }
+
     /// <summary>A guard: a chart with no horary analysis prints no horary section.</summary>
     [Fact]
     public void Pdf_NonHoraryChart_HasNoHorarySection()

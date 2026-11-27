@@ -81,7 +81,9 @@ public static class ChartPdfFormatter
     #region Document Builder
 
     /// <summary>
-    /// Build the QuestPDF document model for a chart result.
+    /// Build the QuestPDF document model for a chart result, with its document information: the title and the
+    /// creator, and no author or subject (branch ExportText, 1.7.2; finding A4). Until 1.7.2 the document
+    /// carried no information of its own, so a PDF reader showed the file's name for its title.
     /// </summary>
     private static Document BuildDocument(ChartResult result)
     {
@@ -97,7 +99,35 @@ public static class ChartPdfFormatter
                 page.Content().Element(c => ComposeContent(c, result));
                 page.Footer().Element(c => ComposeFooter(c, result));
             });
+        })
+        .WithMetadata(new DocumentMetadata
+        {
+            Title = DocumentTitle(result),
+            Creator = DocumentCreator(result),
         });
+    }
+
+    /// <summary>
+    /// The PDF's title: the chart's name and its kind, as the page heading states them ("Eleanor Hartwell
+    /// (Birth)"); the name alone for a chart with no kind.
+    /// </summary>
+    /// <param name="result">The chart.</param>
+    /// <returns>The title.</returns>
+    private static string DocumentTitle(ChartResult result) =>
+        string.IsNullOrWhiteSpace(result.Input.EventType)
+            ? result.Input.Name
+            : $"{result.Input.Name} ({result.Input.EventType})";
+
+    /// <summary>
+    /// The PDF's creator: the program's name and version, "AstroCast 1.7.2", the head of the engine version
+    /// the footer prints, without its Swiss Ephemeris and time-zone part.
+    /// </summary>
+    /// <param name="result">The chart, whose engine version names the program that cast it.</param>
+    /// <returns>The creator.</returns>
+    private static string DocumentCreator(ChartResult result)
+    {
+        int detail = result.EngineVersion.IndexOf(" (", StringComparison.Ordinal);
+        return detail < 0 ? result.EngineVersion : result.EngineVersion[..detail];
     }
 
     #endregion
