@@ -183,6 +183,60 @@ public sealed class ChartPdfFormatterTests
         document.Information.Title.Should().Be("Parcel enquiry 1001 (Horary)");
     }
 
+    /// <summary>
+    /// The house table labels cusp 1 "(ASC)" and cusp 10 "(MC)" only when the cusp's longitude is the angle's
+    /// (branch ExportText, 1.7.2; finding N21): both in Placidus, cusp 1 alone in Equal houses, neither in
+    /// Whole Sign, where the first cusp is 0 degrees of the rising sign. Until 1.7.2 the two labels went by
+    /// the cusp's number in every house system.
+    /// </summary>
+    /// <param name="system">The chart's house system.</param>
+    /// <param name="ascendantLabelled">Whether cusp 1 carries "(ASC)".</param>
+    /// <param name="midheavenLabelled">Whether cusp 10 carries "(MC)".</param>
+    [Theory]
+    [InlineData(AstroCast.Core.Enums.HouseSystem.Placidus, true, true)]
+    [InlineData(AstroCast.Core.Enums.HouseSystem.Equal, true, false)]
+    [InlineData(AstroCast.Core.Enums.HouseSystem.WholeSign, false, false)]
+    public void Pdf_LabelsACuspOnlyWhenItIsTheAngle(
+        AstroCast.Core.Enums.HouseSystem system, bool ascendantLabelled, bool midheavenLabelled)
+    {
+        ChartResult result = _engine.Calculate(new ChartInput
+        {
+            Name = "Eleanor Hartwell",
+            LocalDateTime = new DateTime(1947, 10, 5, 9, 30, 0),
+            TimeZone = "America/New_York",
+            UtcOffsetHours = -5.0,
+            UseExplicitOffset = true,
+            Latitude = 40.2737,
+            Longitude = -76.8844,
+            LocationName = "Harrisburg, Pennsylvania",
+            EventType = "Birth",
+            HouseSystem = system,
+        });
+
+        (string text, _) = PdfText(ChartPdfFormatter.Generate(result));
+
+        Regex.IsMatch(text, @"House 1: \S+ \S+ \(ASC\)").Should().Be(ascendantLabelled);
+        Regex.IsMatch(text, @"House 10: \S+ \S+ \(MC\)").Should().Be(midheavenLabelled);
+        text.Should().Contain("ASC: ").And.Contain("MC: ", "the angles are printed on their own beneath the table");
+    }
+
+    /// <summary>
+    /// The chart ruler's house prints as an ordinal, "Ruler House: 12th", as the Markdown's table has it
+    /// (branch ExportText, 1.7.2; finding N21). Until 1.7.2 the PDF printed the bare number.
+    /// </summary>
+    [Fact]
+    public void Pdf_PrintsTheChartRulersHouseAsAnOrdinal()
+    {
+        ChartResult result = CreateTestResult();
+        int house = result.ChartContext!.ChartRulerHouse;
+        string ordinal = house switch { 1 => "1st", 2 => "2nd", 3 => "3rd", _ => $"{house}th" };
+
+        (string text, _) = PdfText(ChartPdfFormatter.Generate(result));
+
+        text.Should().Contain($"Ruler House: {ordinal} ");
+        ChartMarkdownFormatter.ToMarkdown(result).Should().Contain($"| Ruler House | {ordinal} |");
+    }
+
     /// <summary>A guard: a chart with no horary analysis prints no horary section.</summary>
     [Fact]
     public void Pdf_NonHoraryChart_HasNoHorarySection()

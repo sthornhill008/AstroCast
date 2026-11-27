@@ -652,7 +652,7 @@ public static class ChartPdfFormatter
                 inner.Item().Text(text =>
                 {
                     text.Span("Ruler House: ").Bold();
-                    text.Span(ctx.ChartRulerHouse.ToString(Inv));
+                    text.Span(OrdinalHouse(ctx.ChartRulerHouse));
                 });
 
                 inner.Item().Text(text =>
@@ -752,6 +752,46 @@ public static class ChartPdfFormatter
     }
 
     /// <summary>
+    /// The label a cusp carries in the house table: "(ASC)" for cusp 1 and "(MC)" for cusp 10, and only when the
+    /// cusp's longitude is the angle's (branch ExportText, 1.7.2; finding N21). In Whole Sign the first cusp is
+    /// 0 degrees of the rising sign and the tenth is not the Midheaven; in Equal houses the tenth is not the
+    /// Midheaven. Until 1.7.2 the two labels went by the cusp's number in every house system.
+    /// </summary>
+    /// <param name="houses">The chart's cusps and angles.</param>
+    /// <param name="house">The house number, 1 to 12.</param>
+    /// <returns>The label, or an empty string.</returns>
+    private static string CuspAngleLabel(HouseData houses, int house)
+    {
+        (double angle, string label) = house switch
+        {
+            1 => (houses.Ascendant, "(ASC)"),
+            10 => (houses.Midheaven, "(MC)"),
+            _ => (double.NaN, string.Empty),
+        };
+        if (label.Length == 0)
+            return string.Empty;
+
+        // the two longitudes come from one house calculation, so the same point is the same number; the
+        // tolerance, far below a printed second of arc, allows for the wrap at 360 degrees
+        double apart = Math.Abs(houses.Cusps[house - 1] - angle) % 360.0;
+        apart = Math.Min(apart, 360.0 - apart);
+        return apart < 1e-6 ? label : string.Empty;
+    }
+
+    /// <summary>
+    /// Formats a house number with its ordinal suffix ("1st", "2nd", "10th"), as the chart Markdown does.
+    /// </summary>
+    /// <param name="house">The house number.</param>
+    /// <returns>The ordinal.</returns>
+    private static string OrdinalHouse(int house) => house switch
+    {
+        1 => "1st",
+        2 => "2nd",
+        3 => "3rd",
+        _ => string.Create(Inv, $"{house}th"),
+    };
+
+    /// <summary>
     /// Compose the house cusps section with a two-column layout and angles.
     /// </summary>
     private static void ComposeHousesSection(IContainer container, ChartResult result)
@@ -772,7 +812,7 @@ public static class ChartPdfFormatter
 
                     for (int i = 0; i < 6; i++)
                     {
-                        string label = (i + 1) == 1 ? "(ASC)" : "";
+                        string label = CuspAngleLabel(result.Houses, i + 1);
                         table.Cell().Padding(2).Text(string.Create(Inv, $"House {i + 1}:"));
                         table.Cell().Padding(2).Text($"{PositionFormatter.FormatLongitude(result.Houses.Cusps[i])} {label}");
                     }
@@ -789,7 +829,7 @@ public static class ChartPdfFormatter
 
                     for (int i = 6; i < 12; i++)
                     {
-                        string label = (i + 1) == 10 ? "(MC)" : "";
+                        string label = CuspAngleLabel(result.Houses, i + 1);
                         table.Cell().Padding(2).Text(string.Create(Inv, $"House {i + 1}:"));
                         table.Cell().Padding(2).Text($"{PositionFormatter.FormatLongitude(result.Houses.Cusps[i])} {label}");
                     }
