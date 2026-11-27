@@ -1518,6 +1518,98 @@ public sealed class MainViewModelTests
     }
 
     /// <summary>
+    /// The electional search, falling back to the Chart panel's fields, casts the chart the form describes: its
+    /// type and its house system (branch InputChecks, 1.7.2, finding N5). Until 1.7.2 the fallback built an input
+    /// of its own, always "Birth" in Placidus, and that chart became the Chart panel's chart while the form said
+    /// otherwise.
+    /// </summary>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [Fact]
+    public async Task Electional_NatalFromTheForm_CarriesTheFormsTypeAndHouseSystem()
+    {
+        RecordingChartEngine engine = new();
+        MainViewModel vm = CreateViewModel(chartEngine: engine);
+        FillFormForTheElectionalFallback(vm);
+        vm.ChartEntry.EventType = "Event";
+        vm.ChartEntry.SelectedHouseSystem = HouseSystem.WholeSign;
+
+        vm.CalculateElectionalCommand.Execute(null);
+        await WaitAsync(vm.CalculateElectionalCommand);
+
+        ChartInput input = engine.Inputs
+            .Should().ContainSingle($"the natal chart cast from the form is the only chart cast; status: {vm.StatusText}")
+            .Which;
+        input.EventType.Should().Be("Event");
+        input.HouseSystem.Should().Be(HouseSystem.WholeSign);
+        vm.LastResult?.Input.Should().BeSameAs(input, "the form's chart becomes the Chart panel's chart");
+    }
+
+    /// <summary>
+    /// The electional search's cast from the form builds the very input Calculate &amp; Save builds from the same
+    /// form, every member alike, the horary fields included: both go through one builder (N5).
+    /// </summary>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [Fact]
+    public async Task Electional_NatalFromTheForm_BuildsTheInputCalculateAndSaveBuilds()
+    {
+        RecordingChartEngine savedEngine = new();
+        MainViewModel saved = CreateViewModel(chartEngine: savedEngine);
+        FillFormForTheElectionalFallback(saved);
+        FillTheRestOfTheForm(saved);
+        saved.CalculateAndSaveCommand.Execute(null);
+        await WaitAsync(saved.CalculateAndSaveCommand);
+
+        RecordingChartEngine searchEngine = new();
+        MainViewModel search = CreateViewModel(chartEngine: searchEngine);
+        FillFormForTheElectionalFallback(search);
+        FillTheRestOfTheForm(search);
+        search.CalculateElectionalCommand.Execute(null);
+        await WaitAsync(search.CalculateElectionalCommand);
+
+        ChartInput fromSave = savedEngine.Inputs.Should().ContainSingle(saved.StatusText).Which;
+        ChartInput fromSearch = searchEngine.Inputs.Should().ContainSingle(search.StatusText).Which;
+        fromSearch.Should().BeEquivalentTo(fromSave);
+        fromSearch.EventType.Should().Be("Horary");
+        fromSearch.HoraryQuestion.Should().Be("Will the shop open on time?");
+        fromSearch.HouseSystem.Should().Be(HouseSystem.Regiomontanus);
+    }
+
+    /// <summary>Fills the Chart panel's required fields and the Electional panel's, for a search with no chart picked.</summary>
+    /// <param name="vm">The view model.</param>
+    private static void FillFormForTheElectionalFallback(MainViewModel vm)
+    {
+        vm.ChartEntry.Name = "Shop opening";
+        vm.ChartEntry.EventDate = new DateTime(2026, 6, 11);
+        vm.ChartEntry.EventTime = "09:30:00";
+        vm.ChartEntry.TimeZone = "America/New_York";
+        vm.ChartEntry.LocationName = "Richmond, VA";
+        vm.ChartEntry.LatitudeText = "37.5385";
+        vm.ChartEntry.LongitudeText = "-77.4343";
+        vm.Electional.Goal = "Open a shop";
+        vm.Electional.LocationName = "Richmond, VA";
+        vm.Electional.TimeZone = "America/New_York";
+        vm.Electional.LatitudeText = "37.5385";
+        vm.Electional.LongitudeText = "-77.4343";
+    }
+
+    /// <summary>Fills every optional field of the Chart panel's form, as a horary chart in Regiomontanus houses.</summary>
+    /// <param name="vm">The view model.</param>
+    private static void FillTheRestOfTheForm(MainViewModel vm)
+    {
+        vm.ChartEntry.EventType = "Horary";
+        vm.ChartEntry.HoraryQuestion = "Will the shop open on time?";
+        vm.ChartEntry.HoraryCategory = "Career";
+        vm.ChartEntry.SelectedHouseSystem = HouseSystem.Regiomontanus;
+        vm.ChartEntry.Gender = Gender.Female;
+        vm.ChartEntry.SourceNotes = "Invented example";
+        vm.ChartEntry.Notes = "A note";
+        vm.ChartEntry.Keywords = "shop, opening";
+        vm.ChartEntry.UseExplicitOffset = true;
+        vm.ChartEntry.UtcOffsetHoursText = "-4";
+        vm.ChartEntry.IncludeMinorPoints = true;
+    }
+
+    /// <summary>
     /// The Points box ticked while the form fallback's cast runs: the landed chart carried the box's old value,
     /// so it is recast at once with the new one, the search scores the chart on screen, and the run's own status
     /// line has the last word (1.6.1, item D, decision 5, branch ElectionalPicker). Until 1.6.1 a toggle during

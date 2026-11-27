@@ -1918,6 +1918,50 @@ public sealed class MainViewModel : INotifyPropertyChanged
     }
 
     /// <summary>
+    /// Builds the chart input the Chart panel's form describes, from the values its boxes were read as: the one
+    /// place a form becomes a <see cref="ChartInput"/> (branch InputChecks, 1.7.2, finding N5).
+    /// </summary>
+    /// <remarks>
+    /// Calculate &amp; Save and the electional search's cast from the form both call it, so the two build the same
+    /// input from the same form: its name, clock, place, type, gender, notes, horary question and category (a
+    /// horary chart's only), house system and the session's Points switch. Until 1.7.2 the electional search built
+    /// an input of its own, always "Birth" in Placidus houses with no horary fields, and that chart became the
+    /// Chart panel's chart while the form said otherwise. The caller reads and checks the boxes, in its own order
+    /// and with its own messages; nothing here can fail.
+    /// </remarks>
+    /// <param name="localDateTime">The form's date at the time of day read from the Time box.</param>
+    /// <param name="latitude">The latitude read from its box, in decimal degrees.</param>
+    /// <param name="longitude">The longitude read from its box, in decimal degrees.</param>
+    /// <param name="utcOffsetHours">The explicit offset read from its box, or null when the override is off.</param>
+    /// <returns>The chart input the form describes.</returns>
+    private ChartInput BuildChartInputFromForm(
+        DateTime localDateTime, double latitude, double longitude, double? utcOffsetHours) =>
+        new()
+        {
+            Name = ChartEntry.Name.Trim(),
+            LocalDateTime = localDateTime,
+            TimeZone = ChartEntry.TimeZone.Trim(),
+            Latitude = latitude,
+            Longitude = longitude,
+            LocationName = ChartEntry.LocationName.Trim(),
+            EventType = ChartEntry.EventType,
+            Gender = ChartEntry.Gender,
+            SourceNotes = string.IsNullOrWhiteSpace(ChartEntry.SourceNotes) ? null : ChartEntry.SourceNotes.Trim(),
+            UseExplicitOffset = ChartEntry.UseExplicitOffset,
+            UtcOffsetHours = utcOffsetHours,
+            Notes = string.IsNullOrWhiteSpace(ChartEntry.Notes) ? null : ChartEntry.Notes.Trim(),
+            Keywords = string.IsNullOrWhiteSpace(ChartEntry.Keywords) ? null : ChartEntry.Keywords.Trim(),
+            HoraryQuestion = ChartEntry.IsHorary && !string.IsNullOrWhiteSpace(ChartEntry.HoraryQuestion)
+                ? ChartEntry.HoraryQuestion.Trim()
+                : null,
+            HoraryCategory = ChartEntry.IsHorary && !string.IsNullOrWhiteSpace(ChartEntry.HoraryCategory)
+                ? ChartEntry.HoraryCategory.Trim()
+                : null,
+            HouseSystem = ChartEntry.SelectedHouseSystem,
+            IncludeMinorPoints = ChartEntry.IncludeMinorPoints,
+        };
+
+    /// <summary>
     /// Build a <see cref="ChartInput"/> from the form, calculate the chart,
     /// save to database, and update the saved charts list.
     /// </summary>
@@ -1967,30 +2011,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 utcOffsetHours = offset;
             }
 
-            ChartInput input = new()
-            {
-                Name = ChartEntry.Name.Trim(),
-                LocalDateTime = localDateTime,
-                TimeZone = ChartEntry.TimeZone.Trim(),
-                Latitude = latitude,
-                Longitude = longitude,
-                LocationName = ChartEntry.LocationName.Trim(),
-                EventType = ChartEntry.EventType,
-                Gender = ChartEntry.Gender,
-                SourceNotes = string.IsNullOrWhiteSpace(ChartEntry.SourceNotes) ? null : ChartEntry.SourceNotes.Trim(),
-                UseExplicitOffset = ChartEntry.UseExplicitOffset,
-                UtcOffsetHours = utcOffsetHours,
-                Notes = string.IsNullOrWhiteSpace(ChartEntry.Notes) ? null : ChartEntry.Notes.Trim(),
-                Keywords = string.IsNullOrWhiteSpace(ChartEntry.Keywords) ? null : ChartEntry.Keywords.Trim(),
-                HoraryQuestion = ChartEntry.IsHorary && !string.IsNullOrWhiteSpace(ChartEntry.HoraryQuestion)
-                    ? ChartEntry.HoraryQuestion.Trim()
-                    : null,
-                HoraryCategory = ChartEntry.IsHorary && !string.IsNullOrWhiteSpace(ChartEntry.HoraryCategory)
-                    ? ChartEntry.HoraryCategory.Trim()
-                    : null,
-                HouseSystem = ChartEntry.SelectedHouseSystem,
-                IncludeMinorPoints = ChartEntry.IncludeMinorPoints,
-            };
+            ChartInput input = BuildChartInputFromForm(localDateTime, latitude, longitude, utcOffsetHours);
 
             // Calculate chart (synchronous — Swiss Ephemeris is fast)
             ChartResult result = _chartEngine.Calculate(input);
@@ -2843,23 +2864,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
                     utcOffsetHours = offset;
                 }
 
-                ChartInput natalInput = new()
-                {
-                    Name = ChartEntry.Name.Trim(),
-                    LocalDateTime = ChartEntry.EventDate.Date.Add(natalTime),
-                    TimeZone = ChartEntry.TimeZone.Trim(),
-                    Latitude = natalLat,
-                    Longitude = natalLon,
-                    LocationName = ChartEntry.LocationName.Trim(),
-                    EventType = "Birth",
-                    Gender = ChartEntry.Gender,
-                    SourceNotes = string.IsNullOrWhiteSpace(ChartEntry.SourceNotes) ? null : ChartEntry.SourceNotes.Trim(),
-                    UseExplicitOffset = ChartEntry.UseExplicitOffset,
-                    UtcOffsetHours = utcOffsetHours,
-                    Notes = string.IsNullOrWhiteSpace(ChartEntry.Notes) ? null : ChartEntry.Notes.Trim(),
-                    Keywords = string.IsNullOrWhiteSpace(ChartEntry.Keywords) ? null : ChartEntry.Keywords.Trim(),
-                    IncludeMinorPoints = ChartEntry.IncludeMinorPoints,
-                };
+                // The form's own chart, as Calculate & Save builds it: its type, house system and horary fields
+                ChartInput natalInput = BuildChartInputFromForm(
+                    ChartEntry.EventDate.Date.Add(natalTime), natalLat, natalLon, utcOffsetHours);
 
                 resolvedNatal = await Task.Run(() => _chartEngine.Calculate(natalInput), token);
                 LastResult = resolvedNatal;
