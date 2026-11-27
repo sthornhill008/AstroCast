@@ -99,25 +99,25 @@ public static class ProfectionAnalyzer
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Unlike <see cref="Analyze"/>, this method treats the return's instant as
-    /// the moment at which the new profection year begins. For an SR ingressing
-    /// on or near the natal anniversary, the age is the count of years from the
-    /// birth instant, <see cref="ChartResult.UtcDateTime"/>, rounded to the
-    /// nearest whole (<c>Math.Round(yearsSinceBirth)</c> with the Gregorian mean
-    /// year length of 365.2425 days). This produces the correct year-of-life for
-    /// the SR chart even when the ingress moment falls a day or two before or
-    /// after the calendar birthday — a regular occurrence because SR ingress
-    /// drifts by hours each year. Only <c>SolarReturnMarkdownFormatter</c> calls
-    /// it: a lunar or planetary return's profection is the year running at the
-    /// return, <see cref="Analyze"/> (branch H, 1.3.4).
+    /// Unlike <see cref="Analyze"/>, this method reads the year the return opens,
+    /// which <see cref="YearOpenedBySolarReturn"/> decides: the age is the count of
+    /// years from the birth instant rounded to the nearest whole, right even when
+    /// the return falls a day or two before or after the calendar birthday, a
+    /// regular occurrence because the return drifts by hours each year; and
+    /// <see cref="ProfectionYearResult.ReferenceDate"/>, the "as of" date the
+    /// export prints, is the day that year is read on, the birthday it begins on
+    /// when the return falls before it (branch ReturnAges, 1.7.2; until then the
+    /// return's own day). Only the solar return export reads this way, in all
+    /// three of its time-lord sections: a lunar or planetary return's profection
+    /// is the year running at the return, <see cref="Analyze"/> (branch H, 1.3.4).
     /// </para>
     /// <para>
-    /// Worked example: a native born 1947-10-05 with an SR ingressing
-    /// 2025-10-04 18:07:36 UTC (one day before the calendar birthday). Natal
-    /// <see cref="Analyze"/> gives age 77 because the reference date is one day
-    /// before the 78th anniversary. <see cref="AnalyzeForReturn"/> gives age 78
-    /// because the SR ingress moment governs the 79th year of life (entered at
-    /// age 78).
+    /// Worked example: a native born 1947-10-05 with a solar return at 2026-10-04
+    /// 17:18:50 UTC, the day before the calendar birthday. Natal
+    /// <see cref="Analyze"/> at the return gives age 78, because the return's day
+    /// is the day before the 79th anniversary. <see cref="AnalyzeForReturn"/>
+    /// gives age 79, as of 2026-10-05: the return opens the 80th year of life,
+    /// entered at age 79 on that birthday.
     /// </para>
     /// </remarks>
     public static ProfectionYearResult AnalyzeForReturn(
@@ -125,8 +125,52 @@ public static class ProfectionAnalyzer
     {
         ArgumentNullException.ThrowIfNull(chart);
 
-        // The birth day, and the refusal of a return before it; the age is not this count but the rounding below.
-        (DateOnly birthDay, DateOnly referenceDay, _) = FirdariaAnalyzer.BirthDayAndAge(chart, returnIngressUtc);
+        (DateOnly birthDay, int age, _, DateOnly readingDay) = YearOpenedBySolarReturn(chart, returnIngressUtc);
+
+        return BuildResult(chart, readingDay, age, birthDay);
+    }
+
+    /// <summary>
+    /// The year of life a solar return opens, and the day its time lords are read on: the one place that
+    /// decides both (branch ReturnAges, 1.7.2; finding A1 of the 1.7.2 code audit, Steve's ruling).
+    /// <see cref="AnalyzeForReturn"/> takes its age and its reference day from here, and the solar return
+    /// export reads its Firdaria and its Zodiacal Releasing on the same day, so its three sections are one
+    /// year's.
+    /// </summary>
+    /// <param name="chart">The natal chart.</param>
+    /// <param name="returnIngressUtc">The solar return's instant, UTC.</param>
+    /// <returns>
+    /// The birth day as proleptic ticks; the age of the year the return opens; the birthday that year begins
+    /// on, the birth day plus that many years; and the day the year is read on, the later of that birthday and
+    /// the return's day on the chart's clock.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the return's day on the chart's clock is before the birth day (T6-6).
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The age is the count of years from the birth instant, <see cref="ChartResult.UtcDateTime"/>, to the
+    /// return's, rounded to the nearest whole with the Gregorian mean year of 365.2425 days: a solar return
+    /// lies within a day or two of its birthday, so the rounding names the year it opens whichever side of
+    /// the birthday it falls on. The birth day and the return's day are read by
+    /// <see cref="FirdariaAnalyzer.BirthDayAndAge"/>, on the chart's clock.
+    /// </para>
+    /// <para>
+    /// A return that falls before its birthday is read on the birthday, where the year it opens begins: the
+    /// age counted in completed birthdays on that day is the rounded age, and a Firdaria or releasing period
+    /// that begins on that birthday is the one current. A return on its birthday or after it is read on its
+    /// own day, as it was until 1.7.2. Person A (born 1947-10-05 at UTC-5), solar return 2026 at 2026-10-04
+    /// 17:18:50 UTC: age 79, the birthday 2026-10-05, read on 2026-10-05. Until 1.7.2 only the profection's
+    /// age was the year the return opens; the Firdaria and the releasing counted completed birthdays on the
+    /// return's own day, so that export said 79 in one section and 78 in the next.
+    /// </para>
+    /// </remarks>
+    internal static (DateOnly BirthDay, int Age, DateOnly YearStart, DateOnly ReadingDay) YearOpenedBySolarReturn(
+        ChartResult chart, DateTime returnIngressUtc)
+    {
+        // The birth day, the return's day on the chart's clock, and the refusal of a return before the birth
+        // day; the age is not this method's count of completed birthdays but the rounding below.
+        (DateOnly birthDay, DateOnly returnDay, _) = FirdariaAnalyzer.BirthDayAndAge(chart, returnIngressUtc);
 
         // Age = count of years from the birth instant rounded to the nearest natal
         // anniversary using the Gregorian mean year. For SR ingress within
@@ -135,15 +179,18 @@ public static class ProfectionAnalyzer
         double yearsSinceBirth = (returnIngressUtc - chart.UtcDateTime).TotalDays / 365.2425;
         int age = (int)Math.Round(yearsSinceBirth);
 
-        return BuildResult(chart, referenceDay, age, birthDay);
+        DateOnly yearStart = birthDay.AddYears(age);
+        DateOnly readingDay = returnDay > yearStart ? returnDay : yearStart;
+
+        return (birthDay, age, yearStart, readingDay);
     }
 
     /// <summary>
     /// Builds the full <see cref="ProfectionYearResult"/> for a given chart,
     /// reference date, and pre-computed age. Shared between <see cref="Analyze"/>
     /// (natal semantics) and <see cref="AnalyzeForReturn"/> (return-ingress
-    /// semantics) — the only difference between the two entry points is how
-    /// <paramref name="age"/> is derived.
+    /// semantics): the two entry points differ only in how <paramref name="age"/>
+    /// and <paramref name="referenceDay"/> are derived.
     /// </summary>
     /// <param name="chart">The natal chart result.</param>
     /// <param name="referenceDay">The reference day the age was taken on, to record on the result.</param>

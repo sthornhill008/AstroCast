@@ -479,6 +479,90 @@ public sealed class ProfectionAnalyzerTests
             "SR-context age advances past the calendar boundary; natal-context age stays at the pre-anniversary year");
     }
 
+    /// <summary>
+    /// The one method that decides the year a solar return opens (branch ReturnAges, 1.7.2): a return the day
+    /// before the birthday opens the year of the rounded age, 25, which begins on the 25th birthday, and that
+    /// birthday is the day the year's time lords are read on, not the return's own day.
+    /// </summary>
+    [Fact]
+    public void YearOpenedBySolarReturn_ReturnBeforeTheBirthday_IsReadOnTheBirthday()
+    {
+        ChartResult chart = CreateChart(birthDate: new DateTime(2000, 10, 5));
+        DateTime ingress = new(2025, 10, 4, 18, 7, 36, DateTimeKind.Utc);
+
+        (DateOnly birthDay, int age, DateOnly yearStart, DateOnly readingDay) =
+            ProfectionAnalyzer.YearOpenedBySolarReturn(chart, ingress);
+
+        birthDay.Should().Be(new DateOnly(2000, 10, 5));
+        age.Should().Be(25);
+        yearStart.Should().Be(new DateOnly(2025, 10, 5));
+        readingDay.Should().Be(new DateOnly(2025, 10, 5));
+    }
+
+    /// <summary>
+    /// A return on its birthday, or after it, is read on its own day on the chart's clock, as until 1.7.2:
+    /// 2025-10-05 12:00 UT is 08:00 on the birthday in New York, and 2025-10-06 06:00 UT is 02:00 the day after.
+    /// </summary>
+    /// <param name="day">The day of October 2025 the return falls on, UT.</param>
+    /// <param name="hour">Its hour, UT.</param>
+    [Theory]
+    [InlineData(5, 12)]
+    [InlineData(6, 6)]
+    public void YearOpenedBySolarReturn_ReturnOnOrAfterTheBirthday_IsReadOnItsOwnDay(int day, int hour)
+    {
+        ChartResult chart = CreateChart(birthDate: new DateTime(2000, 10, 5));
+        DateTime ingress = new(2025, 10, day, hour, 0, 0, DateTimeKind.Utc);
+
+        (DateOnly birthDay, int age, DateOnly yearStart, DateOnly readingDay) =
+            ProfectionAnalyzer.YearOpenedBySolarReturn(chart, ingress);
+
+        birthDay.Should().Be(new DateOnly(2000, 10, 5));
+        age.Should().Be(25);
+        yearStart.Should().Be(new DateOnly(2025, 10, 5));
+        readingDay.Should().Be(new DateOnly(2025, 10, day));
+    }
+
+    /// <summary>A return before the birth day is refused, as every time-lord reading is (T6-6).</summary>
+    [Fact]
+    public void YearOpenedBySolarReturn_ReturnBeforeTheBirthDay_IsRefused()
+    {
+        ChartResult chart = CreateChart(birthDate: new DateTime(2000, 10, 5));
+        DateTime ingress = new(1999, 10, 5, 12, 0, 0, DateTimeKind.Utc);
+
+        Action act = () => ProfectionAnalyzer.YearOpenedBySolarReturn(chart, ingress);
+
+        act.Should().Throw<ArgumentOutOfRangeException>().WithMessage("*is before the birth day*");
+    }
+
+    /// <summary>
+    /// The profection of a return the day before the birthday is dated the birthday its year begins on
+    /// (branch ReturnAges, 1.7.2); until then it was dated the return's own day, 2025-10-04.
+    /// </summary>
+    [Fact]
+    public void AnalyzeForReturn_PreBirthdayIngress_IsDatedTheBirthdayTheYearBeginsOn()
+    {
+        ChartResult chart = CreateChart(birthDate: new DateTime(2000, 10, 5));
+        DateTime ingress = new(2025, 10, 4, 18, 7, 36, DateTimeKind.Utc);
+
+        ProfectionYearResult result = ProfectionAnalyzer.AnalyzeForReturn(chart, ingress);
+
+        result.Age.Should().Be(25);
+        result.ReferenceDate.Should().Be(new DateTime(2025, 10, 5));
+    }
+
+    /// <summary>The profection of a return the day after the birthday keeps the return's own day.</summary>
+    [Fact]
+    public void AnalyzeForReturn_PostBirthdayIngress_IsDatedTheReturnsOwnDay()
+    {
+        ChartResult chart = CreateChart(birthDate: new DateTime(2000, 10, 5));
+        DateTime ingress = new(2025, 10, 6, 6, 0, 0, DateTimeKind.Utc);
+
+        ProfectionYearResult result = ProfectionAnalyzer.AnalyzeForReturn(chart, ingress);
+
+        result.Age.Should().Be(25);
+        result.ReferenceDate.Should().Be(new DateTime(2025, 10, 6));
+    }
+
     #endregion
 
     #region Real charts

@@ -1357,7 +1357,8 @@ public static class ChartMarkdownFormatter
     /// injected <see cref="TimeProvider"/> (the real current day in
     /// production), and the solar/lunar/planetary return formatters pass the
     /// return-ingress instant to evaluate the natal-keyed profection at that
-    /// moment. Made non-optional in F-GR-2 so no ambient
+    /// moment (a solar return's for the year it opens: <paramref name="isReturnContext"/>).
+    /// Made non-optional in F-GR-2 so no ambient
     /// <see cref="DateTime.Today"/> can re-enter this formatter and drift the
     /// golden snapshots.
     /// </param>
@@ -1367,13 +1368,15 @@ public static class ChartMarkdownFormatter
     /// to disambiguate from natal exports.
     /// </param>
     /// <param name="isReturnContext">
-    /// When <c>true</c>, dispatches to <see cref="ProfectionAnalyzer.AnalyzeForReturn"/>
-    /// — the return-ingress age semantic where the solar return's instant
-    /// defines the year-of-life regardless of calendar relationship to the
-    /// natal anniversary. Defaults to <c>false</c>, which preserves the natal
+    /// When <c>true</c>, dispatches to <see cref="ProfectionAnalyzer.AnalyzeForReturn"/>:
+    /// the year the solar return opens, its age rounded from the birth instant
+    /// whichever side of the birthday the return falls on, dated the day that
+    /// year is read on, the birthday it begins on when the return falls before
+    /// it (branch ReturnAges, 1.7.2). Defaults to <c>false</c>, which preserves the natal
     /// call-site semantic via <see cref="ProfectionAnalyzer.Analyze"/>, the year
     /// running at the reference date by completed anniversaries. Only the solar
-    /// return formatter passes <c>true</c>; the lunar and planetary return
+    /// return formatter passes <c>true</c>, to this section and to the two that
+    /// follow it; the lunar and planetary return
     /// formatters, and the natal call site at <see cref="ToMarkdown"/>, pass
     /// nothing and fall through to <c>false</c> (branch H, 1.3.4).
     /// </param>
@@ -1438,6 +1441,22 @@ public static class ChartMarkdownFormatter
     }
 
     /// <summary>
+    /// The day a solar return's Firdaria and Zodiacal Releasing are read on, as a plain date the analyzers
+    /// take as given: the day <see cref="ProfectionAnalyzer.YearOpenedBySolarReturn"/> decides, the one place
+    /// the profection's age and date come from too, so the three sections are one year's (branch ReturnAges,
+    /// 1.7.2). It is the birthday the year begins on when the return falls before it, and the return's own
+    /// day on the natal chart's clock otherwise.
+    /// </summary>
+    /// <param name="natal">The natal chart, a Birth chart.</param>
+    /// <param name="returnIngressUtc">The solar return's instant, UTC.</param>
+    /// <returns>The reading day at midnight, of <see cref="DateTimeKind.Unspecified"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the return's day on the chart's clock is before the birth day (T6-6).
+    /// </exception>
+    private static DateTime SolarReturnReadingDay(ChartResult natal, DateTime returnIngressUtc) =>
+        ProfectionAnalyzer.YearOpenedBySolarReturn(natal, returnIngressUtc).ReadingDay.ToDateTime(TimeOnly.MinValue);
+
+    /// <summary>
     /// Appends the firdaria section. Only rendered for Birth charts.
     /// Uses <paramref name="referenceDate"/> if supplied, else today's date. Every boundary prints on the
     /// calendar in force through <see cref="CalendarDateFormatter"/> (R-D6); a node's period, undivided,
@@ -1451,7 +1470,8 @@ public static class ChartMarkdownFormatter
     /// injected <see cref="TimeProvider"/> (the real current day in
     /// production), and the solar/lunar/planetary return formatters pass the
     /// return-ingress instant to evaluate the natal-keyed firdaria periods at
-    /// that moment. Made non-optional in F-GR-2 so no ambient
+    /// that moment (a solar return's for the year it opens: <paramref name="isReturnContext"/>).
+    /// Made non-optional in F-GR-2 so no ambient
     /// <see cref="DateTime.Today"/> can re-enter this formatter and drift the
     /// golden snapshots.
     /// </param>
@@ -1460,14 +1480,25 @@ public static class ChartMarkdownFormatter
     /// Return formatters override this to <c>## Firdaria (at Return Ingress)</c>
     /// to disambiguate from natal exports.
     /// </param>
+    /// <param name="isReturnContext">
+    /// When <c>true</c>, <paramref name="referenceDate"/> is a solar return's instant and the periods are
+    /// those of the year the return opens, read on the day <see cref="SolarReturnReadingDay"/> gives, as the
+    /// profection beside them is (branch ReturnAges, 1.7.2). Defaults to <c>false</c>, the periods at the
+    /// reference date. Only the solar return formatter passes <c>true</c>; a lunar or planetary return keeps
+    /// the year running at the return.
+    /// </param>
     internal static void AppendFirdaria(
         StringBuilder sb,
         ChartResult result,
         DateTime referenceDate,
-        string headingOverride = "## Firdaria")
+        string headingOverride = "## Firdaria",
+        bool isReturnContext = false)
     {
         if (!string.Equals(result.Input.EventType, "Birth", StringComparison.OrdinalIgnoreCase))
             return;
+
+        if (isReturnContext)
+            referenceDate = SolarReturnReadingDay(result, referenceDate);
 
         FirdariaResult firdaria = FirdariaAnalyzer.Analyze(result, referenceDate);
 
@@ -1540,7 +1571,8 @@ public static class ChartMarkdownFormatter
     /// resolved from its injected <see cref="TimeProvider"/> (the real current
     /// day in production), and the solar/lunar/planetary return formatters pass
     /// the return-ingress instant to evaluate the natal-keyed releasing periods
-    /// at that moment. Made non-optional in F-GR-2 so no ambient
+    /// at that moment (a solar return's for the year it opens: <paramref name="isReturnContext"/>).
+    /// Made non-optional in F-GR-2 so no ambient
     /// <see cref="DateTime.Today"/> can re-enter this formatter and drift the
     /// golden snapshots.
     /// </param>
@@ -1551,14 +1583,25 @@ public static class ChartMarkdownFormatter
     /// from natal exports. The override is also applied to the Lot-of-Spirit
     /// unavailable placeholder branch.
     /// </param>
+    /// <param name="isReturnContext">
+    /// When <c>true</c>, <paramref name="referenceDate"/> is a solar return's instant and the periods are
+    /// those of the year the return opens, read on the day <see cref="SolarReturnReadingDay"/> gives, as the
+    /// profection and the Firdaria beside them are (branch ReturnAges, 1.7.2). Defaults to <c>false</c>, the
+    /// periods at the reference date. Only the solar return formatter passes <c>true</c>; a lunar or planetary
+    /// return keeps the year running at the return.
+    /// </param>
     internal static void AppendZodiacalReleasing(
         StringBuilder sb,
         ChartResult result,
         DateTime referenceDate,
-        string headingOverride = "## Zodiacal Releasing (Spirit)")
+        string headingOverride = "## Zodiacal Releasing (Spirit)",
+        bool isReturnContext = false)
     {
         if (!string.Equals(result.Input.EventType, "Birth", StringComparison.OrdinalIgnoreCase))
             return;
+
+        if (isReturnContext)
+            referenceDate = SolarReturnReadingDay(result, referenceDate);
 
         ZodiacalReleasingResult zr = ZodiacalReleasingAnalyzer.Analyze(result, referenceDate);
 

@@ -87,7 +87,7 @@ At age 26, J2000 NYC Fixture is in a 3rd house profection year. The profected ho
 
 ### Summary
 
-Age 25: Jupiter major period (2020–2032), Venus sub-period (2025-02-21–2026-11-09). Jupiter themes of expansion, wisdom, fortune, faith, generosity are the year’s background; Venus themes of relationships, pleasure, beauty, finances, harmony are the current focus.
+Age 26: Jupiter major period (2020–2032), Venus sub-period (2025-02-21–2026-11-09). Jupiter themes of expansion, wisdom, fortune, faith, generosity are the year’s background; Venus themes of relationships, pleasure, beauty, finances, harmony are the current focus.
 
 ## Zodiacal Releasing (Spirit) (at Return Ingress)
 

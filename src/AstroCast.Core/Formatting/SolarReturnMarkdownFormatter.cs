@@ -62,8 +62,12 @@ public static class SolarReturnMarkdownFormatter
         sb.AppendLine("---");
         sb.AppendLine();
 
-        // Section 3: Time-lord context evaluated at the return-ingress instant,
-        // keyed off the natal chart (not the return chart).
+        // Section 3: Time-lord context of the year the return opens, keyed off the natal
+        // chart (not the return chart). All three sections are read for that one year
+        // (isReturnContext; branch ReturnAges, 1.7.2): ProfectionAnalyzer.YearOpenedBySolarReturn
+        // decides its age and the day it is read on, the birthday the year begins on when
+        // the return falls before it. Until 1.7.2 only the profection's age was the year's,
+        // and the Firdaria and the releasing read the year running on the return's own day.
         ChartMarkdownFormatter.AppendProfectionYear(
             sb,
             result.NatalChart,
@@ -75,13 +79,15 @@ public static class SolarReturnMarkdownFormatter
             sb,
             result.NatalChart,
             referenceDate: result.ReturnChart.UtcDateTime,
-            headingOverride: "## Firdaria (at Return Ingress)");
+            headingOverride: "## Firdaria (at Return Ingress)",
+            isReturnContext: true);
 
         ChartMarkdownFormatter.AppendZodiacalReleasing(
             sb,
             result.NatalChart,
             referenceDate: result.ReturnChart.UtcDateTime,
-            headingOverride: "## Zodiacal Releasing (Spirit) (at Return Ingress)");
+            headingOverride: "## Zodiacal Releasing (Spirit) (at Return Ingress)",
+            isReturnContext: true);
 
         sb.AppendLine("---");
         sb.AppendLine();
