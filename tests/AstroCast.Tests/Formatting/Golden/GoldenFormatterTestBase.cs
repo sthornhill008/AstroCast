@@ -120,6 +120,36 @@ public abstract class GoldenFormatterTestBase
         new(@"\(as of \d{4}-\d{2}-\d{2}\)", RegexOptions.Compiled);
 
     /// <summary>
+    /// The list a <see cref="CollectCandidates"/> scope gathers candidates into, on this flow of control, or
+    /// null. While it is set, <see cref="AssertGolden"/> records the candidate as the formatter returned it and
+    /// neither compares nor writes a golden.
+    /// </summary>
+    private static readonly AsyncLocal<List<(string GoldenFileName, string Text)>?> s_collector = new();
+
+    /// <summary>
+    /// Starts gathering every candidate handed to <see cref="AssertGolden"/> on this flow of control, untouched,
+    /// until the scope is disposed (branch ExportText, 1.7.2). <c>ExportLineEndingTests</c> runs every golden
+    /// test inside one to read each export's own line endings, which the golden comparison normalises away.
+    /// </summary>
+    /// <param name="into">The list the candidates are added to, each with its golden file's name.</param>
+    /// <returns>The scope; disposing it ends the gathering.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="into"/> is null.</exception>
+    internal static IDisposable CollectCandidates(List<(string GoldenFileName, string Text)> into)
+    {
+        ArgumentNullException.ThrowIfNull(into);
+
+        s_collector.Value = into;
+        return new CollectorScope();
+    }
+
+    /// <summary>Ends a <see cref="CollectCandidates"/> scope when disposed.</summary>
+    private sealed class CollectorScope : IDisposable
+    {
+        /// <summary>Stops the gathering on this flow of control.</summary>
+        public void Dispose() => s_collector.Value = null;
+    }
+
+    /// <summary>
     /// Assert that <paramref name="actual"/> matches the checked-in golden file
     /// named <paramref name="goldenFileName"/>, or (when
     /// <see cref="RegenerateEnvVar"/> is set) overwrite the golden with the
@@ -150,6 +180,12 @@ public abstract class GoldenFormatterTestBase
     {
         ArgumentNullException.ThrowIfNull(actual);
         ArgumentException.ThrowIfNullOrWhiteSpace(goldenFileName);
+
+        if (s_collector.Value is List<(string GoldenFileName, string Text)> collected)
+        {
+            collected.Add((goldenFileName, actual));
+            return;
+        }
 
         string candidateNormalised = Normalise(actual);
         string goldenPath = ResolveGoldenPath(goldenFileName, callerFilePath);

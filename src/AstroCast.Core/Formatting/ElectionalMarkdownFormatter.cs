@@ -695,7 +695,7 @@ public static class ElectionalMarkdownFormatter
         {
             result.Append(lines[i]);
             if (i < endIndex)
-                result.Append('\n');
+                result.AppendLine();
         }
 
         return result.ToString();

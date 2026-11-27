@@ -244,7 +244,7 @@ public static class SynastryMarkdownFormatter
         {
             sb.Append(lines[i]);
             if (i < endIndex)
-                sb.Append('\n');
+                sb.AppendLine();
         }
 
         return sb.ToString();

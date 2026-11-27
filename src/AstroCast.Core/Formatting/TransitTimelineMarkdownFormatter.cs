@@ -187,7 +187,7 @@ public static class TransitTimelineMarkdownFormatter
         {
             bodySb.Append(lines[i]);
             if (i < endIndex)
-                bodySb.Append('\n');
+                bodySb.AppendLine();
         }
 
         return bodySb.ToString();
