@@ -304,6 +304,102 @@ public sealed class StaleResultsTests
         vm.ExportElectionalMarkdownCommand.CanExecute(null).Should().BeFalse();
     }
 
+    /// <summary>
+    /// The Relocation picker has the same guard: the null its ComboBox writes while the saved-charts list is
+    /// refilled is the refresh, not a change of chart, and the relocation result stays. Until 1.7.2 that null
+    /// cleared the result, on every import and every deletion of another chart, though 1.6.1 meant a refresh to
+    /// keep it.
+    /// </summary>
+    /// <param name="refresh">What refreshes the saved charts: a reload, or the deletion of another chart.</param>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [Theory]
+    [InlineData("Reload")]
+    [InlineData("DeleteAnother")]
+    public async Task ARefreshThatKeepsTheRelocationPick_KeepsTheRelocationResult(string refresh)
+    {
+        MainViewModel vm = (await WithARelocationResultAsync()).Main;
+        Func<int> emptied = WriteNullToTheRelocationPickerAsTheWindowDoes(vm);
+
+        if (refresh == "Reload")
+            await vm.InitializeAsync();
+        else
+            await Harness.RunAsync(vm.DeleteChartCommand, vm.SavedCharts.Single(c => c.Name == "Gamma"));
+
+        emptied().Should().Be(1, "the refresh clears the list once");
+        vm.Relocation.SelectedNatalChart?.Name.Should().Be("Alpha");
+        vm.Relocation.HasResult.Should().BeTrue("the picker holds the chart it held before the refresh");
+        vm.Relocation.ResultSummary.Should().StartWith("Alpha at London");
+        vm.ExportRelocationMarkdownCommand.CanExecute(null).Should().BeTrue();
+    }
+
+    /// <summary>
+    /// Deleting the chart the Relocation picker holds leaves it holding none, and the relocation result goes
+    /// with it, though the picker's own setter clears nothing during the refill.
+    /// </summary>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [Fact]
+    public async Task DeletingTheRelocationPickersChart_ClearsTheRelocationResult()
+    {
+        MainViewModel vm = (await WithARelocationResultAsync()).Main;
+        Func<int> emptied = WriteNullToTheRelocationPickerAsTheWindowDoes(vm);
+
+        await Harness.RunAsync(vm.DeleteChartCommand, vm.SavedCharts.Single(c => c.Name == "Alpha"));
+
+        emptied().Should().Be(1, vm.StatusText);
+        vm.Relocation.SelectedNatalChart.Should().BeNull();
+        vm.Relocation.HasResult.Should().BeFalse("the chart it was made from is deleted");
+        vm.Relocation.ResultSummary.Should().BeEmpty();
+        vm.ExportRelocationMarkdownCommand.CanExecute(null).Should().BeFalse();
+    }
+
+    /// <summary>A pick of another chart by hand in the Relocation picker still clears its result, as since 1.6.1.</summary>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [Fact]
+    public async Task APickOfAnotherRelocationChart_StillClearsTheRelocationResult()
+    {
+        MainViewModel vm = (await WithARelocationResultAsync()).Main;
+
+        vm.Relocation.SelectedNatalChart = vm.AllSavedCharts.Single(c => c.Name == "Gamma");
+
+        vm.Relocation.HasResult.Should().BeFalse();
+        vm.ExportRelocationMarkdownCommand.CanExecute(null).Should().BeFalse();
+    }
+
+    /// <summary>A view model with Alpha loaded, picked in the Relocation picker, and relocated to London.</summary>
+    /// <returns>The harness.</returns>
+    private static async Task<Harness> WithARelocationResultAsync()
+    {
+        Harness harness = await Harness.WithAlphaLoadedAsync();
+        MainViewModel vm = harness.Main;
+        vm.Relocation.SelectedNatalChart?.Name.Should().Be("Alpha", "Load picked the loaded chart");
+        vm.Relocation.LocationName = "London";
+        vm.Relocation.LatitudeText = "51.5074";
+        vm.Relocation.LongitudeText = "-0.1278";
+        await Harness.RunAsync(vm.CalculateRelocationCommand);
+        vm.Relocation.HasResult.Should().BeTrue(vm.StatusText);
+        return harness;
+    }
+
+    /// <summary>
+    /// Makes the Relocation picker do what each head's ComboBox does when its items are cleared: its selection
+    /// goes, and its two-way binding writes null to the view model.
+    /// </summary>
+    /// <param name="vm">The view model.</param>
+    /// <returns>A function giving how many times the list has been cleared since.</returns>
+    private static Func<int> WriteNullToTheRelocationPickerAsTheWindowDoes(MainViewModel vm)
+    {
+        int emptied = 0;
+        vm.AllSavedCharts.CollectionChanged += (_, e) =>
+        {
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                emptied++;
+                vm.Relocation.SelectedNatalChart = null;
+            }
+        };
+        return () => emptied;
+    }
+
     #endregion
 
     #region Clear Form, and a failed run

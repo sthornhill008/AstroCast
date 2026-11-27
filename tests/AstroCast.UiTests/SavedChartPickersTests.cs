@@ -161,8 +161,9 @@ public sealed class SavedChartPickersTests
     }
 
     /// <summary>
-    /// A refresh of the saved charts that keeps Person B and the Electional panel's chart keeps the results made
-    /// from them (branch StaleResults, 1.7.2, finding N2): the Synastry panel's three and the electional result.
+    /// A refresh of the saved charts that keeps Person B and the Electional and Relocation panels' charts keeps
+    /// the results made from them (branch StaleResults, 1.7.2, finding N2): the Synastry panel's three, the
+    /// electional result and the relocation result.
     /// </summary>
     /// <remarks>
     /// Those results are cleared when their picker's chart changes, by its Id. In the window each ComboBox loses
@@ -199,8 +200,22 @@ public sealed class SavedChartPickersTests
         Assert.True(vm.Synastry.HasCompositeResult, vm.StatusText);
         Assert.True(vm.Synastry.HasDavisonResult, vm.StatusText);
 
+        // The Relocation picker follows the Load, so it holds Alpha; the stub service relocates it at once
+        Assert.Equal("Alpha", vm.Relocation.SelectedNatalChart?.Name);
+        vm.Relocation.LocationName = "London";
+        vm.Relocation.LatitudeText = "51.5074";
+        vm.Relocation.LongitudeText = "-0.1278";
+        await RunAsync(vm.CalculateRelocationCommand);
+        Assert.True(vm.Relocation.HasResult, vm.StatusText);
+
         List<string?> personBWrites = [];
         List<string?> electionalWrites = [];
+        List<string?> relocationWrites = [];
+        vm.Relocation.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(RelocationViewModel.SelectedNatalChart))
+                relocationWrites.Add(vm.Relocation.SelectedNatalChart?.Name);
+        };
         vm.Synastry.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(SynastryViewModel.PersonB))
@@ -218,12 +233,15 @@ public sealed class SavedChartPickersTests
         Assert.Equal(2, vm.AllSavedCharts.Count);
         Assert.Equal(new string?[] { null, "Beta" }, personBWrites);
         Assert.Equal(new string?[] { null, "Alpha" }, electionalWrites);
+        Assert.Equal(new string?[] { null, "Alpha" }, relocationWrites);
         Assert.True(vm.Synastry.HasSynastryResult, "The refresh cleared the synastry result.");
         Assert.True(vm.Synastry.HasCompositeResult, "The refresh cleared the composite result.");
         Assert.True(vm.Synastry.HasDavisonResult, "The refresh cleared the Davison result.");
         Assert.True(vm.Electional.HasResult, "The refresh cleared the electional result.");
+        Assert.True(vm.Relocation.HasResult, "The refresh cleared the relocation result.");
         Assert.True(vm.ExportSynastryMarkdownCommand.CanExecute(null));
         Assert.True(vm.ExportElectionalMarkdownCommand.CanExecute(null));
+        Assert.True(vm.ExportRelocationMarkdownCommand.CanExecute(null));
     }
 
     /// <summary>Runs a command and waits for its handler to finish, for at most 5 s.</summary>

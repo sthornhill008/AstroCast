@@ -226,6 +226,11 @@ public sealed class RelocationViewModel : ChildViewModelBase
     /// identity is its Id: the saved-charts refresh re-points the picker at a new
     /// instance of the same chart on every save, import and delete, since
     /// <see cref="ChartEntity"/> compares by reference, and that keeps the result.
+    /// In the window the bound picker also writes null while its list is refilled;
+    /// the parent's <see cref="MainViewModel.IsRefillingSavedCharts"/> says so,
+    /// nothing is cleared for it, and <see cref="OnSavedChartsRefilled"/> settles
+    /// the refill (branch StaleResults, 1.7.2). Until then that null cleared the
+    /// result on every refresh, an import or the deletion of another chart.
     /// </remarks>
     public ChartEntity? SelectedNatalChart
     {
@@ -235,7 +240,8 @@ public sealed class RelocationViewModel : ChildViewModelBase
             bool chartChanged = _selectedNatalChart?.Id != value?.Id;
             if (SetProperty(ref _selectedNatalChart, value))
             {
-                if (chartChanged)
+                // Parent read: only the parent knows that this write is its own refill of the list
+                if (chartChanged && !Parent.IsRefillingSavedCharts)
                     InvalidateResult();
                 OnPropertyChanged(nameof(ChartInUseText));
                 RequestCommandStateRefresh();
@@ -292,6 +298,26 @@ public sealed class RelocationViewModel : ChildViewModelBase
     {
         InvalidateResult();
         OnPropertyChanged(nameof(ChartInUseText));
+        RequestCommandStateRefresh();
+    }
+
+    /// <summary>
+    /// Settles a refill of the saved-charts list: clears <see cref="CurrentResult"/> when the picked chart is no
+    /// longer the one picked before the refill, which is when that chart was deleted. Called by the parent once
+    /// the refill is over (branch StaleResults, 1.7.2).
+    /// </summary>
+    /// <remarks>
+    /// During the refill <see cref="SelectedNatalChart"/>'s setter clears nothing, since the picker passes
+    /// through null on its way back to the same chart; the comparison it would have made is made here. One
+    /// refresh request, and none when there was nothing to clear.
+    /// </remarks>
+    /// <param name="pickedIdBefore">The Id of the picked chart before the refill, or null when none was picked.</param>
+    internal void OnSavedChartsRefilled(long? pickedIdBefore)
+    {
+        if (_selectedNatalChart?.Id == pickedIdBefore || _currentResult is null)
+            return;
+
+        InvalidateResult();
         RequestCommandStateRefresh();
     }
 

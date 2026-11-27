@@ -4841,10 +4841,10 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// Ids are therefore read before the clear, and each selection is pointed at
     /// the refilled chart with the same Id, or at nothing when that chart is gone.
     /// The null written in between is the refill, not a change of chart: while
-    /// <see cref="IsRefillingSavedCharts"/> is set the Person B and Electional
-    /// pickers clear no result for it, and once the refill is over each is told
-    /// the Id it held before, so a picker whose chart was deleted clears its
-    /// panel's results then (branch StaleResults, 1.7.2, finding N2).
+    /// <see cref="IsRefillingSavedCharts"/> is set the Person B, Electional and
+    /// Relocation pickers clear no result for it, and once the refill is over each
+    /// is told the Id it held before, so a picker whose chart was deleted clears
+    /// its panel's results then (branch StaleResults, 1.7.2, finding N2).
     /// </remarks>
     private async Task RefreshSavedChartsAsync()
     {
@@ -4895,6 +4895,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         // A picked chart the refill no longer holds was deleted: its panel's results go with it
         Synastry.OnSavedChartsRefilled(personBId);
         Electional.OnSavedChartsRefilled(electionalId);
+        Relocation.OnSavedChartsRefilled(relocationId);
     }
 
     /// <summary>
@@ -4903,10 +4904,10 @@ public sealed class MainViewModel : INotifyPropertyChanged
     /// </summary>
     /// <remarks>
     /// In the window each picker bound to the list loses its item when the list is cleared, and its two-way
-    /// binding writes null to its view model before the refresh picks the same chart again. The Person B and
-    /// Electional pickers clear their panel's results when their chart's Id changes, and read this flag so that
-    /// the null of a refill clears nothing; <c>OnSavedChartsRefilled</c> then compares the Id held before the
-    /// refill with the one held after.
+    /// binding writes null to its view model before the refresh picks the same chart again. The Person B,
+    /// Electional and Relocation pickers clear their panel's results when their chart's Id changes, and read
+    /// this flag so that the null of a refill clears nothing; <c>OnSavedChartsRefilled</c> then compares the Id
+    /// held before the refill with the one held after.
     /// </remarks>
     internal bool IsRefillingSavedCharts { get; private set; }
 
