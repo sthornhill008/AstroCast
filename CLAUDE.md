@@ -971,7 +971,8 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
   ruler, and the table's row h carries the sign h − 1 after the Ascendant's; the cusps are not read, and
   the summary reads "The profected house is the 9th (Cancer), making Moon the lord of the year".
   `AnalyzeForReturn` rounds from the birth instant (`chart.UtcDateTime`), and only
-  `SolarReturnMarkdownFormatter` passes `isReturnContext: true`: a lunar or planetary return's
+  `SolarReturnMarkdownFormatter` passes `isReturnContext: true`, since 1.7.2 to all three sections, which it
+  reads for the year the return opens (see *Return Ages* below): a lunar or planetary return's
   profection is the year running at the return (Saturn return #1 of J2000 NYC, 2028-07-21: age 28, the
   5th (Taurus), Venus). *Zodiacal releasing* (T-D10; Valens, Anthology IV; Spirit only): Level 1 from
   the Lot of Spirit's sign, each sign for its years × 360 days from the birth day, the timeline closing
@@ -1865,8 +1866,10 @@ on what a `Button` is.
   then branch InputChecks (2026-11-27), the first branch of the 1.7.2 plan: seven input and message fixes
   from the 1.7.2 code audit (see *Input Checks* below), made on Maple, landed on `e7fd2be` and pushed the
   same day; then branch StaleResults (2026-11-27), finding N2 of that audit: every result made from the Chart
-  panel's chart clears when that chart changes (see *Stale Results* below), made on Maple, awaiting its
-  landing.
+  panel's chart clears when that chart changes (see *Stale Results* below), made on Maple and merged into
+  `master` there on `9f9c4c1` the same day, not yet pushed; then branch ReturnAges (2026-11-27), finding A1
+  of that audit: a solar return export reads its three time-lord sections for the year the return opens
+  (see *Return Ages* below), made on Maple, awaiting its landing.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
@@ -1929,9 +1932,9 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4476 in `tests/AstroCast.Tests` and 146 in
-  `tests/AstroCast.UiTests` at StaleResults, all passing on Windows (4411 and 145 at InputChecks,
-  on Windows too; 4297 and 145 at SvgExclude,
+- **Total tests:** 4504 in `tests/AstroCast.Tests` and 146 in
+  `tests/AstroCast.UiTests` at ReturnAges, all passing on Windows (4476 and 146 at StaleResults and
+  4411 and 145 at InputChecks, on Windows too; 4297 and 145 at SvgExclude,
   all passing on macOS; 4296 and 145 at Fixtures
   and at DavisonPanel; 4287 and 142 at Davison;
   4257 and 142 at TiesAndGuards;
@@ -2753,3 +2756,63 @@ panel's three against Person B, the refresh with and without the picker's null, 
 a refresh and a deletion, the mundane series, Clear Form, a failed run) and the UI
 `SavedChartPickersTests.ARefresh_KeepsTheResultsOfThePickersItRepoints`, which sees all three pickers' nulls
 arrive, hold it.
+
+## Return Ages (branch ReturnAges, 1.7.2)
+
+Finding A1 of the 1.7.2 code audit, Steve's ruling: a solar return export reads its three time-lord sections
+for one year, the year the return opens.
+
+- **The rule.** In a solar return export the annual profection, the Firdaria and the Zodiacal Releasing are
+  all read for the year the return opens: the age `ProfectionAnalyzer.AnalyzeForReturn` gives, and the
+  Firdaria and the releasing as they stand on the birthday that year begins on, the anniversary of the birth
+  day at that age on the chart's clock. A Firdaria or releasing period that begins on that birthday is the
+  one printed, not the one that ended the day before. Until 1.7.2 only the profection's age was that year's:
+  the Firdaria and the releasing counted completed birthdays on the return's own day, so a return on the
+  local day before the birthday printed two ages.
+- **One method decides the year:** `ProfectionAnalyzer.YearOpenedBySolarReturn(chart, returnIngressUtc)`
+  (internal) returns the birth day, the age, the birthday the year begins on and the day the year is read
+  on. The age is the years from the birth instant to the return's, rounded to the nearest whole at 365.2425
+  days a year; the birthday is the birth day plus that many years (`DateOnly.AddYears`); the reading day is
+  the later of that birthday and the return's day on the natal chart's clock, both read by
+  `FirdariaAnalyzer.BirthDayAndAge`, which still refuses a return before the birth day. So a return before
+  its birthday is read on the birthday, and a return on its birthday or after it on its own day, as before.
+  `AnalyzeForReturn` takes its age and its reference day from the method.
+  `ChartMarkdownFormatter.AppendFirdaria` and `AppendZodiacalReleasing` have an `isReturnContext` flag, as
+  `AppendProfectionYear` has, and with it read on that day (`SolarReturnReadingDay`, a plain date the
+  analyzers take as given); `SolarReturnMarkdownFormatter` passes `isReturnContext: true` to all three with
+  the return's instant. The rounding is in the one method only.
+- **The worked example.** Person A (born 1947-10-05 09:30 at UTC−5), solar return 2026: the return is
+  2026-10-04 17:18:50 UT, the day before the birthday, and opens the year of age 79. The export prints
+  `**Age:** 79 (as of 2026-10-05)` and "At age 79, …" in the profection, "Age 79: Sun major period
+  (2022–2032), Mercury sub-period (2025-08-13–2027-01-17)" in the Firdaria, and the releasing as it stands
+  on 2026-10-05, Leo at both levels; until 1.7.2 `(as of 2026-10-04)` and "Age 78: …". Her 2022 return,
+  2022-10-04 18:09:22 UT, is the day before the birthday on which the Sun's ten years begin: the export
+  prints `**Current Major Period:** Sun (2022–2032, 10y)` and "Age 75: Sun major period", where it printed
+  the South Node's period, "Age 74". Her 2032 return, 2032-10-04 04:20:08 UT, is 3 October on her clock, two
+  days before: Venus (2032–2040), as of 2032-10-05. In her hundred years the return falls before the birthday
+  84 times and on it 16; the Firdaria differs between the two days in 13 of them and the releasing in none,
+  its periods running on 360-day years and 30-day months from the birth day.
+- **What the sections print.** The profection's "(as of …)" date is the reading day: the birthday when the
+  return falls before it, else the return's day on the natal chart's clock. The Firdaria and the releasing
+  print no date of their own, only their periods' bounds and the "← current" marks, which follow the
+  reading day; the releasing prints no age. The three headings keep "(at Return Ingress)", and no line was
+  added.
+- **Unchanged.** A lunar or planetary return's three sections keep the year running at the return (branch H,
+  1.3.4): person A's lunar return of 2026-10-01 23:05:25 UT reads age 78 as of 2026-10-01, and her second
+  Saturn return, 2006-09-14 16:17:30 UT, age 58. A solar return on its birthday (her 1995 return, 00:15 on
+  5 October on her clock) or after it (person B's 1966 return, 6 December for a birthday of 5 December)
+  prints what it printed. The Returns panel's three lines are the natal chart's at today's date, the solar
+  return's status line names no age, and no PDF or JSON of a return exists. A planetary return's own
+  "(age N)" line counts whole years between the two instants in UT (`PlanetaryReturnService`), not completed
+  birthdays on the chart's clock, so on the birthday itself, before the birth's time of day, it reads one
+  less than the sections; left as it is.
+- **Goldens.** The two J2000 NYC 2026 solar-return goldens moved by one line each, "Age 25:" to "Age 26:" in
+  the Firdaria summary: that return is 2025-12-31 19:17:48 UT for a birthday of 1 January. The golden
+  comparison masks the "(as of …)" date, which moved from 2025-12-31 to 2026-01-01. Four goldens were added,
+  written from `master` before the rule changed: `SolarReturnMarkdownFormatter_Hartwell_1995`,
+  `SolarReturnMarkdownFormatter_Whitfield_1966`, `LunarReturnMarkdownFormatter_Hartwell_20261001` and
+  `PlanetaryReturnMarkdownFormatter_Hartwell_Saturn2`.
+
+`ReturnTimeLordYearTests` (22 names: person A's 2026, 2022 and 2032 returns, the four goldens with their
+as-of lines, and the three cultures) and `ProfectionAnalyzerTests` (6 names for the method and the
+profection's date) hold it.
