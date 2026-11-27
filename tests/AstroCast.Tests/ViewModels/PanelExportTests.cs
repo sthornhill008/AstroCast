@@ -319,6 +319,66 @@ public sealed class PanelExportTests
         }
     }
 
+    /// <summary>
+    /// A default file name carries its dates on the Gregorian calendar whatever the machine's (branch InputChecks,
+    /// 1.7.2, finding N7): under th-TH, whose calendar is the Thai Buddhist one, the electional, transit report,
+    /// daily horoscope, transit timeline, lunar return and backup names read 2026 and 2000. Until 1.7.2 each date
+    /// was formatted in the machine's culture, so the electional name read "..._25690420_25690425.md".
+    /// </summary>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [Fact]
+    public async Task DefaultNames_UnderTheThaiCalendar_CarryGregorianDates()
+    {
+        using CultureScope scope = new("th-TH");
+        ChartResult natal = GoldenFixtures.J2000Nyc(_fixture);
+        SaveDialogDouble fileDialog = new(null);
+        MainViewModel main = ViewModel(fileDialog);
+        SeedResult(main, natal);
+
+        main.Electional.StartDate = new DateTime(2026, 4, 20);
+        main.Electional.EndDate = new DateTime(2026, 4, 25);
+        main.Electional.ElectionalResult = Electional(natal);
+        await RunAsync(main.ExportElectionalMarkdownCommand);
+        fileDialog.DefaultFileName.Should().Be("J2000_NYC_Fixture_Electional_20260420_20260425.md");
+
+        main.Transits.TransitResult = new AstroCast.Core.Models.Transit.TransitResult
+        {
+            NatalChart = natal,
+            ReportStartDate = new DateOnly(2026, 4, 12),
+            ReportEndDate = new DateOnly(2026, 4, 18),
+            MidpointDate = new DateOnly(2026, 4, 15),
+            IncludeMinorAspects = false,
+            TransitPositions = new Dictionary<TransitBody, AstroCast.Core.Models.Transit.TransitPlanetPosition>(),
+            Stations = [],
+            Ingresses = [],
+            ActiveTransits = [],
+            HouseOverlays = [],
+            MidpointActivations = [],
+            MarsIncluded = false,
+        };
+        await RunAsync(main.ExportTransitMarkdownCommand);
+        fileDialog.DefaultFileName.Should().Be("J2000_NYC_Fixture_Transits_20260412_20260418.md");
+        await RunAsync(main.ExportDailyHoroscopeMarkdownCommand);
+        fileDialog.DefaultFileName.Should().Be("J2000_NYC_Fixture_DailyHoroscope_20260412_20260418.md");
+        await RunAsync(main.ExportTransitTimelineMarkdownCommand);
+        fileDialog.DefaultFileName.Should().Be("J2000_NYC_Fixture_TransitTimeline_20260412_20260418.md");
+
+        LunarReturnResult lunar = new StubLunarReturnService().CalculateNext(
+            natal, new DateTime(2026, 4, 1), natal.Input.Latitude, natal.Input.Longitude,
+            natal.Input.LocationName, natal.Input.TimeZone);
+        main.Returns.LunarReturnResults = [lunar];
+        main.Returns.SelectedLunarReturn = lunar;
+        await RunAsync(main.ExportLunarReturnMarkdownCommand);
+        fileDialog.DefaultFileName.Should().Be("J2000_NYC_Fixture_LunarReturn_2000-01-01.md");
+
+        // Today's date, read either side of the command in case midnight passes between
+        System.Globalization.CultureInfo invariant = System.Globalization.CultureInfo.InvariantCulture;
+        string before = $"AstroCast_Charts_{DateTime.Now.ToString("yyyyMMdd", invariant)}.json";
+        await RunAsync(main.ExportDatabaseCommand);
+        string after = $"AstroCast_Charts_{DateTime.Now.ToString("yyyyMMdd", invariant)}.json";
+        fileDialog.DefaultFileName.Should().BeOneOf(before, after);
+    }
+
     /// <summary>Runs a command and waits for it to finish.</summary>
     /// <param name="command">The command.</param>
     /// <returns>A task that completes when the command has finished.</returns>

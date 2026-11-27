@@ -1836,7 +1836,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             string? path = await _fileDialogService.ShowSaveAsync(
                 "Export Charts Database",
                 FileDialogFileTypes.JsonOnly,
-                $"AstroCast_Charts_{DateTime.Now:yyyyMMdd}.json",
+                $"AstroCast_Charts_{FileNameDate(DateOnly.FromDateTime(DateTime.Now))}.json",
                 ".json");
 
             if (path is not null)
@@ -2657,8 +2657,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
         try
         {
             string personName = SanitiseFileName(currentResult.NatalChart.Input.Name);
-            string startDate = currentResult.ReportStartDate.ToString("yyyyMMdd");
-            string endDate = currentResult.ReportEndDate.ToString("yyyyMMdd");
+            string startDate = FileNameDate(currentResult.ReportStartDate);
+            string endDate = FileNameDate(currentResult.ReportEndDate);
             // The stem and the dialog's subject name the techniques the result holds (branch Modes,
             // 1.4.0 item 2): _Transits_ whenever the scan ran, else _SolarArcs_, _Progressions_ or
             // _SolarArcsProgressions_
@@ -2706,8 +2706,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
         try
         {
             string personName = SanitiseFileName(currentResult.NatalChart.Input.Name);
-            string startDate = currentResult.ReportStartDate.ToString("yyyyMMdd");
-            string endDate = currentResult.ReportEndDate.ToString("yyyyMMdd");
+            string startDate = FileNameDate(currentResult.ReportStartDate);
+            string endDate = FileNameDate(currentResult.ReportEndDate);
             string defaultName = $"{personName}_DailyHoroscope_{startDate}_{endDate}.md";
 
             string? path = await _fileDialogService.ShowSaveAsync(
@@ -2767,8 +2767,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
         try
         {
             string personName = SanitiseFileName(currentResult.NatalChart.Input.Name);
-            string startDate = currentResult.ReportStartDate.ToString("yyyyMMdd");
-            string endDate = currentResult.ReportEndDate.ToString("yyyyMMdd");
+            string startDate = FileNameDate(currentResult.ReportStartDate);
+            string endDate = FileNameDate(currentResult.ReportEndDate);
             string defaultName = $"{personName}_TransitTimeline_{startDate}_{endDate}.md";
 
             string? path = await _fileDialogService.ShowSaveAsync(
@@ -2982,8 +2982,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
         try
         {
             string baseName = SanitiseFileName(result.NatalChart.Input.Name);
-            string startDate = Electional.StartDate.ToString("yyyyMMdd");
-            string endDate = Electional.EndDate.ToString("yyyyMMdd");
+            string startDate = FileNameDate(DateOnly.FromDateTime(Electional.StartDate));
+            string endDate = FileNameDate(DateOnly.FromDateTime(Electional.EndDate));
             string defaultName = $"{baseName}_Electional_{startDate}_{endDate}.md";
 
             string? path = await _fileDialogService.ShowSaveAsync(
@@ -3445,7 +3445,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
         try
         {
             string name = SanitiseFileName(selected.NatalChart.Input.Name);
-            string dateStr = selected.ReturnChart.Input.LocalDateTime.ToString("yyyy-MM-dd");
+            // The return's local date as typed, with invariant digits on the Gregorian calendar (1.7.2, N7)
+            string dateStr = selected.ReturnChart.Input.LocalDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             string defaultName = $"{name}_LunarReturn_{dateStr}.md";
 
             string? path = await _fileDialogService.ShowSaveAsync(
@@ -4574,8 +4575,10 @@ public sealed class MainViewModel : INotifyPropertyChanged
             return;
         }
 
+        // The time with a colon in every culture, as the Time box is read (1.7.2, N7): the machine's own
+        // separator, a dot under fi-FI or da-DK, is refused by the box's check
         ChartEntry.EventDate = now.Date;
-        ChartEntry.EventTime = now.ToString("HH:mm:ss");
+        ChartEntry.EventTime = now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
         StatusText = $"Date/time set to now: {now:yyyy-MM-dd HH:mm:ss}";
     }
 
@@ -4621,6 +4624,16 @@ public sealed class MainViewModel : INotifyPropertyChanged
         !string.IsNullOrWhiteSpace(ChartEntry.Name) &&
         !string.IsNullOrWhiteSpace(ChartEntry.TimeZone) &&
         !string.IsNullOrWhiteSpace(ChartEntry.LocationName);
+
+    /// <summary>
+    /// A date as a default file name carries it: <c>yyyyMMdd</c> in the invariant culture, so on the Gregorian
+    /// calendar with ASCII digits whatever the machine's regional settings (branch InputChecks, 1.7.2, finding
+    /// N7). Until 1.7.2 each name took its dates in the machine's culture: under th-TH, whose calendar is the Thai
+    /// Buddhist one, 2026-04-20 read "25690420".
+    /// </summary>
+    /// <param name="date">The date, as typed or as the result holds it.</param>
+    /// <returns>The date's eight digits.</returns>
+    private static string FileNameDate(DateOnly date) => date.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 
     /// <summary>The status line for a date range whose end date is before its start date.</summary>
     internal const string EndDateBeforeStartMessage = "The end date is before the start date.";

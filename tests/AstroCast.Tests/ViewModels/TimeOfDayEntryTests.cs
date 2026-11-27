@@ -177,6 +177,33 @@ public sealed class TimeOfDayEntryTests
         entry.ResolvedOffsetDisplay.Should().Contain("EDT");
     }
 
+    /// <summary>
+    /// "Set to now" writes the time with a colon whatever the machine's culture, so Calculate &amp; Save accepts
+    /// what it wrote (finding N7). Until 1.7.2 it wrote the culture's own separator, "14.30.15" under fi-FI.
+    /// </summary>
+    /// <param name="culture">The culture the form runs under.</param>
+    [Theory]
+    [InlineData("fi-FI")]
+    [InlineData("da-DK")]
+    [InlineData("th-TH")]
+    public void SetToNow_WritesATimeCalculateAndSaveAccepts(string culture)
+    {
+        using CultureScope scope = new(culture);
+        SavedChartsRepository repository = new();
+        MainViewModel main = FilledForm(repository);
+
+        main.SetToNowCommand.Execute(null);
+
+        main.ChartEntry.EventTime.Should().MatchRegex("^[0-9]{2}:[0-9]{2}:[0-9]{2}$", main.StatusText);
+        ChartEntryViewModel.TryParseTimeOfDay(main.ChartEntry.EventTime, out _, out _).Should().BeTrue();
+
+        main.CalculateAndSaveCommand.Execute(null);
+        Thread.Sleep(50);
+
+        main.LastResult.Should().NotBeNull(main.StatusText);
+        repository.Count.Should().Be(1);
+    }
+
     /// <summary>A chart loaded from the database fills the box with text the check accepts.</summary>
     [Fact]
     public void PopulateFrom_FillsTheBoxWithATimeTheCheckAccepts()
