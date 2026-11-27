@@ -73,6 +73,41 @@ public sealed class ExportLineEndingTests
     }
 
     /// <summary>
+    /// A horary chart whose question perfects holds one kind of line ending too: no golden casts one, and its
+    /// "**Status:** Perfected" line was written with a line feed inside its own text (branch ExportText, 1.7.2;
+    /// found beside finding A3). The chart is the first of sixty daily casts at Columbus, Ohio that perfects.
+    /// </summary>
+    [Fact]
+    public void HoraryChartThatPerfects_HoldsOnlyTheSystemsLineEnding()
+    {
+        AstroCast.Core.Services.ChartEngine engine = GoldenFixtures.CreateChartEngine(_fixture);
+        AstroCast.Core.Models.ChartResult? perfected = null;
+        for (int day = 0; day < 60 && perfected is null; day++)
+        {
+            AstroCast.Core.Models.ChartResult chart = engine.Calculate(new AstroCast.Core.Models.ChartInput
+            {
+                Name = "Parcel enquiry 1001",
+                LocalDateTime = new DateTime(2026, 10, 1, 6, 56, 30).AddDays(day),
+                TimeZone = "America/New_York",
+                Latitude = 39.9612,
+                Longitude = -82.9988,
+                LocationName = "Columbus, Ohio",
+                EventType = "Horary",
+                HoraryCategory = "Relationship",
+            });
+            if (chart.HoraryPerfection?.IsPerfected == true)
+                perfected = chart;
+        }
+
+        perfected.Should().NotBeNull("one of sixty daily horary charts perfects");
+        string markdown = AstroCast.Core.Formatting.ChartMarkdownFormatter.ToMarkdown(perfected!);
+
+        markdown.Should().Contain("**Status:** Perfected  " + Environment.NewLine + "**Mechanism:** ");
+        string rest = markdown.Replace(Environment.NewLine, string.Empty, StringComparison.Ordinal);
+        rest.Should().NotContain("\n").And.NotContain("\r");
+    }
+
+    /// <summary>
     /// In every export the golden tests make, a <c>**Label:** value</c> line followed directly by another ends
     /// with two spaces, Markdown's hard break, so a reader keeps the two on separate lines (branch ExportText,
     /// 1.7.2; findings A3 and N8). The last line of such a run needs none. Until 1.7.2 the header lines of the

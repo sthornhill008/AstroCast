@@ -1257,7 +1257,7 @@ public static class ChartMarkdownFormatter
         sb.AppendLine();
         if (perfection.IsPerfected)
         {
-            sb.Append("**Status:** Perfected  \n");
+            sb.AppendLine("**Status:** Perfected  ");
             sb.Append($"**Mechanism:** {perfection.PerfectionMechanism}");
             if (perfection.PerfectionAspect is not null)
                 sb.Append($" ({perfection.PerfectionAspect}, orb {FormatOrbOrEmpty(perfection.PerfectionOrb)})");
