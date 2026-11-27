@@ -2473,7 +2473,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 SortAscending = SortAscending,
             };
 
-            IReadOnlyList<ChartEntity> charts = await _repository.QueryAsync(options);
+            IReadOnlyList<ChartEntity> charts = InListOrder(await _repository.QueryAsync(options));
 
             SavedCharts.Clear();
             foreach (ChartEntity chart in charts)
@@ -4828,7 +4828,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
             SortAscending = SortAscending,
         };
 
-        IReadOnlyList<ChartEntity> filtered = await _repository.QueryAsync(options);
+        IReadOnlyList<ChartEntity> filtered = InListOrder(await _repository.QueryAsync(options));
 
         SavedCharts.Clear();
         foreach (ChartEntity chart in filtered)
@@ -4836,8 +4836,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
             SavedCharts.Add(chart);
         }
 
-        // Unfiltered list, bound by the Person B, Electional and Relocation pickers
-        IReadOnlyList<ChartEntity> all = await _repository.ListAllAsync();
+        // Unfiltered list, bound by the Person B, Electional and Relocation pickers: always by name, A to Z
+        IReadOnlyList<ChartEntity> all = OrderedByName(await _repository.ListAllAsync(), ascending: true);
 
         long? personBId = Synastry.PersonB?.Id;
         long? electionalId = Electional.SelectedNatalChart?.Id;
@@ -4852,6 +4852,40 @@ public sealed class MainViewModel : INotifyPropertyChanged
         Synastry.PersonB = FindSavedChart(personBId);
         Electional.SelectedNatalChart = FindSavedChart(electionalId);
         Relocation.SelectedNatalChart = FindSavedChart(relocationId);
+    }
+
+    /// <summary>
+    /// Puts the charts a query read into the saved-charts list's order: by name as a person reads names when
+    /// the list is sorted by name, in the direction of the A-Z button; otherwise as the query read them.
+    /// </summary>
+    /// <param name="charts">The charts, in the order the query read them.</param>
+    /// <returns>The charts in the list's order.</returns>
+    private IReadOnlyList<ChartEntity> InListOrder(IReadOnlyList<ChartEntity> charts) =>
+        SortField == ChartSortField.Name ? OrderedByName(charts, SortAscending) : charts;
+
+    /// <summary>
+    /// Orders saved charts by name as a person reads names (branch InputChecks, 1.7.2, finding N18): case is
+    /// ignored and an accented letter stands beside its base letter, on the user's own culture.
+    /// </summary>
+    /// <remarks>
+    /// The database orders names by their bytes, so every capital came before every small letter and every
+    /// accented letter after "z": "Zoe Carter" before "anna lind", and a name beginning with an accented E after
+    /// both. The sort is stable, so names that read the same keep the order the database gave them, in either
+    /// direction. Only the order changes: the Search box and the same-name check on save still compare in the
+    /// database, where case is ignored for the letters a to z only.
+    /// </remarks>
+    /// <param name="charts">The charts, in the order the database read them.</param>
+    /// <param name="ascending"><see langword="true"/> for A to Z; <see langword="false"/> for Z to A.</param>
+    /// <returns>The charts by name.</returns>
+    internal static IReadOnlyList<ChartEntity> OrderedByName(IReadOnlyList<ChartEntity> charts, bool ascending)
+    {
+        CompareInfo compareInfo = CultureInfo.CurrentCulture.CompareInfo;
+        Comparer<string> byReading = Comparer<string>.Create(
+            (a, b) => compareInfo.Compare(a, b, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace));
+
+        return ascending
+            ? [.. charts.OrderBy(chart => chart.Name, byReading)]
+            : [.. charts.OrderByDescending(chart => chart.Name, byReading)];
     }
 
     /// <summary>
