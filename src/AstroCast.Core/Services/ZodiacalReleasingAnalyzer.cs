@@ -443,9 +443,14 @@ public static class ZodiacalReleasingAnalyzer
         if (l1 is null)
             return "Zodiacal Releasing from Spirit: Lot of Spirit not available in this chart.";
 
+        // One sentence for each angularity the Level 1 line prints (branch ExportText, 1.7.2; finding Q23 of
+        // the prompt audit). Until 1.7.2 there were two, peak for Angular and background for the rest, so a
+        // Succedent period was called background.
         string peakNote = l1.IsPeak
             ? " This is a peak (angular) period — heightened activity and visibility."
-            : " This is a background period — quieter, preparatory themes.";
+            : string.Equals(l1.Angularity, "Succedent", StringComparison.Ordinal)
+                ? " This is a moderately active (succedent) period — steady development between peak and background."
+                : " This is a background period — quieter, preparatory themes.";
 
         string l2Part = l2 is not null
             ? string.Create(Inv, $" Level 2: {l2.Sign} sub-period ({CalendarDateFormatter.Date(l2.StartDate)}–{CalendarDateFormatter.Date(l2.EndDate)}, " +

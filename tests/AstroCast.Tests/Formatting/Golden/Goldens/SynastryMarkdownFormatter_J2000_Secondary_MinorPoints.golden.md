@@ -757,7 +757,7 @@ Age 55: Jupiter major period (2021–2033), Sun sub-period (2024-11-18–2026-08
 
 ### Summary
 
-Zodiacal Releasing from Spirit (Taurus): Currently in a Leo Level 1 period (2022–2041, 19y, Succedent), ruled by Sun. Level 2: Libra sub-period (2025-11-23–2026-07-21, ruled by Venus, Angular). This is a background period — quieter, preparatory themes.
+Zodiacal Releasing from Spirit (Taurus): Currently in a Leo Level 1 period (2022–2041, 19y, Succedent), ruled by Sun. Level 2: Libra sub-period (2025-11-23–2026-07-21, ruled by Venus, Angular). This is a moderately active (succedent) period — steady development between peak and background.
 
 ## Arabic Parts / Lots
 

@@ -138,7 +138,7 @@ Age 78: Sun major period (2022–2032), Mercury sub-period (2025-08-13–2027-01
 
 ### Summary
 
-Zodiacal Releasing from Spirit (Pisces): Currently in a Leo Level 1 period (2026–2045, 19y, Succedent), ruled by Sun. Level 2: Leo sub-period (2026-08-11–2028-03-03, ruled by Sun, Succedent). This is a background period — quieter, preparatory themes.
+Zodiacal Releasing from Spirit (Pisces): Currently in a Leo Level 1 period (2026–2045, 19y, Succedent), ruled by Sun. Level 2: Leo sub-period (2026-08-11–2028-03-03, ruled by Sun, Succedent). This is a moderately active (succedent) period — steady development between peak and background.
 
 ---
 

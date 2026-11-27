@@ -293,6 +293,30 @@ public sealed class ZodiacalReleasingAnalyzerTests
         result.Summary.Should().Contain($"Currently in {expected} Level 1 period (");
     }
 
+    /// <summary>
+    /// The summary closes with the sentence of the Level 1 period's angularity (branch ExportText, 1.7.2;
+    /// finding Q23 of the prompt audit): Angular reads peak, Succedent moderately active, Cadent background.
+    /// Until 1.7.2 there were two sentences, peak for Angular and background for the rest, so a Succedent
+    /// period was called background.
+    /// </summary>
+    /// <param name="spiritLongitude">The Lot of Spirit's longitude; the Lot of Fortune is in Aries.</param>
+    /// <param name="angularity">The first Level 1 period's angularity.</param>
+    /// <param name="sentence">The summary's closing sentence.</param>
+    [Theory]
+    [InlineData(10.0, "Angular", " This is a peak (angular) period — heightened activity and visibility.")]
+    [InlineData(40.0, "Succedent", " This is a moderately active (succedent) period — steady development between peak and background.")]
+    [InlineData(70.0, "Cadent", " This is a background period — quieter, preparatory themes.")]
+    public void Analyze_Summary_ClosesWithTheSentenceOfTheLevel1Angularity(
+        double spiritLongitude, string angularity, string sentence)
+    {
+        ChartResult chart = CreateChart(spiritLongitude: spiritLongitude, fortuneLongitude: 10.0);
+
+        ZodiacalReleasingResult result = ZodiacalReleasingAnalyzer.Analyze(chart, new DateTime(1980, 1, 1));
+
+        result.CurrentL1Angularity.Should().Be(angularity);
+        result.Summary.Should().EndWith(sentence);
+    }
+
     #endregion
 
     #region Fields

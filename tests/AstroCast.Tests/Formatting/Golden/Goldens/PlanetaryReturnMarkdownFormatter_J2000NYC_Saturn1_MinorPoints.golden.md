@@ -133,7 +133,7 @@ Age 28: Jupiter major period (2020–2032), Mercury sub-period (2026-11-09–202
 
 ### Summary
 
-Zodiacal Releasing from Spirit (Scorpio): Currently in a Capricorn Level 1 period (2026–2053, 27y, Succedent), ruled by Saturn. Level 2: Capricorn sub-period (2026-08-12–2028-10-30, ruled by Saturn, Succedent). This is a background period — quieter, preparatory themes.
+Zodiacal Releasing from Spirit (Scorpio): Currently in a Capricorn Level 1 period (2026–2053, 27y, Succedent), ruled by Saturn. Level 2: Capricorn sub-period (2026-08-12–2028-10-30, ruled by Saturn, Succedent). This is a moderately active (succedent) period — steady development between peak and background.
 
 ---
 
