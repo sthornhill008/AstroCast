@@ -1,7 +1,7 @@
 # Transit Timeline
 
-**Name:** J2000 NYC Fixture
-**Report Period:** 2026-04-01 to 2026-04-30
+**Name:** J2000 NYC Fixture  
+**Report Period:** 2026-04-01 to 2026-04-30  
 **Generated:** YYYY-MM-DD HH:MM:SS UTC
 
 ---

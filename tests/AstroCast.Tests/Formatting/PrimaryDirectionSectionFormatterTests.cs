@@ -218,7 +218,7 @@ public sealed class PrimaryDirectionSectionFormatterTests
     {
         StringBuilder sb = new();
         PrimaryDirectionSectionFormatter.AppendSection(sb, result, hits, subheading, noneSentence);
-        return [.. sb.ToString().Split('\n').Select(l => l.TrimEnd('\r'))];
+        return [.. sb.ToString().Split('\n').Select(l => l.TrimEnd('\r', ' '))];
     }
 
     /// <summary>A result over a minimal chart at a latitude with a birth-time source.</summary>
@@ -285,6 +285,30 @@ public sealed class PrimaryDirectionSectionFormatterTests
         EngineVersion = "AstroCast 1.5.0 (SwissEph 2.10.03)",
         CalculatedAt = DateTime.UtcNow,
     };
+
+    #endregion
+
+    #region Hard breaks (branch ExportText, 1.7.2)
+
+    /// <summary>
+    /// The section's header lines each end with two spaces, Markdown's hard break, but the last (finding N8).
+    /// Until 1.7.2 none did, so a Markdown reader ran Method, Key, Significators and Promissors into one
+    /// paragraph.
+    /// </summary>
+    [Fact]
+    public void AppendSection_BreaksEveryHeaderLineButTheLast()
+    {
+        StringBuilder sb = new();
+        PrimaryDirectionSectionFormatter.AppendSection(sb, Result(leftOut: 3, sourceNotes: null), [], "Sub", "None.");
+        string[] lines = [.. sb.ToString().Split('\n').Select(l => l.TrimEnd('\r'))];
+
+        string[] header = [.. lines.Skip(2).TakeWhile(l => l.Length > 0)];
+
+        header.Should().HaveCount(6, "Method, Key, Significators, Promissors, Left out and Birth time");
+        header[0].Should().Be(PrimaryDirectionSectionFormatter.MethodLine + "  ");
+        header[..^1].Should().OnlyContain(l => l.EndsWith("  ", StringComparison.Ordinal));
+        header[^1].Should().StartWith("**Birth time:**").And.NotEndWith(" ");
+    }
 
     #endregion
 }

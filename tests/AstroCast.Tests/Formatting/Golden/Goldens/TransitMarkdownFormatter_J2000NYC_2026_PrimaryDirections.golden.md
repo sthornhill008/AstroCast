@@ -1,12 +1,12 @@
 # Primary Directions Report
 
-**Name:** J2000 NYC Fixture
-**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City
-**Birth Time Source:** Not specified
-**Report Period:** 2026-01-01 to 2026-12-31
-**Aspects:** Primary directions: majors
-**Techniques:** Primary Directions
-**Generated:** YYYY-MM-DD HH:MM:SS UTC
+**Name:** J2000 NYC Fixture  
+**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City  
+**Birth Time Source:** Not specified  
+**Report Period:** 2026-01-01 to 2026-12-31  
+**Aspects:** Primary directions: majors  
+**Techniques:** Primary Directions  
+**Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus
 
 ---
@@ -474,11 +474,11 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 
 ## Primary Directions
 
-**Method:** Placidus semi-arc, in zodiaco; direct and converse (traditional)
-**Key:** Naibod (0°59′08″ a year)
-**Significators:** Ascendant, Midheaven, Sun, Moon, Part of Fortune; the Descendant and IC by the conjunctions of bodies and stars
-**Promissors:** the planets and Chiron with the Ptolemaic aspects, the node by conjunction and opposition; their antiscia and the 55 fixed stars by conjunction
-**Left out:** 60 directions whose point never rises or sets at 40.7128° N (no semi-arc)
+**Method:** Placidus semi-arc, in zodiaco; direct and converse (traditional)  
+**Key:** Naibod (0°59′08″ a year)  
+**Significators:** Ascendant, Midheaven, Sun, Moon, Part of Fortune; the Descendant and IC by the conjunctions of bodies and stars  
+**Promissors:** the planets and Chiron with the Ptolemaic aspects, the node by conjunction and opposition; their antiscia and the 55 fixed stars by conjunction  
+**Left out:** 60 directions whose point never rises or sets at 40.7128° N (no semi-arc)  
 **Birth time:** unconfirmed (Birth Time Source not specified): every date below moves with the birth time; see Months/min
 
 ### Primary Direction Hits in the Report Period

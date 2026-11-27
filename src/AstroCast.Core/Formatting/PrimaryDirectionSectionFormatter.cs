@@ -42,7 +42,7 @@ internal static class PrimaryDirectionSectionFormatter
     private const string RangeSeparator = "----------------|";
 
     /// <summary>
-    /// Appends the section: the heading, a blank line, the header lines with no blank between them, a blank
+    /// Appends the section: the heading, a blank line, the header lines with no blank between them (each but the last ending with two spaces, a hard break), a blank
     /// line, the sub-heading, a blank line, then the table of <paramref name="hits"/> in the order given,
     /// or <paramref name="noneSentence"/> when there is none, and a closing blank line.
     /// </summary>
@@ -67,12 +67,12 @@ internal static class PrimaryDirectionSectionFormatter
 
         sb.AppendLine(Heading);
         sb.AppendLine();
-        sb.AppendLine(MethodLine);
-        sb.AppendLine($"**Key:** {result.Settings.Key.DisplayName}");
-        sb.AppendLine(SignificatorsLine(result.Settings));
-        sb.AppendLine(PromissorsLine);
+        sb.AppendLine(MethodLine + "  ");
+        sb.AppendLine($"**Key:** {result.Settings.Key.DisplayName}  ");
+        sb.AppendLine(SignificatorsLine(result.Settings) + "  ");
+        sb.AppendLine(PromissorsLine + "  ");
         if (LeftOutLine(result) is string leftOut)
-            sb.AppendLine(leftOut);
+            sb.AppendLine(leftOut + "  ");
         if (BirthTimeLine(result.NatalChart.Input) is string birthTime)
             sb.AppendLine(birthTime);
         sb.AppendLine();

@@ -1,7 +1,7 @@
 # Astrocartography Map
 
-**Name:** Golden Test Chart
-**Born:** 2000-01-01 07:00:00 America/New_York, New York City
+**Name:** Golden Test Chart  
+**Born:** 2000-01-01 07:00:00 America/New_York, New York City  
 **Obliquity:** 23.437677°  
 **GAST:** 280.457072°  
 **Latitude Range:** -85.0° to 85.0° (step 1.0°)  

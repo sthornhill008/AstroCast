@@ -184,6 +184,6 @@ public sealed class DailyHoroscopeExportLineTests
         (ChartResult natal, TransitResult result, IReadOnlyList<DailyHoroscopeDay> days) =
             DailyHoroscopeServiceTests.Daily(_fixture, natalInput, start, end, minorAspects);
         string md = DailyHoroscopeMarkdownFormatter.ToMarkdown(result, days, birthTimeSource, null, natal.Input.TimeZone);
-        return md.Split('\n').Select(line => line.TrimEnd('\r')).ToArray();
+        return md.Split('\n').Select(line => line.TrimEnd('\r', ' ')).ToArray();
     }
 }

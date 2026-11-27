@@ -3,7 +3,7 @@
 **Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast X.Y.Z (SwissEph VER)  
 **Period:** 2000 to 2050  
-**Conjunctions Found:** 3
+**Conjunctions Found:** 3  
 **Average Synodic Period:** 7390.95 days (20.23 years)  
 **Range:** 7269.81–7512.09 days
 

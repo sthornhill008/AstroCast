@@ -47,7 +47,7 @@ public static class PlanetaryCycleTimelineFormatter
         {
             DateTime cycleStart = timeline.PhasePoints[0].ExactUtc;
             DateTime cycleEnd = timeline.PhasePoints[^1].ExactUtc;
-            sb.AppendLine($"**Cycle Period:** {CalendarDateFormatter.Date(cycleStart)} \u2192 {CalendarDateFormatter.Date(cycleEnd)}");
+            sb.AppendLine($"**Cycle Period:** {CalendarDateFormatter.Date(cycleStart)} \u2192 {CalendarDateFormatter.Date(cycleEnd)}  ");
             if (CalendarDateFormatter.IsJulian(cycleStart))
                 sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
         }

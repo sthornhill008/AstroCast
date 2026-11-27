@@ -1,12 +1,12 @@
 # Daily Horoscope Data
 
-**Name:** J2000 NYC Fixture
-**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City
-**Birth Time Source:** Not specified
-**Report Period:** 2026-10-20 to 2026-11-05 (17 days)
-**Generated:** YYYY-MM-DD HH:MM:SS UTC
-**Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus
-**Timezone:** America/New_York — the days and every time in them (void of course, exact, entering and leaving orb, the Moon's sign change) are on this zone's clock
+**Name:** J2000 NYC Fixture  
+**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City  
+**Birth Time Source:** Not specified  
+**Report Period:** 2026-10-20 to 2026-11-05 (17 days)  
+**Generated:** YYYY-MM-DD HH:MM:SS UTC  
+**Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus  
+**Timezone:** America/New_York — the days and every time in them (void of course, exact, entering and leaving orb, the Moon's sign change) are on this zone's clock  
 **Orbs and Phases:** at 12:00 each day on this clock; a transit is listed when it is in orb at 12:00
 
 ---

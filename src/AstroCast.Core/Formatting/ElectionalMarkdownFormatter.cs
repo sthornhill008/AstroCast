@@ -126,35 +126,35 @@ public static class ElectionalMarkdownFormatter
 
         sb.AppendLine("# Electional Report");
         sb.AppendLine();
-        sb.AppendLine($"**Name:** {natalInput.Name}");
+        sb.AppendLine($"**Name:** {natalInput.Name}  ");
         // An explicit offset overrides the zone's rules, so the birth wall clock is labelled
         // with that offset, as the chart export's Date/Time line labels it, never with the zone.
         string natalClock = natalInput.UseExplicitOffset && natalInput.UtcOffsetHours.HasValue
             ? result.NatalChart.ResolvedOffsetLabel
             : natalInput.TimeZone;
-        sb.AppendLine(CultureInfo.InvariantCulture, $"**Natal Date:** {natalInput.LocalDateTime:yyyy-MM-dd}, {natalInput.LocalDateTime:HH:mm:ss} {natalClock}, {natalInput.LocationName}");
-        sb.AppendLine($"**Election Type:** {input.ElectionType}");
-        sb.AppendLine(CultureInfo.InvariantCulture, $"**Score ceiling:** {ElectionalScorer.ScoreCeiling(input.ElectionType):0.##} (each of the seven dimensions at its highest)");
-        sb.AppendLine($"**Election Goal:** {input.ElectionGoal}");
-        sb.AppendLine(CultureInfo.InvariantCulture, $"**Date Range:** {input.RangeStart:yyyy-MM-dd} to {input.RangeEnd:yyyy-MM-dd}");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"**Natal Date:** {natalInput.LocalDateTime:yyyy-MM-dd}, {natalInput.LocalDateTime:HH:mm:ss} {natalClock}, {natalInput.LocationName}  ");
+        sb.AppendLine($"**Election Type:** {input.ElectionType}  ");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"**Score ceiling:** {ElectionalScorer.ScoreCeiling(input.ElectionType):0.##} (each of the seven dimensions at its highest)  ");
+        sb.AppendLine($"**Election Goal:** {input.ElectionGoal}  ");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"**Date Range:** {input.RangeStart:yyyy-MM-dd} to {input.RangeEnd:yyyy-MM-dd}  ");
         if (CalendarDateFormatter.IsJulian(result.NatalChart.UtcDateTime) || input.RangeStart < CalendarDateFormatter.GregorianCalendarStartDate)
-            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
-        sb.AppendLine(CultureInfo.InvariantCulture, $"**Event Location:** {input.LocationName} ({input.Latitude:F4}\u00b0, {input.Longitude:F4}\u00b0)");
-        sb.AppendLine($"**Event Time Zone:** {input.TimeZone} (candidate instants and the period tables are on this clock)");
-        sb.AppendLine($"**Constraints:** {BuildConstraintsDisplay(input)}");
-        sb.AppendLine($"**Candidate instants:** {BuildCandidateCountDisplay(result)}");
-        sb.AppendLine($"**Separation:** {BuildSeparationDisplay(input)}");
+            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"**Event Location:** {input.LocationName} ({input.Latitude:F4}\u00b0, {input.Longitude:F4}\u00b0)  ");
+        sb.AppendLine($"**Event Time Zone:** {input.TimeZone} (candidate instants and the period tables are on this clock)  ");
+        sb.AppendLine($"**Constraints:** {BuildConstraintsDisplay(input)}  ");
+        sb.AppendLine($"**Candidate instants:** {BuildCandidateCountDisplay(result)}  ");
+        sb.AppendLine($"**Separation:** {BuildSeparationDisplay(input)}  ");
         if (result.SamplesWithoutPlanetaryHour == 1)
         {
-            sb.AppendLine("**Samples without a planetary hour:** 1, not scored (the Sun does not rise or set there on that day)");
+            sb.AppendLine("**Samples without a planetary hour:** 1, not scored (the Sun does not rise or set there on that day)  ");
         }
         else if (result.SamplesWithoutPlanetaryHour > 0)
         {
             sb.AppendLine(CultureInfo.InvariantCulture, $"**Samples without a planetary hour:** {result.SamplesWithoutPlanetaryHour}, not scored (the Sun does not rise or set there on "
-                + $"those days)");
+                + $"those days)  ");
         }
 
-        sb.AppendLine(CultureInfo.InvariantCulture, $"**Generated:** {result.CalculatedAt:yyyy-MM-dd HH:mm:ss} UTC");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"**Generated:** {result.CalculatedAt:yyyy-MM-dd HH:mm:ss} UTC  ");
         sb.AppendLine($"**Software:** AstroCast \u2014 Swiss Ephemeris, Tropical, {result.NatalChart.HouseSystemName}");
         sb.AppendLine();
     }
@@ -457,14 +457,14 @@ public static class ElectionalMarkdownFormatter
         sb.AppendLine();
 
         // Summary line
-        sb.AppendLine(CultureInfo.InvariantCulture, $"**Score:** {candidate.Score:0.##}");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"**Score:** {candidate.Score:0.##}  ");
 
         // Moon line
         string voidStatus = candidate.Moon.IsVoidOfCourse
             ? string.Create(CultureInfo.InvariantCulture, $"void-of-course (since {candidate.Moon.VoidStartLocal:HH:mm}, ends {candidate.Moon.VoidEndLocal:HH:mm})")
             : "not void";
         string applyingAspect = BuildMoonApplyingAspectDisplay(candidate);
-        sb.AppendLine($"**Moon:** {candidate.Moon.Sign}, {candidate.Moon.Phase} ({candidate.Moon.PhasePosition}-phase), {voidStatus}, {applyingAspect}");
+        sb.AppendLine($"**Moon:** {candidate.Moon.Sign}, {candidate.Moon.Phase} ({candidate.Moon.PhasePosition}-phase), {voidStatus}, {applyingAspect}  ");
 
         // Ascendant line
         ZodiacSign ascSign = (ZodiacSign)((int)(candidate.Chart.Houses.Ascendant / 30.0) + 1);
@@ -472,7 +472,7 @@ public static class ElectionalMarkdownFormatter
         PlanetPosition? rulerPosition = candidate.Chart.Positions
             .FirstOrDefault(p => string.Equals(p.Name, rulerPlanet, StringComparison.OrdinalIgnoreCase));
         string rulerHouse = rulerPosition?.House.HasValue == true ? string.Create(CultureInfo.InvariantCulture, $"House {rulerPosition.House.Value}") : "unknown";
-        sb.AppendLine($"**Ascendant:** {ascSign}, ruler {rulerPlanet} in {rulerHouse}");
+        sb.AppendLine($"**Ascendant:** {ascSign}, ruler {rulerPlanet} in {rulerHouse}  ");
 
         // Planetary hour
         string dayNight = candidate.PlanetaryHour.IsDaytime ? "Day" : "Night";

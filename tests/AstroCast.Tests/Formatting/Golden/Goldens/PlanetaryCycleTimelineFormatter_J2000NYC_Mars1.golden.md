@@ -4,7 +4,7 @@
 **Software:** AstroCast X.Y.Z (SwissEph VER)  
 **Natal Mars:** 27°57′47″ Aquarius  
 **Cycle Duration:** 553 days (1y 6m)  
-**Cycle Period:** 2001-12-06 → 2003-06-12
+**Cycle Period:** 2001-12-06 → 2003-06-12  
 
 ---
 

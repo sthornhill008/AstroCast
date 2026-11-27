@@ -145,26 +145,26 @@ public static class DailyHoroscopeMarkdownFormatter
 
         sb.AppendLine("# Daily Horoscope Data");
         sb.AppendLine();
-        sb.AppendLine($"**Name:** {input.Name}");
+        sb.AppendLine($"**Name:** {input.Name}  ");
         // An explicit offset overrides the zone's rules, so the birth wall clock is labelled
         // with that offset, as the chart export's Date/Time line labels it, never with the zone.
         string natalClock = input.UseExplicitOffset && input.UtcOffsetHours.HasValue
             ? result.NatalChart.ResolvedOffsetLabel
             : input.TimeZone;
-        sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}");
-        sb.AppendLine($"**Birth Time Source:** {birthTimeSource}");
-        sb.AppendLine(Inv, $"**Report Period:** {FormatDate(result.ReportStartDate)} to {FormatDate(result.ReportEndDate)} ({dayCount} {(dayCount == 1 ? "day" : "days")})");
+        sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}  ");
+        sb.AppendLine($"**Birth Time Source:** {birthTimeSource}  ");
+        sb.AppendLine(Inv, $"**Report Period:** {FormatDate(result.ReportStartDate)} to {FormatDate(result.ReportEndDate)} ({dayCount} {(dayCount == 1 ? "day" : "days")})  ");
         if (CalendarDateFormatter.IsJulian(result.NatalChart.UtcDateTime) || result.ReportStartDate < CalendarDateFormatter.GregorianCalendarStartDate)
-            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
-        sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
-        sb.AppendLine($"**Software:** AstroCast \u2014 Swiss Ephemeris, Tropical, {result.NatalChart.HouseSystemName}");
+            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
+        sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC  ");
+        sb.AppendLine($"**Software:** AstroCast \u2014 Swiss Ephemeris, Tropical, {result.NatalChart.HouseSystemName}  ");
 
         // The days are the reader's present days, on the zone's clock, whatever clock the birth
         // time was entered on: an explicit offset fixes only the birth instant. Every time in a
         // day is a reading on the same clock.
         if (!string.IsNullOrWhiteSpace(timeZoneId))
         {
-            sb.AppendLine($"**Timezone:** {timeZoneId} — the days and every time in them (void of course, exact, entering and leaving orb, the Moon's sign change) are on this zone's clock");
+            sb.AppendLine($"**Timezone:** {timeZoneId} — the days and every time in them (void of course, exact, entering and leaving orb, the Moon's sign change) are on this zone's clock  ");
             sb.AppendLine("**Orbs and Phases:** at 12:00 each day on this clock; a transit is listed when it is in orb at 12:00");
         }
 

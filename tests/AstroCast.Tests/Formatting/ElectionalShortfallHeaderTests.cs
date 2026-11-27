@@ -193,7 +193,7 @@ public sealed class ElectionalShortfallHeaderTests
     {
         string? line = markdown
             .Split('\n')
-            .Select(l => l.TrimEnd('\r'))
+            .Select(l => l.TrimEnd('\r', ' '))
             .FirstOrDefault(l => l.StartsWith("**Candidate instants:**", StringComparison.Ordinal));
 
         line.Should().NotBeNull("every export carries a Candidate instants header line");

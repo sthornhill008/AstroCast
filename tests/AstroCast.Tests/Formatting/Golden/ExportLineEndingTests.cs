@@ -73,6 +73,45 @@ public sealed class ExportLineEndingTests
     }
 
     /// <summary>
+    /// In every export the golden tests make, a <c>**Label:** value</c> line followed directly by another ends
+    /// with two spaces, Markdown's hard break, so a reader keeps the two on separate lines (branch ExportText,
+    /// 1.7.2; findings A3 and N8). The last line of such a run needs none. Until 1.7.2 the header lines of the
+    /// transit report, the transit timeline, the daily horoscope, the electional report and the primary
+    /// directions report, and several blocks inside them, ran together into one paragraph.
+    /// </summary>
+    [Fact]
+    public void EveryExport_BreaksALabelLineThatAnotherFollows()
+    {
+        List<(string GoldenFileName, string Text)> exports = MakeEveryExport();
+
+        List<string> runTogether = [];
+        foreach ((string goldenFileName, string text) in exports.DistinctBy(e => e.GoldenFileName))
+        {
+            string[] lines = text.Replace("\r\n", "\n", StringComparison.Ordinal).Split('\n');
+            for (int i = 0; i + 1 < lines.Length; i++)
+            {
+                if (IsLabelLine(lines[i]) && IsLabelLine(lines[i + 1]) && !lines[i].EndsWith("  ", StringComparison.Ordinal))
+                    runTogether.Add($"{goldenFileName} line {i + 1}: {lines[i]}");
+            }
+        }
+
+        string.Join(Environment.NewLine, runTogether).Should().BeEmpty(
+            "a label line that another label line follows ends with two spaces");
+    }
+
+    /// <summary>Whether a line is a <c>**Label:** value</c> line: it opens with a bold label that ends in a colon.</summary>
+    /// <param name="line">The line, without its line ending.</param>
+    /// <returns>True for a label line.</returns>
+    private static bool IsLabelLine(string line)
+    {
+        if (!line.StartsWith("**", StringComparison.Ordinal))
+            return false;
+
+        int close = line.IndexOf(":**", 2, StringComparison.Ordinal);
+        return close > 2 && !line[2..close].Contains('*');
+    }
+
+    /// <summary>
     /// Runs every fact of every golden test class inside a collecting scope and returns the exports they
     /// handed to the golden comparison, each as its formatter returned it. The culture theories are left out:
     /// each runs a fact again under another culture.

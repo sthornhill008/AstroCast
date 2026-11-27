@@ -2,7 +2,7 @@
 
 **Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast X.Y.Z (SwissEph VER)  
-**Method:** Tropical zodiac, Placidus houses
+**Method:** Tropical zodiac, Placidus houses  
 
 ---
 

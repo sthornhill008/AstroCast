@@ -103,7 +103,7 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = Astrocartography(Chart(explicitOffset: true));
 
-        Line(md, "**Born:**").Should().Be($"**Born:** 1947-10-05 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania");
+        Line(md, "**Born:**").Should().Be($"**Born:** 1947-10-05 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania  ");
     }
 
     /// <summary>A zone chart's astrocartography Born line is unchanged: the bare zone.</summary>
@@ -116,7 +116,7 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = Astrocartography(Chart(explicitOffset: false));
 
-        Line(md, "**Born:**").Should().Be("**Born:** 1947-10-05 09:30:00 America/New_York, Harrisburg, Pennsylvania");
+        Line(md, "**Born:**").Should().Be("**Born:** 1947-10-05 09:30:00 America/New_York, Harrisburg, Pennsylvania  ");
     }
 
     #endregion
@@ -133,7 +133,7 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = Electional(Chart(explicitOffset: true));
 
-        Line(md, "**Natal Date:**").Should().Be($"**Natal Date:** 1947-10-05, 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania");
+        Line(md, "**Natal Date:**").Should().Be($"**Natal Date:** 1947-10-05, 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania  ");
     }
 
     /// <summary>A zone chart's electional Natal Date line is unchanged: the bare zone.</summary>
@@ -146,7 +146,7 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = Electional(Chart(explicitOffset: false));
 
-        Line(md, "**Natal Date:**").Should().Be("**Natal Date:** 1947-10-05, 09:30:00 America/New_York, Harrisburg, Pennsylvania");
+        Line(md, "**Natal Date:**").Should().Be("**Natal Date:** 1947-10-05, 09:30:00 America/New_York, Harrisburg, Pennsylvania  ");
     }
 
     #endregion
@@ -163,7 +163,7 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = TransitMarkdownFormatter.ToMarkdown(Transits(Chart(explicitOffset: true)));
 
-        Line(md, "**Natal Date:**").Should().Be($"**Natal Date:** 1947-10-05, 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania");
+        Line(md, "**Natal Date:**").Should().Be($"**Natal Date:** 1947-10-05, 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania  ");
     }
 
     /// <summary>A zone chart's transit Natal Date line is unchanged: the bare zone.</summary>
@@ -176,7 +176,7 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = TransitMarkdownFormatter.ToMarkdown(Transits(Chart(explicitOffset: false)));
 
-        Line(md, "**Natal Date:**").Should().Be("**Natal Date:** 1947-10-05, 09:30:00 America/New_York, Harrisburg, Pennsylvania");
+        Line(md, "**Natal Date:**").Should().Be("**Natal Date:** 1947-10-05, 09:30:00 America/New_York, Harrisburg, Pennsylvania  ");
     }
 
     #endregion
@@ -197,8 +197,8 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = Daily(Chart(explicitOffset: true));
 
-        Line(md, "**Natal Date:**").Should().Be($"**Natal Date:** 1947-10-05, 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania");
-        Line(md, "**Timezone:**").Should().Be(DailyClockLine);
+        Line(md, "**Natal Date:**").Should().Be($"**Natal Date:** 1947-10-05, 09:30:00 {ExplicitLabel}, Harrisburg, Pennsylvania  ");
+        Line(md, "**Timezone:**").Should().Be(DailyClockLine + "  ");
     }
 
     /// <summary>
@@ -214,8 +214,8 @@ public sealed class ExplicitOffsetBirthLineTests
 
         string md = Daily(Chart(explicitOffset: false));
 
-        Line(md, "**Natal Date:**").Should().Be("**Natal Date:** 1947-10-05, 09:30:00 America/New_York, Harrisburg, Pennsylvania");
-        Line(md, "**Timezone:**").Should().Be(DailyClockLine);
+        Line(md, "**Natal Date:**").Should().Be("**Natal Date:** 1947-10-05, 09:30:00 America/New_York, Harrisburg, Pennsylvania  ");
+        Line(md, "**Timezone:**").Should().Be(DailyClockLine + "  ");
     }
 
     #endregion

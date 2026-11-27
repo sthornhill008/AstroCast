@@ -124,22 +124,22 @@ public static class TransitMarkdownFormatter
         // report whenever the scan ran, else the solar arc, progressions or both report
         sb.AppendLine($"# {TransitReportNaming.Title(result)}");
         sb.AppendLine();
-        sb.AppendLine($"**Name:** {input.Name}");
+        sb.AppendLine($"**Name:** {input.Name}  ");
         // An explicit offset overrides the zone's rules, so the birth wall clock is labelled
         // with that offset, as the chart export's Date/Time line labels it, never with the zone.
         string natalClock = input.UseExplicitOffset && input.UtcOffsetHours.HasValue
             ? result.NatalChart.ResolvedOffsetLabel
             : input.TimeZone;
-        sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}");
-        sb.AppendLine($"**Birth Time Source:** {birthTimeSource}");
-        sb.AppendLine($"**Report Period:** {FormatDate(result.ReportStartDate)} to {FormatDate(result.ReportEndDate)}");
+        sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}  ");
+        sb.AppendLine($"**Birth Time Source:** {birthTimeSource}  ");
+        sb.AppendLine($"**Report Period:** {FormatDate(result.ReportStartDate)} to {FormatDate(result.ReportEndDate)}  ");
         if (CalendarDateFormatter.IsJulian(result.NatalChart.UtcDateTime) || result.ReportStartDate < CalendarDateFormatter.GregorianCalendarStartDate)
-            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
-        sb.AppendLine($"**Aspects:** {FormatAspectSets(result)}");
+            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
+        sb.AppendLine($"**Aspects:** {FormatAspectSets(result)}  ");
 
         if (!string.IsNullOrWhiteSpace(interpretationContext))
         {
-            sb.AppendLine($"**Interpretation Context:** {interpretationContext.Trim()}");
+            sb.AppendLine($"**Interpretation Context:** {interpretationContext.Trim()}  ");
         }
 
         // The techniques the result holds, in the order Transits, Solar Arcs, Secondary Progressions
@@ -149,9 +149,9 @@ public static class TransitMarkdownFormatter
         if (result.SolarArcs is not null) techniques.Add("Solar Arcs");
         if (result.Progressions is not null) techniques.Add("Secondary Progressions");
         if (result.PrimaryDirections is not null) techniques.Add("Primary Directions");
-        sb.AppendLine($"**Techniques:** {string.Join(", ", techniques)}");
+        sb.AppendLine($"**Techniques:** {string.Join(", ", techniques)}  ");
 
-        sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+        sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC  ");
         sb.AppendLine($"**Software:** AstroCast \u2014 Swiss Ephemeris, Tropical, {result.NatalChart.HouseSystemName}");
         sb.AppendLine();
         sb.AppendLine("---");
@@ -837,8 +837,8 @@ public static class TransitMarkdownFormatter
 
         sb.AppendLine("## Secondary Progressions");
         sb.AppendLine();
-        sb.AppendLine("**Method:** Day-for-a-year (secondary)");
-        sb.AppendLine($"**Progressed Date:** {CalendarDateFormatter.Minutes(prog.ProgressedDate)} UT");
+        sb.AppendLine("**Method:** Day-for-a-year (secondary)  ");
+        sb.AppendLine($"**Progressed Date:** {CalendarDateFormatter.Minutes(prog.ProgressedDate)} UT  ");
         sb.AppendLine($"**Solar Arc:** {FormatDegMin(prog.SolarArcValue)}");
         sb.AppendLine();
 

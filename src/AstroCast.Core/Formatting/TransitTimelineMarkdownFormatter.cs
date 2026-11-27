@@ -101,16 +101,16 @@ public static class TransitTimelineMarkdownFormatter
 
         sb.AppendLine("# Transit Timeline");
         sb.AppendLine();
-        sb.AppendLine($"**Name:** {input.Name}");
-        sb.AppendLine(Inv, $"**Report Period:** {result.ReportStartDate:yyyy-MM-dd} to {result.ReportEndDate:yyyy-MM-dd}");
+        sb.AppendLine($"**Name:** {input.Name}  ");
+        sb.AppendLine(Inv, $"**Report Period:** {result.ReportStartDate:yyyy-MM-dd} to {result.ReportEndDate:yyyy-MM-dd}  ");
         if (CalendarDateFormatter.IsJulian(result.NatalChart.UtcDateTime) || result.ReportStartDate < CalendarDateFormatter.GregorianCalendarStartDate)
-            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
+            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
 
         if (!string.IsNullOrWhiteSpace(birthTimeSource))
-            sb.AppendLine($"**Birth Time Source:** {birthTimeSource}");
+            sb.AppendLine($"**Birth Time Source:** {birthTimeSource}  ");
 
         if (!string.IsNullOrWhiteSpace(interpretationContext))
-            sb.AppendLine($"**Context:** {interpretationContext}");
+            sb.AppendLine($"**Context:** {interpretationContext}  ");
 
         sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
         sb.AppendLine();

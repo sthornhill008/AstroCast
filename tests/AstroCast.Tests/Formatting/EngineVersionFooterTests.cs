@@ -197,7 +197,10 @@ public sealed class EngineVersionFooterTests
         return version;
     }
 
-    /// <summary>The export's lines, without a final empty line after its last newline.</summary>
+    /// <summary>
+    /// The export's lines, without a final empty line after its last newline, and without a line's trailing
+    /// spaces: a header line that another follows ends with two, a hard break (branch ExportText, 1.7.2).
+    /// </summary>
     private static string[] Lines(string md) =>
-        md.Replace("\r", "", StringComparison.Ordinal).TrimEnd('\n').Split('\n');
+        [.. md.Replace("\r", "", StringComparison.Ordinal).TrimEnd('\n').Split('\n').Select(l => l.TrimEnd(' '))];
 }

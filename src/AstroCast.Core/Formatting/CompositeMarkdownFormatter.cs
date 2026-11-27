@@ -75,7 +75,7 @@ public static class CompositeMarkdownFormatter
             sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
         sb.AppendLine(
             Inv, $"**Reference Location:** {result.ReferenceLocationDescription} " +
-            $"({result.ReferenceLatitude:F4}, {result.ReferenceLongitude:F4})");
+            $"({result.ReferenceLatitude:F4}, {result.ReferenceLongitude:F4})  ");
 
         if (!string.IsNullOrWhiteSpace(interpretationContext))
         {

@@ -40,7 +40,8 @@ public sealed class TransitTimelineExportTests
             await RunAsync(main);
 
             main.StatusText.Should().Be($"Transit timeline exported: {path}");
-            List<string> lines = [.. (await File.ReadAllLinesAsync(path))];
+            // without each line's trailing spaces: a header line that another follows ends with a hard break
+            List<string> lines = [.. (await File.ReadAllLinesAsync(path)).Select(l => l.TrimEnd(' '))];
             lines.Should().Contain("**Birth Time Source:** Birth certificate");
             lines.Should().Contain("**Context:** Career change");
         }

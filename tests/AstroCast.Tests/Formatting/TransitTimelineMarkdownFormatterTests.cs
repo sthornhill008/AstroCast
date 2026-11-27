@@ -1006,6 +1006,27 @@ public sealed class TransitTimelineMarkdownFormatterTests
         md.Should().Contain("Duration: 1 day |");
     }
 
+    /// <summary>
+    /// The header's lines each end with two spaces, Markdown's hard break, but the last, Generated (branch
+    /// ExportText, 1.7.2; finding A3). Until 1.7.2 none did, so a Markdown reader ran the header into one
+    /// paragraph.
+    /// </summary>
+    [Fact]
+    public void ToMarkdown_Header_BreaksEveryLineButTheLast()
+    {
+        string md = TransitTimelineMarkdownFormatter.ToMarkdown(
+            CreateTransitResult(), birthTimeSource: "Birth Certificate", interpretationContext: "Invented context");
+        string[] lines = [.. md.Split('\n').Select(l => l.TrimEnd('\r'))];
+
+        string[] header = [.. lines.Skip(2).TakeWhile(l => l.Length > 0)];
+
+        header.Should().Contain("**Birth Time Source:** Birth Certificate  ")
+            .And.Contain("**Context:** Invented context  ");
+        header[0].Should().StartWith("**Name:**");
+        header[..^1].Should().OnlyContain(l => l.EndsWith("  ", StringComparison.Ordinal));
+        header[^1].Should().StartWith("**Generated:**").And.NotEndWith(" ");
+    }
+
     #endregion
 
     #region Position Column Tests

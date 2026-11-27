@@ -1493,7 +1493,7 @@ public sealed class TransitMarkdownFormatterTests
     /// <summary>The export's lines, each without its line terminator.</summary>
     /// <param name="markdown">A Markdown export.</param>
     /// <returns>The export's lines, in order.</returns>
-    private static List<string> Lines(string markdown) => [.. markdown.Split('\n').Select(l => l.TrimEnd('\r'))];
+    private static List<string> Lines(string markdown) => [.. markdown.Split('\n').Select(l => l.TrimEnd('\r', ' '))];
 
     /// <summary>
     /// A result holding the given techniques: the progressions and solar arcs from

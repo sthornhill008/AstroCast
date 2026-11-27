@@ -185,7 +185,30 @@ public sealed class PrimaryDirectionMarkdownFormatterTests(EphemerisFixture fixt
     }
 
     /// <summary>The document's lines without their terminators.</summary>
-    private static List<string> Lines(string markdown) => [.. markdown.Split('\n').Select(l => l.TrimEnd('\r'))];
+    private static List<string> Lines(string markdown) => [.. markdown.Split('\n').Select(l => l.TrimEnd('\r', ' '))];
+
+    #endregion
+
+    #region Hard breaks (branch ExportText, 1.7.2)
+
+    /// <summary>
+    /// The report's header lines each end with two spaces, Markdown's hard break, but the last, Software
+    /// (finding A3). Until 1.7.2 none did, so a Markdown reader ran the header into one paragraph.
+    /// </summary>
+    [Fact]
+    public void Header_BreaksEveryLineButTheLast()
+    {
+        string[] lines = [.. ToMarkdown(GoldenFixtures.HartwellInput("Birth Certificate")).Split('\n').Select(l => l.TrimEnd('\r'))];
+
+        string[] header = [.. lines.Skip(2).TakeWhile(l => l.Length > 0)];
+
+        header.Should().Contain("**Name:** Eleanor Hartwell  ")
+            .And.Contain("**Birth Time Source:** Birth Certificate  ")
+            .And.Contain("**Span:** birth to age 100  ")
+            .And.Contain("**Techniques:** Primary Directions  ");
+        header[..^1].Should().OnlyContain(l => l.EndsWith("  ", StringComparison.Ordinal));
+        header[^1].Should().StartWith("**Software:**").And.NotEndWith(" ");
+    }
 
     #endregion
 }

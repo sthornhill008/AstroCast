@@ -1,12 +1,12 @@
 # Transit Report
 
-**Name:** J2000 NYC Fixture
-**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City
-**Birth Time Source:** Not specified
-**Report Period:** 2026-04-12 to 2026-04-18
-**Aspects:** Major
-**Techniques:** Transits, Solar Arcs, Secondary Progressions
-**Generated:** YYYY-MM-DD HH:MM:SS UTC
+**Name:** J2000 NYC Fixture  
+**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City  
+**Birth Time Source:** Not specified  
+**Report Period:** 2026-04-12 to 2026-04-18  
+**Aspects:** Major  
+**Techniques:** Transits, Solar Arcs, Secondary Progressions  
+**Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus
 
 ---
@@ -830,8 +830,8 @@ Transits to the natal Ceres, Pallas, Juno, Vesta and Lilith (Black Moon Lilith, 
 
 ## Secondary Progressions
 
-**Method:** Day-for-a-year (secondary)
-**Progressed Date:** 2000-01-27 18:40 UT
+**Method:** Day-for-a-year (secondary)  
+**Progressed Date:** 2000-01-27 18:40 UT  
 **Solar Arc:** 26°45'
 
 ### Progressed Positions (at report start, 2026-04-12)

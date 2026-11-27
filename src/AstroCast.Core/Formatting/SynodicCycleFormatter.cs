@@ -33,7 +33,7 @@ public static class SynodicCycleFormatter
         sb.AppendLine(Inv, $"**Period:** {series.StartDate.Year} to {series.EndDate.Year}  ");
         if (series.Conjunctions.Count > 0 && CalendarDateFormatter.IsJulian(series.Conjunctions.Min(c => c.DateTimeUtc)))
             sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
-        sb.AppendLine(Inv, $"**Conjunctions Found:** {series.Count}");
+        sb.AppendLine(Inv, $"**Conjunctions Found:** {series.Count}  ");
 
         if (series.AverageSynodicPeriodDays.HasValue)
         {

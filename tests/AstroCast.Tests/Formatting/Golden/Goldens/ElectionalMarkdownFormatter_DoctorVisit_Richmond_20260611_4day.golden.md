@@ -1,17 +1,17 @@
 # Electional Report
 
-**Name:** J2000 NYC Fixture
-**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City
-**Election Type:** Other
-**Score ceiling:** 90.5 (each of the seven dimensions at its highest)
-**Election Goal:** Best time to visit Doctor
-**Date Range:** 2026-06-11 to 2026-06-14
-**Event Location:** Richmond, VA (37.5385°, -77.4343°)
-**Event Time Zone:** America/New_York (candidate instants and the period tables are on this clock)
-**Constraints:** None
-**Candidate instants:** 2
-**Separation:** at least 6 hours between candidate instants
-**Generated:** YYYY-MM-DD HH:MM:SS UTC
+**Name:** J2000 NYC Fixture  
+**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City  
+**Election Type:** Other  
+**Score ceiling:** 90.5 (each of the seven dimensions at its highest)  
+**Election Goal:** Best time to visit Doctor  
+**Date Range:** 2026-06-11 to 2026-06-14  
+**Event Location:** Richmond, VA (37.5385°, -77.4343°)  
+**Event Time Zone:** America/New_York (candidate instants and the period tables are on this clock)  
+**Constraints:** None  
+**Candidate instants:** 2  
+**Separation:** at least 6 hours between candidate instants  
+**Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus
 
 ---
@@ -105,9 +105,9 @@
 
 ## Candidate instant 1 — Fri, 12 Jun 2026 5:00 PM
 
-**Score:** 82.25
-**Moon:** Taurus, WaningCrescent (early-phase), not void, Moon sextile Jupiter (applying, 6°29′)
-**Ascendant:** Scorpio, ruler Mars in House 7
+**Score:** 82.25  
+**Moon:** Taurus, WaningCrescent (early-phase), not void, Moon sextile Jupiter (applying, 6°29′)  
+**Ascendant:** Scorpio, ruler Mars in House 7  
 **Planetary Hour:** Moon (Day hour 10)
 
 ### Score Breakdown
@@ -523,9 +523,9 @@ None within 5° of angles.
 
 ## Candidate instant 2 — Thu, 11 Jun 2026 9:00 PM
 
-**Score:** 80.2
-**Moon:** Taurus, WaningCrescent (early-phase), not void, Moon sextile Mercury (applying, 7°36′)
-**Ascendant:** Sagittarius, ruler Jupiter in House 7
+**Score:** 80.2  
+**Moon:** Taurus, WaningCrescent (early-phase), not void, Moon sextile Mercury (applying, 7°36′)  
+**Ascendant:** Sagittarius, ruler Jupiter in House 7  
 **Planetary Hour:** Moon (Night hour 1)
 
 ### Score Breakdown

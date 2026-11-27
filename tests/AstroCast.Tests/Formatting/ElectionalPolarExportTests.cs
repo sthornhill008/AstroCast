@@ -110,5 +110,5 @@ public sealed class ElectionalPolarExportTests
     /// <summary>The export's lines, without their terminators.</summary>
     /// <param name="markdown">The export.</param>
     /// <returns>Its lines.</returns>
-    private static List<string> Lines(string markdown) => [.. markdown.Split('\n').Select(l => l.TrimEnd('\r'))];
+    private static List<string> Lines(string markdown) => [.. markdown.Split('\n').Select(l => l.TrimEnd('\r', ' '))];
 }

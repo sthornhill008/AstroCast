@@ -5,7 +5,7 @@
 **Method:** Tropical zodiac, short-arc midpoints (Mercury and Venus nearer the composite Sun); MC the midpoint of the two Midheavens, Placidus houses for it at the mean birth latitude  
 **Not shown:** declinations, right ascensions, out-of-bounds, declination aspects, stations, planet conditions, applying/separating marks, the Moon's next aspect and void of course — a composite body is a midpoint, not a point in the sky.  
 **Note:** Venus takes the midpoint nearer the composite Sun, 00°13′17″ Aries; the short-arc midpoint, 00°13′17″ Libra, lies opposite.  
-**Reference Location:** Midpoint of New York City & Los Angeles (37.3825, -96.1249)
+**Reference Location:** Midpoint of New York City & Los Angeles (37.3825, -96.1249)  
 
 ---
 

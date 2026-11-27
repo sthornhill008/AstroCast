@@ -40,20 +40,20 @@ public static class PrimaryDirectionMarkdownFormatter
 
         sb.AppendLine("# Primary Directions Report");
         sb.AppendLine();
-        sb.AppendLine($"**Name:** {input.Name}");
+        sb.AppendLine($"**Name:** {input.Name}  ");
         // An explicit offset overrides the zone's rules, so the birth wall clock is labelled with that
         // offset, as the transit report labels it, never with the zone.
         string natalClock = input.UseExplicitOffset && input.UtcOffsetHours.HasValue
             ? chart.ResolvedOffsetLabel
             : input.TimeZone;
-        sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}");
-        sb.AppendLine($"**Birth Time Source:** {(string.IsNullOrEmpty(input.SourceNotes) ? "Not specified" : input.SourceNotes)}");
-        sb.AppendLine(Inv, $"**Span:** birth to age {ageLimit}");
+        sb.AppendLine(Inv, $"**Natal Date:** {input.LocalDateTime:yyyy-MM-dd}, {input.LocalDateTime:HH:mm:ss} {natalClock}, {input.LocationName}  ");
+        sb.AppendLine($"**Birth Time Source:** {(string.IsNullOrEmpty(input.SourceNotes) ? "Not specified" : input.SourceNotes)}  ");
+        sb.AppendLine(Inv, $"**Span:** birth to age {ageLimit}  ");
         // The earliest instant the report prints is the birth: before 1582-10-15 the dates are Julian (R-D2)
         if (CalendarDateFormatter.IsJulian(chart.UtcDateTime))
-            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
-        sb.AppendLine("**Techniques:** Primary Directions");
-        sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC");
+            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
+        sb.AppendLine("**Techniques:** Primary Directions  ");
+        sb.AppendLine(Inv, $"**Generated:** {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC  ");
         sb.AppendLine($"**Software:** AstroCast — Swiss Ephemeris, Tropical, {chart.HouseSystemName}");
         sb.AppendLine();
         sb.AppendLine("---");

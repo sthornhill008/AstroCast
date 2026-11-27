@@ -53,11 +53,11 @@ public static class SynastryMarkdownFormatter
         sb.AppendLine();
         sb.AppendLine(Inv, $"**Generated:** {result.CalculatedAt:yyyy-MM-dd HH:mm:ss} UTC  ");
         sb.AppendLine($"**Software:** {result.EngineVersion}  ");
-        sb.AppendLine($"**Method:** Tropical zodiac, {result.PersonA.HouseSystemName} houses");
+        sb.AppendLine($"**Method:** Tropical zodiac, {result.PersonA.HouseSystemName} houses  ");
         if (CalendarDateFormatter.IsJulian(result.PersonA.UtcDateTime) || CalendarDateFormatter.IsJulian(result.PersonB.UtcDateTime))
-            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine);
+            sb.AppendLine(CalendarDateFormatter.JulianCalendarLine + "  ");
         if (result.RelationshipType != RelationshipType.Unspecified)
-            sb.AppendLine($"**Relationship:** {result.RelationshipType.DisplayName}");
+            sb.AppendLine($"**Relationship:** {result.RelationshipType.DisplayName}  ");
         if (!string.IsNullOrEmpty(result.RelationshipNotes))
             sb.AppendLine($"**Relationship Notes:** {result.RelationshipNotes}");
         sb.AppendLine();

@@ -90,11 +90,11 @@ public static class AstrocartographyFormatter
 
         sb.AppendLine("# Astrocartography Map");
         sb.AppendLine();
-        sb.Append("**Name:** ").AppendLine(name);
+        sb.Append("**Name:** ").Append(name).AppendLine("  ");
         sb.Append("**Born:** ")
           .Append(localDt.ToString("yyyy-MM-dd HH:mm:ss", Inv))
           .Append(' ').Append(birthClock)
-          .Append(", ").AppendLine(location);
+          .Append(", ").Append(location).AppendLine("  ");
         sb.Append("**Obliquity:** ")
           .Append(result.Obliquity.ToString("F6", Inv))
           .AppendLine("\u00b0  ");

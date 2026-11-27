@@ -265,7 +265,7 @@ public sealed class PreSwitchLabelTests
     {
         string julian = TransitMarkdownFormatter.ToMarkdown(Transit(_n1, 1301, Return1301));
         julian.Should().Contain("- **Exact pass 1:** 1301-03-15 17:42:37 UTC");
-        LineAfter(julian, "**Report Period:**").Should().Be(CalendarLine);
+        LineAfter(julian, "**Report Period:**").Should().Be(CalendarLine + "  ");
 
         string gregorian = TransitMarkdownFormatter.ToMarkdown(Transit(_j2000, 2026, Modern));
         gregorian.Should().Contain("- **Exact pass 1:** 2026-04-15 12:00:00 UTC");
@@ -279,7 +279,7 @@ public sealed class PreSwitchLabelTests
         string julian = TransitTimelineMarkdownFormatter.ToMarkdown(Transit(_n1, 1301, Return1301));
         julian.Should().Contain("- **Exact pass 1:** 1301-03-15 17:42 UTC");
         julian.Should().Contain("| 1301-03-15 17:42 UTC | TR Saturn cnj NA Sun | Exact pass 1 |");
-        LineAfter(julian, "**Report Period:**").Should().Be(CalendarLine);
+        LineAfter(julian, "**Report Period:**").Should().Be(CalendarLine + "  ");
 
         string gregorian = TransitTimelineMarkdownFormatter.ToMarkdown(Transit(_j2000, 2026, Modern));
         gregorian.Should().Contain("| 2026-04-15 12:00 UTC | TR Saturn cnj NA Sun | Exact pass 1 |");
@@ -296,7 +296,7 @@ public sealed class PreSwitchLabelTests
     {
         string julian = DailyHoroscopeMarkdownFormatter.ToMarkdown(Transit(_n1, 1301, Return1301), [Day(new DateOnly(1301, 3, 15))]);
         julian.Should().Contain("### Tuesday, March 7, 1301");
-        LineAfter(julian, "**Report Period:**").Should().Be(CalendarLine);
+        LineAfter(julian, "**Report Period:**").Should().Be(CalendarLine + "  ");
 
         string gregorian = DailyHoroscopeMarkdownFormatter.ToMarkdown(Transit(_j2000, 2026, Modern), [Day(new DateOnly(2026, 4, 15))]);
         gregorian.Should().Contain("### Wednesday, April 15, 2026");
@@ -309,7 +309,7 @@ public sealed class PreSwitchLabelTests
     {
         string julian = ElectionalMarkdownFormatter.ToMarkdown(Electional(_n1, Return1301));
         julian.Should().Contain("## Candidate instant 1 — Wed, 15 Mar 1301 5:42 PM");
-        LineAfter(julian, "**Date Range:**").Should().Be(CalendarLine);
+        LineAfter(julian, "**Date Range:**").Should().Be(CalendarLine + "  ");
 
         string gregorian = ElectionalMarkdownFormatter.ToMarkdown(Electional(_j2000, Modern));
         gregorian.Should().Contain("## Candidate instant 1 — Wed, 15 Apr 2026 12:00 PM");

@@ -1,11 +1,11 @@
 # Primary Directions Report
 
-**Name:** Eleanor Hartwell
-**Natal Date:** 1947-10-05, 09:30:00 UTC−5 (explicit), Harrisburg, Pennsylvania
-**Birth Time Source:** Birth Certificate
-**Span:** birth to age 100
-**Techniques:** Primary Directions
-**Generated:** YYYY-MM-DD HH:MM:SS UTC
+**Name:** Eleanor Hartwell  
+**Natal Date:** 1947-10-05, 09:30:00 UTC−5 (explicit), Harrisburg, Pennsylvania  
+**Birth Time Source:** Birth Certificate  
+**Span:** birth to age 100  
+**Techniques:** Primary Directions  
+**Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus
 
 ---
@@ -509,11 +509,11 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 
 ## Primary Directions
 
-**Method:** Placidus semi-arc, in zodiaco; direct and converse (traditional)
-**Key:** Naibod (0°59′08″ a year)
-**Significators:** Ascendant, Midheaven, Sun, Moon, Part of Fortune; the Descendant and IC by the conjunctions of bodies and stars
-**Promissors:** the planets and Chiron with the Ptolemaic aspects, the node by conjunction and opposition; their antiscia and the 55 fixed stars by conjunction
-**Left out:** 60 directions whose point never rises or sets at 40.2737° N (no semi-arc)
+**Method:** Placidus semi-arc, in zodiaco; direct and converse (traditional)  
+**Key:** Naibod (0°59′08″ a year)  
+**Significators:** Ascendant, Midheaven, Sun, Moon, Part of Fortune; the Descendant and IC by the conjunctions of bodies and stars  
+**Promissors:** the planets and Chiron with the Ptolemaic aspects, the node by conjunction and opposition; their antiscia and the 55 fixed stars by conjunction  
+**Left out:** 60 directions whose point never rises or sets at 40.2737° N (no semi-arc)  
 
 ### Primary Directions, Birth to Age 100
 

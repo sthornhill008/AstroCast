@@ -1,12 +1,12 @@
 # Solar Arc and Progressions Report
 
-**Name:** J2000 NYC Fixture
-**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City
-**Birth Time Source:** Not specified
-**Report Period:** 2026-01-01 to 2026-12-31
-**Aspects:** Solar arcs: majors, semisquare, sesquiquadrate; progressions: majors
-**Techniques:** Solar Arcs, Secondary Progressions
-**Generated:** YYYY-MM-DD HH:MM:SS UTC
+**Name:** J2000 NYC Fixture  
+**Natal Date:** 2000-01-01, 07:00:00 America/New_York, New York City  
+**Birth Time Source:** Not specified  
+**Report Period:** 2026-01-01 to 2026-12-31  
+**Aspects:** Solar arcs: majors, semisquare, sesquiquadrate; progressions: majors  
+**Techniques:** Solar Arcs, Secondary Progressions  
+**Generated:** YYYY-MM-DD HH:MM:SS UTC  
 **Software:** AstroCast — Swiss Ephemeris, Tropical, Placidus
 
 ---
@@ -474,8 +474,8 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 
 ## Secondary Progressions
 
-**Method:** Day-for-a-year (secondary)
-**Progressed Date:** 2000-01-27 12:01 UT
+**Method:** Day-for-a-year (secondary)  
+**Progressed Date:** 2000-01-27 12:01 UT  
 **Solar Arc:** 26°28'
 
 ### Progressed Positions (at report start, 2026-01-01)
