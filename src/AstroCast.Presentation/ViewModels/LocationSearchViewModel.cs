@@ -232,6 +232,10 @@ public sealed class LocationSearchViewModel : ChildViewModelBase
     /// network or timeout exceptions log a warning and surface a
     /// user-friendly fallback message; any other exception logs an
     /// error with the full stack trace. No in-flight cancellation.
+    /// Since 1.7.2 (branch InputChecks, finding N16) a failure that carries
+    /// an HTTP status code reads "The place-search service answered {code};
+    /// try again in a minute. You can enter coordinates manually.", and the
+    /// warning logs the code and the exception.
     /// </remarks>
     public async Task SearchAsync()
     {
@@ -291,11 +295,19 @@ public sealed class LocationSearchViewModel : ChildViewModelBase
                 "{Context} lookup for '{Query}' returned {Count} results",
                 _logContext, _searchText.Trim(), Results.Count);
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
-            Parent.StatusText =
-                "Location lookup failed \u2014 check internet connection. You can enter coordinates manually.";
-            _logger.Warning("{Context} lookup failed: network error", _logContext);
+            // A status code means the service was reached and refused, 429 when asked too often: the
+            // connection is not at fault, and the line says so. None means no answer at all (branch
+            // InputChecks, 1.7.2, finding N16; until then both read "check internet connection").
+            int? statusCode = ex.StatusCode is { } status ? (int)status : null;
+            Parent.StatusText = statusCode is { } code
+                ? string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"The place-search service answered {code}; try again in a minute. You can enter coordinates manually.")
+                : "Location lookup failed \u2014 check internet connection. You can enter coordinates manually.";
+            _logger.Warning(
+                ex, "{Context} lookup failed: network error, status code {StatusCode}", _logContext, statusCode);
         }
         catch (TaskCanceledException)
         {
