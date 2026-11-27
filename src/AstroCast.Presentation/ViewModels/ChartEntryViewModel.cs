@@ -734,6 +734,48 @@ public sealed class ChartEntryViewModel : ChildViewModelBase
         return true;
     }
 
+    /// <summary>The message the form shows for a Time box that does not hold a time of day.</summary>
+    public const string InvalidTimeOfDayMessage = "Invalid time format. Use HH:mm:ss.";
+
+    /// <summary>The forms a time of day is read in: hours and minutes with a colon, seconds optional.</summary>
+    private static readonly string[] TimeOfDayFormats = ["H:mm", "H:mm:ss"];
+
+    /// <summary>
+    /// Reads a time-of-day box (branch InputChecks, 1.7.2, finding N1): hours and minutes, seconds optional,
+    /// written <c>H:mm</c>, <c>HH:mm</c>, <c>H:mm:ss</c> or <c>HH:mm:ss</c> with a colon in any culture, from
+    /// 00:00:00 to 23:59:59, blanks around the text dropped. Every place that reads the Chart panel's Time box
+    /// reads it here (Calculate &amp; Save, the electional search's cast from the form and the form's live offset
+    /// label), and the electional time window's two boxes are read by the same rule.
+    /// </summary>
+    /// <remarks>
+    /// Until 1.7.2 the box was read with <c>TimeSpan.TryParse</c>, which takes a number with no colon for days and
+    /// accepts a sign and a day part: "9", meant as nine o'clock, cast and saved the chart for midnight nine days
+    /// later, "1430" some four years later, and "-5:00" five hours before midnight on the day before. Everything
+    /// that is not a time of day is now refused: a bare number, a sign, a day part, a dot or a comma, a fraction
+    /// of a second, 24:00, an empty box.
+    /// </remarks>
+    /// <param name="text">The box's text.</param>
+    /// <param name="time">The time of day, as the span since midnight, when the text is valid.</param>
+    /// <param name="error">
+    /// The message the form shows when the text is not valid, <see cref="InvalidTimeOfDayMessage"/>;
+    /// <see langword="null"/> when it is valid.
+    /// </param>
+    /// <returns><see langword="true"/> when the text is a time of day the form accepts.</returns>
+    public static bool TryParseTimeOfDay(string? text, out TimeSpan time, [NotNullWhen(false)] out string? error)
+    {
+        if (!TimeOnly.TryParseExact(
+                text?.Trim(), TimeOfDayFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out TimeOnly read))
+        {
+            time = TimeSpan.Zero;
+            error = InvalidTimeOfDayMessage;
+            return false;
+        }
+
+        time = read.ToTimeSpan();
+        error = null;
+        return true;
+    }
+
     /// <summary>
     /// Constructs a DateTime from the current <see cref="EventDate"/> and
     /// <see cref="EventTime"/> fields. Returns noon on EventDate if EventTime
@@ -741,7 +783,7 @@ public sealed class ChartEntryViewModel : ChildViewModelBase
     /// </summary>
     private DateTime GetCurrentLocalDateTime()
     {
-        if (TimeSpan.TryParse(EventTime, out TimeSpan time))
+        if (TryParseTimeOfDay(EventTime, out TimeSpan time, out _))
             return EventDate.Date.Add(time);
         return EventDate.Date.AddHours(12);
     }

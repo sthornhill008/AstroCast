@@ -1927,10 +1927,10 @@ public sealed class MainViewModel : INotifyPropertyChanged
         {
             StatusText = "Calculating...";
 
-            // Parse time from the text field
-            if (!TimeSpan.TryParse(ChartEntry.EventTime, out TimeSpan time))
+            // Parse time from the text field: a time of day only, the one check the Time box goes through
+            if (!ChartEntryViewModel.TryParseTimeOfDay(ChartEntry.EventTime, out TimeSpan time, out string? timeError))
             {
-                StatusText = "Invalid time format. Use HH:mm:ss.";
+                StatusText = timeError;
                 return;
             }
 
@@ -2813,7 +2813,8 @@ public sealed class MainViewModel : INotifyPropertyChanged
                 // lines overwriting the recast's (1.6.1, item D, branch ElectionalPicker).
                 StatusText = "Calculating natal chart from form fields...";
 
-                if (!TimeSpan.TryParse(ChartEntry.EventTime, out TimeSpan natalTime))
+                // The same check as Calculate & Save's, with this path's own wording
+                if (!ChartEntryViewModel.TryParseTimeOfDay(ChartEntry.EventTime, out TimeSpan natalTime, out string? _))
                 {
                     StatusText = "Invalid natal time format. Use HH:mm:ss.";
                     return;
