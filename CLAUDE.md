@@ -1929,7 +1929,7 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4472 in `tests/AstroCast.Tests` and 146 in
+- **Total tests:** 4476 in `tests/AstroCast.Tests` and 146 in
   `tests/AstroCast.UiTests` at StaleResults, all passing on Windows (4411 and 145 at InputChecks,
   on Windows too; 4297 and 145 at SvgExclude,
   all passing on macOS; 4296 and 145 at Fixtures
@@ -2733,10 +2733,11 @@ does, in both heads, with no change outside the view models.
   the picker at a new object for the same chart and clears nothing, and deleting Person B's chart clears
   them. In the window each picker's ComboBox loses its item while `AllSavedCharts` is refilled, and writes
   null to its view model before the refresh picks the same chart again: `MainViewModel.IsRefillingSavedCharts`
-  is set for the refill, the Person B and Electional setters clear nothing while it is, and
+  is set for the refill, the Person B, Electional and Relocation setters clear nothing while it is, and
   `OnSavedChartsRefilled(idBefore)` then compares the Id held before the refill with the one held after. The
-  Relocation picker has no such guard (noted at StaleResults, not changed): in the window its result is
-  cleared by any refresh while a chart is picked there.
+  Relocation picker has had its Id key since 1.6.1 and takes the guard here (Steve's ruling of 2026-11-27):
+  until then, in the window, its result was cleared by any refresh while a chart was picked there, an import
+  or the deletion of another chart, though 1.6.1 meant a refresh to keep it.
 - **Clear Form** clears every chart-made result: through the six panels' `Clear()` as before, through the
   `LastResult` setter, and by name for the two it left until 1.7.2, the return and ingress timeline and the
   map, whether or not there was a chart to change. Those two panels' own settings (the timeline's years and
@@ -2747,6 +2748,8 @@ does, in both heads, with no change outside the view models.
   while a run is under way clears the old result, and the run then lands its result for the chart it started
   with.
 
-`StaleResultsTests` (61 names: each of the twelve results against each of the four changes, the Synastry
-panel's three against Person B, the refresh with and without the picker's null, the mundane series, Clear
-Form, a failed run) and the UI `SavedChartPickersTests.ARefresh_KeepsTheResultsOfThePickersItRepoints` hold it.
+`StaleResultsTests` (65 names: each of the twelve results against each of the four changes, the Synastry
+panel's three against Person B, the refresh with and without the picker's null, the Relocation picker across
+a refresh and a deletion, the mundane series, Clear Form, a failed run) and the UI
+`SavedChartPickersTests.ARefresh_KeepsTheResultsOfThePickersItRepoints`, which sees all three pickers' nulls
+arrive, hold it.
