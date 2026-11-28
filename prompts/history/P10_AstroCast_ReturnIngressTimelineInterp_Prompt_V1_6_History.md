@@ -1,10 +1,25 @@
 # P10 Revision History and Extracted Records
 
-Current release: 1.5 (2026-10-15). Previous release: 1.4.
+Current release: 1.6 (2026-11-28). Previous release: 1.5 (2026-10-15).
 
-Source: AstroCast_ReturnIngressTimelineInterp_Prompt_V1_4.md (in Prompts.zip). The source remains unchanged.
+Source: P10_AstroCast_ReturnIngressTimelineInterp_Prompt_V1_5.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. One change of AstroCast 1.7.2 (code finding N13: an ingress row's Label names the sign entered) and one of the review's findings (Q13). Line numbers are v1.6's; the replaced v1.5 passages are in the v1.5 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v1.6, the documentation line links the V1_6 guide and history, the Version line reads 1.6 and the Date line 2026-11-28.
+- **:9, Compatible Export.** AstroCast 1.7.2; the line says that an older export prints "Sign Entry" on every ingress row.
+- **:96-104, the Timeline table (N13).** An ingress's Label is "Enters Taurus", or "Enters Aries (retrograde)" for a retrograde crossing, beside the boundary's position (`00°00′00″ Taurus | Enters Aries (retrograde)`, the golden's row 8); a cardinal ingress of the Sun keeps its season's name. For an older export, whose Label is "Sign Entry", the sign entered comes from the Summary's Ingresses table.
+- **:268-272, Ingresses (Q13).** Houses come only from a natal export supplied with the timeline; the timeline prints the return planets' natal positions and no house. v1.5 said "The natal house is everything" of an export that prints none, and returns alone put a reading in personal mode.
+- **:587, Glossary, Ingress (N13).** The entry names the 1.7.2 Label and the older "Sign Entry".
+- **:593, Glossary, Mars Return (Q13).** A cycle of physical energy, drive and assertion; a medical reading of it only on an operator's request. v1.5 called it "the most important personal medical timing marker", against the shared rule that medical analysis needs a request.
+
+The User Guide 1.2 names the Return & Ingress Timeline export (it said "the matching chart export") and says the same for its user.
+
+Unchanged, by instruction: every other rule of v1.5.
+
+## Previous changes — 1.5 (2026-10-15)
 
 Aligned with the AstroCast 1.3.4 exports; the Compatible Export line names 1.3.4 (R3). F (T2-2, T2-5, T-D6; R6): each Mercury return is read from its own row, as Venus's and the outer planets'; the aggregation and the "3–4 per year" and "~1.6 per year" rates are dropped; a retrograde loop is one return, "Return #N (first of 3 passes)"; the Timeline's Label and Event columns and the Summary's Next Return are described. R2: a header carrying `**Calendar:** dates before 1582-10-15 are on the Julian calendar` means every date is on the calendar in force; nothing to convert. R1 not applied: the export prints no orb. H (R8): the dated windows name the major period when a node's firdaria period is undivided. Older lines made true: the export never lists a Sun ingress (its ingress planets are Jupiter, Saturn, Uranus, Neptune, Pluto and Chiron), so the cardinal-ingress method applies only to a supplied Ingress export. Run 1b (2026-10-15): the Mundane colophon makes the Aries ingress chart the year-map only when an Ingress export supplies it.
 

@@ -1,12 +1,12 @@
-# AstroCast Return & Ingress Timeline Interpretation Prompt — v1.5
+# AstroCast Return & Ingress Timeline Interpretation Prompt — v1.6
 
-**Operator documentation:** [P10 guide](<../guides/P10_AstroCast_ReturnIngressTimelineInterp_Prompt_V1_5_UserGuide.md>) · [Revision history](<../history/P10_AstroCast_ReturnIngressTimelineInterp_Prompt_V1_5_History.md>). These are optional references.
+**Operator documentation:** [P10 guide](<../guides/P10_AstroCast_ReturnIngressTimelineInterp_Prompt_V1_6_UserGuide.md>) · [Revision history](<../history/P10_AstroCast_ReturnIngressTimelineInterp_Prompt_V1_6_History.md>). These are optional references.
 
-**Version:** 1.5
-**Date:** 2026-10-15
+**Version:** 1.6
+**Date:** 2026-11-28
 **Method:** Personal timing synthesis (Hand / Sasportas / Greene / Tyl) + mundane tradition (Campion)
 **Target Audience:** Astrology practitioners and clients
-**Compatible Export:** AstroCast Return & Ingress Timeline Markdown export, AstroCast 1.3.4 (earlier exports: v1.0.174+)
+**Compatible Export:** AstroCast Return & Ingress Timeline Markdown export, AstroCast 1.7.2 (older exports still read: from 1.7.2 an ingress row's Label names the sign entered, "Enters Taurus", or "Enters Aries (retrograde)" for a planet moving back over a boundary, where an older export prints "Sign Entry" on every ingress row; earlier exports: AstroCast 1.3.4 to 1.7.1, v1.0.174+)
 **Scope:** Chronological master timing calendar — personal (returns + ingresses with natal chart) or mundane (ingresses only, collective reading)
 
 ---
@@ -93,8 +93,15 @@ The export's Timeline table has one row per event: # / Date (UTC) /
 Event (Return or Ingress) / Planet / Position / Label. A return's Label
 is "Return #N", N counting the planet's returns since birth (Mercury
 #26 at 26), or "Return #N (first of 3 passes)" for a retrograde loop,
-dated at its first pass; an ingress's Label is "Sign Entry" and its
-Position the boundary degree. In the Summary by Planet, a return
+dated at its first pass; an ingress's Label names the sign entered,
+"Enters Taurus", or "Enters Aries (retrograde)" when the planet
+crosses the boundary moving backward, and its Position is the
+boundary degree, 00°00′00″ of the sign that begins there, so a
+retrograde row reads `00°00′00″ Taurus | Enters Aries (retrograde)`.
+One of the Sun's four cardinal ingresses, where a timeline lists it,
+keeps its season's name as its Label. An export older than AstroCast
+1.7.2 prints "Sign Entry" on every ingress row: take the sign entered
+from the Summary's Ingresses table. In the Summary by Planet, a return
 planet's Count is its returns in the window and Next Return is the
 first of them, not the next return after today.
 
@@ -259,7 +266,10 @@ The natal planet's condition determines the QUALITY of each renewal.
 | Chiron | ~2–8 years | Where collective wound and healing crisis focus |
 
 The natal house is everything. Map each ingress to the natal house
-the sign rules.
+the sign rules. Houses come only from a natal export supplied with
+the timeline: the timeline itself prints the return planets' natal
+positions and no house, so without a natal export name no house and
+read each ingress by its planet and sign.
 
 #### Interaction Between Returns and Ingresses
 
@@ -574,13 +584,13 @@ Topic-grouped, basic reader level, curated to terms actually used.
 **1. Timeline Basics**
 - **Return & Ingress Timeline:** A chronological master calendar combining planetary returns and/or sign ingresses.
 - **Return:** The moment a transiting planet returns to its natal longitude — for a retrograde loop the first of its passes, the label counting them ("Return #N (first of 3 passes)"). Personal by nature.
-- **Ingress:** The moment a transiting planet crosses a sign boundary: moving forward it enters the sign that begins there; moving retrograde it re-enters the sign that ends there, so a planet can enter the same sign up to three times. From AstroCast 1.3.3 the Summary's Ingresses table names the sign entered; the Timeline row's Position is the boundary degree, printed as 00°00′00″ of the sign that begins there. Collective by nature.
+- **Ingress:** The moment a transiting planet crosses a sign boundary: moving forward it enters the sign that begins there; moving retrograde it re-enters the sign that ends there, so a planet can enter the same sign up to three times. From AstroCast 1.3.3 the Summary's Ingresses table names the sign entered; the Timeline row's Position is the boundary degree, printed as 00°00′00″ of the sign that begins there. From AstroCast 1.7.2 the row's Label names the sign entered too ("Enters Taurus"; "Enters Aries (retrograde)" for a retrograde crossing), where an older export prints "Sign Entry". Collective by nature.
 - **Chronological mapping:** Events ordered by date for rhythmic narrative.
 
 **2. Returns — Personal Renewal Cycles**
 - **Mercury Return:** ~1 year as seen from the Earth. Cognitive and communication refresh.
 - **Venus Return:** ~1 year as seen from the Earth. Relational and aesthetic recalibration.
-- **Mars Return:** ~2 years. Physical energy, drive, assertion cycle. The most important personal medical timing marker.
+- **Mars Return:** ~2 years. A cycle of physical energy, drive and assertion. A medical reading of it is given only on an operator's request.
 - **Jupiter Return:** ~12 years. Growth and philosophical orientation.
 - **Saturn Return:** ~29.5 years. Structural reckoning. The most significant personal return.
 
