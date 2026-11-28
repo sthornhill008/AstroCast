@@ -39,7 +39,80 @@
             <ComponentGroupRef Id="AllComponents" />
             <ComponentRef Id="ProgramMenuShortcut" />
             <ComponentRef Id="DesktopShortcut" />
+            <ComponentRef Id="InstallFolderRecord" />
         </Feature>
+
+        <!--
+            THE INSTALLER REMEMBERS ITS FOLDER (branch WindowsFit, 1.7.2;
+            findings A6 and N3, Steve's ruling 4).
+
+            The Windows head keeps its database, logs and key file beside the
+            program, and the folder page lets the user choose the folder. Until
+            1.7.2 nothing recorded the choice, so the next installer offered
+            the default folder again: accepting it removed the old version
+            from the chosen folder, left the database behind there, and the
+            new version opened with no charts.
+
+            1. Record. The component below writes the folder to a per-user
+               value of the installer's own. It is removed on uninstall with
+               the rest; the user's database, logs and key file are never the
+               installer's, and stay.
+            2. Read back. RECORDEDINSTALLFOLDER is that value, found by
+               AppSearch at the next install.
+            3. The one upgrade from 1.7.1, which recorded nothing.
+               FOUNDINSTALLFOLDER is the folder of the installed component
+               that holds AstroCast.exe. Its component GUID is generated from
+               its install path, so it is the same in 1.7.1 (read from the
+               released MSI's Component table) and in every build since; a
+               component search with no Signature row yields the directory of
+               the component's key file.
+            4. Order. INSTALLFOLDER takes the recorded value, else the folder
+               found, else stays unset and resolves to the default in
+               Directories.wxs. Each step runs only while INSTALLFOLDER is
+               unset, so a folder passed on the command line wins over both,
+               and both run before the folder page, where a folder the user
+               types wins in its turn. Scheduled in both sequences and run in
+               the first, so a silent install lands in the same folder.
+
+            ARPINSTALLLOCATION gives Windows the folder for its Apps list
+            (A6). The UpgradeCode, the per-user scope, the folder page, the
+            licence page and the shortcuts are unchanged.
+        -->
+        <Component Id="InstallFolderRecord" Directory="INSTALLFOLDER" Guid="*">
+            <RegistryValue Root="HKCU" Key="Software\Thornhill Computer Software\AstroCast"
+                           Name="InstallFolder" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        </Component>
+
+        <Property Id="RECORDEDINSTALLFOLDER">
+            <RegistrySearch Id="RecordedInstallFolder" Root="HKCU"
+                            Key="Software\Thornhill Computer Software\AstroCast"
+                            Name="InstallFolder" Type="raw" />
+        </Property>
+
+        <Property Id="FOUNDINSTALLFOLDER">
+            <ComponentSearch Id="InstalledAstroCastExe" Guid="2DB7EFBE-419D-5180-B965-3571232245F2" Type="file" />
+        </Property>
+
+        <SetProperty Id="INSTALLFOLDER" Action="SetInstallFolderFromRecord" Value="[RECORDEDINSTALLFOLDER]"
+                     After="AppSearch" Sequence="first"
+                     Condition="NOT INSTALLFOLDER AND RECORDEDINSTALLFOLDER" />
+        <SetProperty Id="INSTALLFOLDER" Action="SetInstallFolderFromSearch" Value="[FOUNDINSTALLFOLDER]"
+                     After="SetInstallFolderFromRecord" Sequence="first"
+                     Condition="NOT INSTALLFOLDER AND FOUNDINSTALLFOLDER" />
+
+        <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" Sequence="execute" />
+
+        <!--
+            The Apps list entry (finding N19): the program's own icon, the
+            website as the About link and the repository's Issues page as the
+            Help link. The icon is the one at the repository root that the
+            executable carries; BuildInstaller.ps1 runs wix from this folder.
+            Until 1.7.2 the entry had a blank icon and no link.
+        -->
+        <Icon Id="AstroCastIcon.ico" SourceFile="..\..\AstroCast.ico" />
+        <Property Id="ARPPRODUCTICON" Value="AstroCastIcon.ico" />
+        <Property Id="ARPURLINFOABOUT" Value="https://www.sthornhill.com/AstroCast/" />
+        <Property Id="ARPHELPLINK" Value="https://github.com/sthornhill008/AstroCast/issues" />
 
         <!--
             The licence page shows AstroCast's licence, the GNU AGPL version 3:
