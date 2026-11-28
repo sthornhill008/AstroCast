@@ -1,12 +1,12 @@
-# AstroCast Relocation Chart Interpretation Prompt — v1.10
+# AstroCast Relocation Chart Interpretation Prompt — v1.11
 
-**Operator documentation:** [P11 guide](<../guides/P11_AstroCast_RelocationInterp_Prompt_V1_10_UserGuide.md>) · [Revision history](<../history/P11_AstroCast_RelocationInterp_Prompt_V1_10_History.md>). These are optional references.
+**Operator documentation:** [P11 guide](<../guides/P11_AstroCast_RelocationInterp_Prompt_V1_11_UserGuide.md>) · [Revision history](<../history/P11_AstroCast_RelocationInterp_Prompt_V1_11_History.md>). These are optional references.
 
-**Version:** 1.10
-**Date:** 2026-10-22
+**Version:** 1.11
+**Date:** 2026-11-28
 **Method:** Life-domain relocation framework (Locational astrology / Jim Lewis tradition / Classical dignity integration)
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Relocation Markdown Export, AstroCast 1.6.0 (older relocation exports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0 and 1.5.0; v1.0.115+)
+**Compatible Export:** AstroCast Relocation Markdown Export, AstroCast 1.7.2 (older relocation exports still read; the header's Event and Question labels print from AstroCast 1.6.1, and an export of 1.6.0 or earlier reads Birth Location and Birth Date/Time for every chart, so there the chart's kind is taken from the relocated chart's `**Type:**` line; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0, 1.5.0 and 1.6.0 to 1.7.1; v1.0.115+)
 
 ---
 
@@ -436,7 +436,7 @@ life-domain section of its relocated house; no section of their own.
 - **Report title:** `Relocation Chart Interpretation: {Name} — {Target Location}`
 - **Created by** {AI} with data from AstroCast
 - **Report Generated:** {date the AI produces the report}
-- **Native:** {Name} — Born {birth date/time} at {birth location} (a Birth chart, whose export lines read Birth Location and Birth Date/Time; for an Event chart, whose lines read Event, `**Subject:** {Name} — Event {date/time} at {location}`; for a horary chart, whose lines read Question, `**Subject:** {Name} — Asked {date/time} at {location}`)
+- **Native:** {Name} — Born {birth date/time} at {birth location} (a Birth chart, whose export lines read Birth Location and Birth Date/Time; for an Event chart, whose lines read Event, `**Subject:** {Name} — Event {date/time} at {location}`; for a horary chart, whose lines read Question, `**Subject:** {Name} — Asked {date/time} at {location}`; the Event and Question lines print from AstroCast 1.6.1, and for an older export, which reads Birth for every chart, take the kind from the relocated chart's `**Type:**` line)
 - **Relocation Target:** {Target location} ({latitude}, {longitude})
 - **Ascendant Change:** {Natal ASC sign} → {Relocated ASC sign} (or "Unchanged — sign held; degree shifted {X}° within sign" if same sign)
 - **Midheaven Change:** {Natal MC sign} → {Relocated MC sign} (or "Unchanged" if same sign)
@@ -484,16 +484,19 @@ social magnetism. Part of Marriage if relevant.
 ### Section 5 — Health and Vitality
 **Word target:** 375-600 (standard) / 500-750 (complex)
 
-Apply Medical Correspondence Safety Protocol.
+Keep this section to vitality and energy unless the Medical
+Correspondence Safety Protocol is triggered by an operator's request;
+the illness readings of the Health houses list above belong only to a
+triggered reading.
 
 Sun's house = constitutional vitality placement. Mars angular =
-physical energy, drive, and overexertion risk. Chiron angular =
-wound made visible, healing identity. Moon's house = emotional
-health and self-care direction. 6th house sign, ruler, and planets.
-12th house planets = hidden health factors. Medical correspondences
-data if present — frame as educational-historical. Preserve the
-export's disclaimer. Biographical health context if provided in
-Notes — honor lightly, never speculate.
+physical energy and drive. Chiron angular = wound made visible,
+healing identity. Moon's house = emotional wellbeing and self-care
+direction. 6th house sign, ruler, and planets, as daily routine and
+energy. Only when the protocol is triggered: the medical
+correspondences data if present, framed as educational-historical,
+with the export's disclaimer preserved. Biographical health context
+if provided in Notes — honor lightly, never speculate.
 
 ### Section 6 — Overall Assessment and Key Takeaways
 **Word target:** 250-400 (standard) / 300-500 (complex)
@@ -610,7 +613,7 @@ reference this):
 - [ ] Voice convention applied per matrix (personal default OR public-figure branch if triggered/inherited)
 - [ ] Location-Framing Discipline applied throughout — claims expressed as pattern-shifts not deterministic predictions
 - [ ] Public-Figure Relocation Protocol applied if triggered or inherited; observable patterns only
-- [ ] Medical Correspondence Safety Protocol applied in §5 if medical data present in export; disclaimer preserved verbatim
+- [ ] Medical Correspondence Safety Protocol applied in §5 only when triggered by an operator's request (disclaimer preserved verbatim); otherwise §5 keeps to vitality and energy
 - [ ] Context Fit Rule observed — every biographical claim traces to Notes, Interpretation Context, or chart data
 - [ ] Inheritance source stated in Title Page if inherited
 
@@ -620,7 +623,7 @@ reference this):
 - [ ] §2 covers MC change, MC ruler, 10th-house planets, 6th-house condition, Part of Vocation, Part of Spirit, Sun's house as visibility indicator
 - [ ] §3 covers chart ruler's house, 2nd-house condition, Part of Fortune, 8th-house changes
 - [ ] §4 covers ASC as relational tone, 7th-house ruler, Venus's house change, angular planets in relationship houses, community indicators
-- [ ] §5 covers Sun's house (vitality), Mars angular (physical energy/risk), Chiron angular (wound visibility), Moon's house (emotional health), 6th-house condition, medical correspondences if present
+- [ ] §5 covers Sun's house (vitality), Mars angular (physical energy and drive), Chiron angular (wound visibility), Moon's house (emotional wellbeing), 6th-house condition; medical correspondences only when the protocol is triggered
 - [ ] export-supported dignity convention used for chart ruler AND all newly angular planets
 - [ ] Planet conditions (combust, besieged, etc.) checked for all newly angular planets
 - [ ] Sect identified for out-of-sect malefic and in-sect benefic with relocated house placements

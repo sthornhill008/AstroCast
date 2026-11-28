@@ -1,8 +1,8 @@
-# P11 AstroCast_RelocationInterp_Prompt_V1_10 — User Guide
+# P11 AstroCast_RelocationInterp_Prompt_V1_11 — User Guide
 
-Version: 1.3. Date: 2026-10-22.
+Version: 1.4. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Relocation/P11_AstroCast_RelocationInterp_Prompt_V1_10.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.10 labels the title page's subject line by the chart's type, Born for a Birth chart and Event or Asked for an event or horary chart, as the export's own header lines read; the revision history lists the changes.
+Use the [complete current prompt](<../Relocation/P11_AstroCast_RelocationInterp_Prompt_V1_11.md>), followed by the Relocation export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.11 keeps the reading's Health and Vitality section to vitality and energy; the traditional medical correspondences are read only when your request asks for a health or medical reading. The title page still labels its subject line by the chart's type (Born, Event or Asked); the export's own Event and Question labels print from AstroCast 1.6.1. The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 

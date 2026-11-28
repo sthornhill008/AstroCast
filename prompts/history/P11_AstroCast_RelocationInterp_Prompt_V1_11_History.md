@@ -1,10 +1,26 @@
 # P11 Revision History and Extracted Records
 
-Current release: 1.10 (2026-10-22). Previous release: 1.9 (2026-10-20).
+Current release: 1.11 (2026-11-28). Previous release: 1.10 (2026-10-22).
 
-Source: P11_AstroCast_RelocationInterp_Prompt_V1_9.md (in Prompts.zip). The source remains unchanged.
+Source: P11_AstroCast_RelocationInterp_Prompt_V1_10.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. One of the review's findings (Q20). Line numbers are v1.11's; the replaced v1.10 passages are in the v1.10 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v1.11, the documentation line links the V1_11 guide and history, the Version line reads 1.11 and the Date line 2026-11-28.
+- **:9, Compatible Export (Q20).** AstroCast 1.7.2. The header's Event and Question labels began in AstroCast 1.6.1 (v1.10 named 1.6.0 for them); an export of 1.6.0 or earlier reads Birth for every chart, and the chart's kind is then taken from the relocated chart's `**Type:**` line.
+- **:439, Title Page.** The same sentence for the subject line's word (Born, Event, Asked).
+- **:487-499, Section 5, Health and Vitality (Q20).** The section keeps to vitality and energy unless the Medical Correspondence Safety Protocol is triggered by an operator's request. "Overexertion risk" and "12th house planets = hidden health factors" are gone; the medical correspondences data is read only when the protocol is triggered. Protocol 3 (:153-157) already made the medical layer request-only, yet v1.10 wrote these into every reading.
+- **:616, :626, Compliance Gate (Q20).** The protocol's line and §5's content line follow Section 5. The first is not among the lines the review cited: it applied the protocol "if medical data present in export", and the export always holds that block, so the change to Section 5 could not stand without it.
+
+AstroCast 1.7.2 no longer prints a second title or a second footer under `## Relocated Chart`; no sentence of the prompt described either, so nothing changed for it.
+
+The User Guide 1.4 names the Relocation export (it said "the matching chart export") and says the same for its user.
+
+Unchanged, by instruction: every other rule of v1.10, among them the Health houses list of the life-domain framework (:399-405), which a triggered reading still uses.
+
+## Previous changes — 1.10 (2026-10-22)
 
 A ruling carried over from the 1.5.0 library work's leftovers to the 1.7.0 library run (Steve, 2026-10-22). The relocation export's header lines read **Birth Location** and **Birth Date/Time** for a Birth chart, **Event Location** and **Event Date/Time** for an event chart, and **Question Location** and **Question Date/Time** for a horary (`src\AstroCast.Core\Formatting\RelocationMarkdownFormatter.cs` :47-57 and :133-136 at 9e227eb), but the prompt's title page line read "Born" for every chart. It now follows the export's word. No other rule changed; this is the whole of the release.
 
