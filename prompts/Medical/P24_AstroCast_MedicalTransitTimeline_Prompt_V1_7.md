@@ -1,10 +1,10 @@
-# AstroCast Medical Transit Timeline Interpretation — v1.6
+# AstroCast Medical Transit Timeline Interpretation — v1.7
 
-**Operator documentation:** [P24 guide](<../guides/P24_AstroCast_MedicalTransitTimeline_Prompt_V1_6_UserGuide.md>) · [Revision history](<../history/P24_AstroCast_MedicalTransitTimeline_Prompt_V1_6_History.md>). These are optional references.
+**Operator documentation:** [P24 guide](<../guides/P24_AstroCast_MedicalTransitTimeline_Prompt_V1_7_UserGuide.md>) · [Revision history](<../history/P24_AstroCast_MedicalTransitTimeline_Prompt_V1_7_History.md>). These are optional references.
 
-**Version:** 1.6
-**Date:** 2026-10-15
-**Compatible Export:** AstroCast Medical Markdown Export and Transit Timeline Markdown Export, AstroCast 1.3.4
+**Version:** 1.7
+**Date:** 2026-11-28
+**Compatible Export:** AstroCast Medical Markdown Export and Transit Timeline Markdown Export, AstroCast 1.7.2 (older exports of both still read, and nothing this prompt relies on is missing from them: an older medical export also holds a second, shorter copy of its tables inside its embedded chart, under `## Medical Astrology Correspondences`, which is the same data; earlier exports: AstroCast 1.3.4 to 1.7.1)
 
 ## Shared operating rules
 
@@ -28,7 +28,7 @@ Glossary scope (curated/full), ordering (topic/alphabetical), and reader level a
 
 ### Family routing
 
-Educational symbolic timeline only. Verify that the supplied natal profile, person, and timeline match. Retain the same public-figure restriction as the medical interpretation prompt; no event-chart bypass. Exported scores (the medical profile's elemental scores; the export prints no severity labels) are symbolic source scores, not health risk or healing windows.
+Educational symbolic timeline only. Verify that the supplied natal profile, person, and timeline match. Retain the same public-figure restriction as the medical interpretation prompt; no event-chart bypass. Exported scores (the medical profile's elemental scores) and the export's one label (the Significance column of its Hard Aspects table, High or Moderate) are symbolic source scores and a symbolic label, not severity, health risk or healing windows.
 
 ## Configuration and use
 
@@ -62,11 +62,11 @@ Filter for supplied Sun (the export prints no Hyleg), Moon, Ascendant ruler, Mer
 
 Use **CONCENTRATED**, **NOTABLE**, or **SUPPORTIVE SYMBOLISM** as editorial categories, not health severity:
 
-- Concentrated: a supplied target contact converges with an emphasised source correspondence (the export's Zodiacal Anatomy and Planetary Body Correspondences tables carry no scores), or a malefic contacts a symbolic vitality pillar. Name the actual factors and source score; no elevated-risk claim.
+- Concentrated: a supplied target contact converges with an emphasised source correspondence (the export's Zodiacal Anatomy and Planetary Body Correspondences tables carry no scores), or a malefic contacts a symbolic vitality pillar. Name the actual factors and, where the export gives one, the source score or the Hard Aspects table's Significance label, as symbolic emphasis; no elevated-risk claim.
 - Notable: another relevant target contact, supported midpoint activation, or station/ingress that reinforces the selected correspondence.
 - Supportive symbolism: relevant benefic trine/sextile or another explicitly supplied supportive contact. Chiron may be discussed only when supplied. Do not call these healing windows or favorable care dates.
 
-Preserve exact passes, chronological order, applying/separating status where the export gives it (the timeline's windows, events and clusters carry none), and source orbs. Group convergent contacts within a stated two-to-four-week window only when dates support it; multiple derived indicators are not independent medical evidence. Midpoint entries identify both endpoints and the activating planet. Stations are sustained background markers; ingresses are sign changes. Do not invent entry/exit dates from a single exact date. The orb allowances are those of the Transit Orbs table below; use them for symbolic duration only and label estimates; speed and retrograde passes affect duration.
+Preserve exact passes, chronological order, applying/separating status where the export gives it (the timeline's windows, events and clusters carry none), and source orbs. Group convergent contacts within a stated two-to-four-week window only when dates support it; multiple derived indicators are not independent medical evidence. Midpoint entries identify both endpoints and the activating planet. Stations are sustained background markers; ingresses are sign changes. Do not invent entry/exit dates from a single exact date. The orb allowances are those of the Transit Orbs table below; use them for symbolic duration only and label estimates; speed and retrograde passes affect duration. The timeline's `*Recommended Event Type B dates: ...*` line under a cluster lists dates for casting event charts: never give it, or any date, as a recommended date in a medical reading.
 
 ### Transit Orbs (AstroCast 1.3.4)
 

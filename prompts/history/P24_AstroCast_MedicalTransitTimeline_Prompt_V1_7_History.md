@@ -1,10 +1,24 @@
 # P24 Revision History and Extracted Records
 
-Current release: 1.6 (2026-10-15). Previous release: 1.5.
+Current release: 1.7 (2026-11-28). Previous release: 1.6 (2026-10-15).
 
-Source: AstroCast_MedicalTransitTimeline_Prompt_V1_5.md (in Prompts.zip). The source remains unchanged.
+Source: P24_AstroCast_MedicalTransitTimeline_Prompt_V1_6.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. One of the review's findings (Q21); the guide also takes Q22. Line numbers are v1.7's; the replaced v1.6 passages are in the v1.6 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v1.7, the documentation line links the V1_7 guide and history, the Version line reads 1.7 and the Date line 2026-11-28.
+- **:7, Compatible Export.** AstroCast 1.7.2; older exports lack nothing this prompt relies on. The line notes that an older medical export also holds a second copy of its tables inside its embedded chart, which AstroCast 1.7.2 leaves out (code finding N14).
+- **:31, Family routing (Q21).** The medical export does print one label: the Significance column of its Hard Aspects table, High or Moderate. It is named as symbolic, beside the elemental scores. v1.6 said "the export prints no severity labels".
+- **:65, Timeline method (Q21).** A concentrated entry names the source score or the Significance label where the export gives one; the tables it had pointed at carry no score.
+- **:69, Timeline method (Q21).** The timeline's `*Recommended Event Type B dates: ...*` line is for casting event charts and is never given as recommended dates in a medical reading. v1.6 did not say what that line is.
+
+The User Guide 1.2 names the two exports the prompt reads, the Medical export and the Transit Timeline export (Q22: it said "the matching chart export"), and carries the same two sentences. The guide of P23 names the Medical export in the same run, with no new version of P23.
+
+Unchanged, by instruction: every other rule of v1.6.
+
+## Previous changes — 1.6 (2026-10-15)
 
 Aligned with the AstroCast 1.3.4 exports; a Compatible Export line names 1.3.4 (R3). O-D3 (R1): every orb prints as truncated degrees and minutes with the prime; a compact `147'` or a decimal belongs to an older export. R2: a header carrying `**Calendar:** dates before 1582-10-15 are on the Julian calendar` means every date is on the calendar in force; nothing to convert. T-D15 (R5, kept): run 2's Transit Orbs table, word for word from the timeline prompt V2_8, replaces the old approximate figures. Older lines made true: the timeline's windows, events and clusters carry no applying/separating mark; the export's Tradition line names its methods.
 
