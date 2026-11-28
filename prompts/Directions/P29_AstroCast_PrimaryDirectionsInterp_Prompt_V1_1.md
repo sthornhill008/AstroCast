@@ -1,12 +1,12 @@
-# AstroCast Primary Directions Interpretation Prompt — v1.0
+# AstroCast Primary Directions Interpretation Prompt — v1.1
 
-**Operator documentation:** [P29 guide](<../guides/P29_AstroCast_PrimaryDirectionsInterp_Prompt_V1_0_UserGuide.md>) · [Revision history](<../history/P29_AstroCast_PrimaryDirectionsInterp_Prompt_V1_0_History.md>). These are optional references.
+**Operator documentation:** [P29 guide](<../guides/P29_AstroCast_PrimaryDirectionsInterp_Prompt_V1_1_UserGuide.md>) · [Revision history](<../history/P29_AstroCast_PrimaryDirectionsInterp_Prompt_V1_1_History.md>). These are optional references.
 
-**Version:** 1.0
-**Date:** 2026-10-18
+**Version:** 1.1
+**Date:** 2026-11-28
 **Method:** Traditional primary directions (Ptolemy / Placidus / Gansten), with the Galenic medical tradition context-activated
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Primary Directions Report, AstroCast 1.5.0 — the whole-life report, whose header carries a `**Span:**` line (`**Span:** birth to age 100`) and the line `**Techniques:** Primary Directions`. A report of a period, whose header carries a `**Report Period:**` line, is read with P03, the Transit Interpretation prompt, when its Techniques line names Transits, and with P28, the Directions prompt, when it does not; neither is read with this one.
+**Compatible Export:** AstroCast Primary Directions Report, AstroCast 1.7.2 (the reports of AstroCast 1.5.0 to 1.7.1 still read; the `†` and `‡` marks with their footnotes and the `### Natures of the Promissor Stars` table print only from AstroCast 1.7.2, so an older export shows a bare `—` where a figure is missing, marks no row whose date turns, and gives a nature only for the stars of the natal Fixed Stars table) — the whole-life report, whose header carries a `**Span:**` line (`**Span:** birth to age 100`) and the line `**Techniques:** Primary Directions`. A report of a period, whose header carries a `**Report Period:**` line, is read with P03, the Transit Interpretation prompt, when its Techniques line names Transits, and with P28, the Directions prompt, when it does not; neither is read with this one.
 
 ---
 
@@ -54,6 +54,9 @@ text. Overrides combine across distinct fields. Resolve them using Shared operat
 | Length target | 3,000–6,000 words (standard); 1,800–3,000 (Quick); 6,000+ when the life's chapters warrant it | `"Use N words maximum"` |
 | Context grounding | Relevant supplied claims considered; plausible correspondence or material no-clear-fit | "Skip biographical grounding" changes discussion scope only |
 | Rectification events | None supplied; Section 6 then explains how to use the Months/min column | "Rectification events: {event}, {YYYY-MM-DD}; …" in the submission, or dated events in the Notes or Interpretation Context |
+| Rectification figure | Included in Section 6 when three or more events each give a figure | `"No chart"` |
+| Trial-shift check | Off | `"Include the trial-shift check"` |
+| Rectification only | Off: the full reading, rectification as Section 6 | `"Rectification only"` |
 
 **Public-figure default.** When the chart holder is a politician,
 celebrity, historical figure, or any person whose life is public record
@@ -209,8 +212,23 @@ The columns:
   that many minutes either side of the birth time
   (`2015-04-02 to 2017-03-21`), or `—` when, moved that far, the
   direction would fall before the birth or beyond the age limit, as in
-  `| 2099-05-24 | 99.39 | C | Ascendant | sxt dex | Moon | 97°58′ | +2.3 | — |`,
-  or on the two conditions of Months/min.
+  `| 2099-05-24 | 99.39 | C | Ascendant | sxt dex | Moon | 97°58′ | +2.3 | — ‡ |`
+  (the `‡` from AstroCast 1.7.2; a bare `—` in an older export), or on
+  the two conditions of Months/min.
+- **The marks (AstroCast 1.7.2)** — a figure may carry a mark, which a
+  footnote under the table explains. A dagger after a value (`-0.2 †`)
+  marks a row whose date turns within the birth-time window:
+  `† This direction's date turns within the birth-time window. Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.`
+  (with no uncertainty set the footnote says "within a minute of the
+  recorded birth time" and names the Months/min alone). A double dagger
+  after a dash (`— ‡`) marks a missing figure, and its footnote gives
+  the reason:
+  `‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.`
+  An older export prints the bare `—` and marks no row.
+- **Natures of the Promissor Stars (AstroCast 1.7.2)** — when a listed
+  direction's promissor is a fixed star, a table under this heading
+  follows the footnotes: each such star once, with the planetary
+  nature the catalogue gives it (`| Capella | Mercury-Mars |`).
 
 ### The Method
 
@@ -264,9 +282,12 @@ contact: read them as support for a theme the bodily directions already
 open, or as a quiet echo when they stand alone.
 
 **Fixed stars** reach a significator by conjunction only. Read a star by
-its attributed nature — the planetary nature the tradition gives it,
-which the natal Fixed Stars table prints for the stars it lists — and
-never as a prediction of catastrophe. The royal stars (Regulus,
+its attributed nature — the planetary nature the export gives it: for a
+promissor star the report's `### Natures of the Promissor Stars` table,
+and for a star on a natal point the natal Fixed Stars table. Where the
+export prints no nature for a star (an older export, for a promissor
+star outside the natal table), state none and say the export gives
+none. Never read a star as a prediction of catastrophe. The royal stars (Regulus,
 Aldebaran, Antares, Fomalhaut) and the Behenian stars, which the natal
 Fixed Stars table flags `(Behenian)`, are of the first rank. FIXED STAR
 LORE POLICY (applies in all honesty registers): harsh traditional star
@@ -329,7 +350,8 @@ never a corrected birth time.
 directions whose meaning fits it and whose listed date is near it. The
 minutes of correction a direction implies are the event date minus the
 listed date, in months, divided by its Months/min: a positive result
-means a later birth, a negative an earlier one. Mind the sign: a
+means a later birth, a negative an earlier one. A month is 30.43685
+days (365.2422 ÷ 12), the unit the export's Months/min uses. Mind the sign: a
 negative Months/min means a later birth brings the date earlier. A
 hypothetical example: the Midheaven's conjunction with the Moon is
 listed for 2016-03-26 with Months/min `-3.0`; an event fitting it on
@@ -342,9 +364,92 @@ two minutes earlier.
 - When the Range column is present, use it: an event outside a
   direction's Range lies beyond the uncertainty the operator set.
 - A direction whose Months/min is `—` gives no figure.
+- A row marked with a dagger (`†`) is never a working match: its date
+  turns within the birth-time window, so it gives no figure and no
+  range test. An unmarked row is not thereby proved free of a turn:
+  the export marks a row only when its own date falls outside the
+  dates it compares. Where the events disagree by more than the Range
+  allows, say so and do not force a fit.
 - The Sun's and Moon's directions move little with the birth time and
   test it poorly; the angles and the Part of Fortune move most and test
   it best.
+
+**One working match for each event.** Several directions may lie near
+an event. Choose one working match for each: an angle direction first,
+then the Part of Fortune; the one whose meaning fits and whose date is
+nearest; inside its Range when a Range is printed; never a row marked
+with a dagger. Say that the matches were chosen with the events in
+view, which no arithmetic can undo.
+
+**The events table.** One row for each event, in date order: the event
+and its date; the working match in words, with D or C, its listed date
+and the age; its Range when printed; the gap in days and in months
+(event date minus listed date); its Months/min and the minutes it
+implies, signed, to two decimals; and the fit in a few words. Below
+it, one event worked through as arithmetic.
+
+**The figure.** When three or more events each have a working match
+that gives a figure, Section 6 includes one figure, titled "How much
+the result moves":
+
+- one row for each event, in date order, labelled with a short name
+  for the event;
+- a horizontal axis in minutes of birth time, zero at the recorded
+  time, the same length either side, with "Earlier birth" at the
+  negative end and "Later birth" at the positive;
+- a vertical line at zero, the recorded time;
+- one point for each event at the minutes its working match implies,
+  with the value printed beside it, signed, to two decimals;
+- nothing that suggests a result: no average, no median mark, no
+  fitted line, no band. A second colour may mark a group the caption
+  names (for example the events before a given year), and nothing
+  else;
+- a caption of one or two sentences saying what a point is and what
+  the line is.
+
+The figure repeats the events table and adds nothing to it: every
+value in it is in the table. With fewer than three such events there
+is no figure. Under a Markdown or chat override, or when you cannot
+draw, give the table alone and say in one sentence that the figure was
+left out.
+
+**Competing matches.** After the figure, a second small table,
+"Competing matches": for each event that has one, the next most
+plausible direction (another angle, another promissor, or the same
+episode on its other date), with its gap, its Months/min and the
+minutes it implies, or "outside range", or "marked row" for a row with
+a dagger, which gives no figure, and a few words on why it weighs
+less. One row for an event, two at most. Leave an event out when
+nothing else plausible lies within a year of it. Say in the prose
+where an event's implied shift changes sign under its competing match:
+that is the measure of how firm the result is.
+
+**The result, in one sentence.** Close the section with one plain
+sentence: either the hypothesis (a correction of about so many
+minutes, to test against further events) or that the events give no
+reason to change the recorded time. The rule above still decides
+which: two or more angle directions, each fitting its own event,
+agreeing within a minute or two.
+
+**The trial-shift check (only on request).** When the operator asks
+for it, hold the working matches and their Months/min fixed and give,
+for trial shifts of −1, −0.5, 0, +0.5 and +1 minute, the mean absolute
+gap in days between each event and its direction (the gap at a shift
+of s minutes is the gap at zero, less s × Months/min × 30.43685 days).
+Compute it by code, never by hand; an assistant that cannot run code
+says so and gives no figures for the check. One sentence of result
+and one of limits: the matches were chosen in hindsight, so the
+figures describe the chosen matches and test nothing.
+
+**Researched events for a public figure.** When the operator
+explicitly asks for public biographical knowledge of a public figure
+("Use public biographical knowledge", or a request to research the
+person's events), dated events found by research count as supplied
+events. Prefer events of the kind the angles describe, known to the
+day, from official or primary sources. Verify and cite each: number
+the sources in a list after Section 6's tables and mark each event's
+row with its number. An event that cannot be verified is left out,
+and the section says so. Two dates of one episode count as one event.
 
 **Without supplied events.** Explain in a few sentences how the column
 is used and which directions move most — the angles first, then the
@@ -362,7 +467,8 @@ choose in this order:
 3. The Part of Fortune as significator.
 4. Stars of the first rank — the royal stars and the Behenian stars the
    natal Fixed Stars table flags — and the antiscia, as supporting
-   testimony.
+   testimony; a promissor star's nature from the report's Natures of
+   the Promissor Stars table.
 5. The planets as significators, only when the Significators line
    names Mercury to Pluto.
 
@@ -482,8 +588,12 @@ significators; and every chapter that opens in the years a new firdaria
 major period or Zodiacal Releasing Level 1 period begins.
 
 **5. Rectification.** Match each supplied dated event to the directions
-that fit it; compute the minutes each implies; note which agree.
-Without supplied events, note the angle directions that move most.
+that fit it; choose one working match for each, never a row marked
+with a dagger, and note its strongest competitor; compute the minutes
+each implies; note which agree, and which change sign under the
+competitor. Count the events that give a figure: three or more call
+for the figure. Without supplied events, note the angle directions
+that move most.
 
 **6. Medical (only when medical correspondences are active).** Read the
 natal Medical Astrology Correspondences section; record the temperament
@@ -498,7 +608,10 @@ Sensitive-Period Framing Protocol:
 - NEVER invent, fabricate, or assume biographical facts about the
   person. The ONLY biographical facts you may state as true are those
   explicitly written in the Notes, Source, and Interpretation Context
-  fields of the export, and the events the operator supplies.
+  fields of the export, and the events the operator supplies, which
+  include cited events found by research when the operator has
+  explicitly asked for public biographical knowledge of a public
+  figure.
 - When connecting a direction's theme to a chapter already lived,
   distinguish sharply between CONFIRMED (grounded in provided facts),
   INDICATED (chart observation, no biographical claim) and FORBIDDEN
@@ -530,17 +643,25 @@ When a chapter is quiet, do not pad to reach a minimum.
 | 3 | Life Chapters | 1,500–3,000 words | One subsection per chapter: an age range opened or coloured by angle and light directions, with its supporting directions (the Part of Fortune, antiscia, stars). Each gives its ages and years, the significator touched, the promissor's nature and condition, and the quality; past chapters hedged, chapters ahead as tendencies. |
 | 4 | Now and Next | 300–600 words | The directions of about five years either side of the native's current age, in date order, each with its span; the Annual Profection of the export's year when relevant. |
 | 5 | Stars and Mirrors | 200–400 words | The fixed-star and antiscion directions worth naming, royal and Behenian stars to the angles and lights first, as supporting testimony. |
-| 6 | Rectification Notes | 150–500 words | With supplied dated events: each event's fitting directions and the minutes each implies, with the arithmetic; a correction only when two or more angle directions agree, stated as a hypothesis. Without events: how to use the Months/min column, and which directions move most. |
+| 6 | Rectification Notes | 150–500 words; up to 900 with three or more events (tables and figure not counted) | With supplied dated events: one working match for each, the events table with the minutes each implies and one worked example; with three or more events that give a figure, the figure "How much the result moves" and the competing-matches table; a correction only when two or more angle directions agree, stated as a hypothesis; one closing sentence of result. Without events: how to use the Months/min column, and which directions move most. |
 | 7 | Synthesis — The Arc of the Life | 200–350 words | Step back; describe the life's arc as its directions draw it; return to Interpretation Context when present. **Name each cluster and convergence with its count.** |
 | 8 | Three-Sentence Portrait | — | Exactly three vivid, specific, memorable sentences that capture the life's directions. |
 | 9 | Key Directions | Reference table | Five columns: date, age, D/C, the direction in words, a short reading. Chronological; every chapter's opening direction and every direction of Section 4 at least. |
-| 10 | Fixed Stars Referenced | Reference table | Every fixed star mentioned in the body, its attributed nature, and its significance here. |
+| 10 | Fixed Stars Referenced | Reference table | Every fixed star mentioned in the body, its attributed nature, and its significance here. The nature is the export's: the Natures of the Promissor Stars table for a promissor star, the natal Fixed Stars table for a star on a natal point; "not given in the export" where it prints none. |
 | 11 | Glossary of Terms | Reference section, topic-grouped | Curated definitions of technical terms used in the body. |
 | 12 | Methodological Acknowledgements | — | Brief closing colophon naming the tradition (Ptolemy, Placidus de Titis, Martin Gansten) and the report's key. Styled in smaller or lighter font than body text. |
 
 Global target: 3,000–6,000 words of prose for a standard reading
 (excluding reference tables and colophon). A long life with many angle
 directions runs longer; a quiet one tightens.
+
+**Rectification only.** When the operator asks for "Rectification
+only", the report is the title page, Section 2 (The Method and the
+Birth Time, short), Section 6 as the body, with its tables, figure,
+sources and closing sentence, and Section 12. Sections 1, 3 to 5 and 7
+to 11 are left out, and the gate's checks on them are not applicable.
+600 to 1,500 words. The file is named
+`{Name}_PrimaryDirections_0-{Limit}_Rectification{AI}.pdf`.
 
 ---
 
@@ -580,8 +701,17 @@ Structure (checks against the authoritative Interpretation Structure):
       opened or coloured by angle and light directions
 - [ ] Section 4 covers about five years either side of the native's
       current age, read from the Generated line
-- [ ] Section 6 present: implied corrections with their arithmetic and
-      stated as a hypothesis, or, without events, how to use Months/min
+- [ ] Section 6 present: one working match for each event, none of
+      them a row marked with a dagger, implied corrections with their
+      arithmetic, stated as a hypothesis, one closing sentence of
+      result; or, without events, how to use Months/min
+- [ ] With three or more events that give a figure: the figure "How
+      much the result moves" (unless "No chart" or a format without
+      figures) and the competing-matches table; every value in the
+      figure equals the table's; no average, fitted line or band
+- [ ] Trial-shift check present only when requested, computed by code,
+      its limits stated; where code cannot be run, said so and no
+      figures given
 - [ ] Key Directions table (Section 9) chronological, with date, age,
       D/C, the direction in words and a short reading
 - [ ] Fixed Stars Referenced table included
@@ -615,13 +745,18 @@ Voice and framing:
 
 Safety-gating (absolute, cannot be overridden):
 - [ ] Zero Fabrication Rule observed — every biographical fact traces
-      to explicit text in Notes, Source, or Interpretation Context
+      to explicit text in Notes, Source, or Interpretation Context, to
+      an event the operator supplied, or, under an explicit request
+      for public biographical knowledge of a public figure, to a cited
+      researched event
 - [ ] One prominent medical basis note present when medical
       correspondences are active; otherwise N/A.
 - [ ] No medical diagnoses, legal advice, or financial predictions
 - [ ] No length of life, hyleg, alcocoden, anaretic reading, death or
       prognosis
 - [ ] Rectification stated as a hypothesis, never as the birth time
+- [ ] Researched events used only under an explicit operator request,
+      each one cited
 - [ ] No promises about outcomes — directions describe seasons of a
       life and their quality, not fates
 
@@ -644,6 +779,9 @@ override in the submission text. Common overrides:
 - `"Unvarnished mode"`
 - `"Use N words maximum"`
 - `"Rectification events: {event}, {YYYY-MM-DD}; …"`
+- `"No chart"` (Section 6 without its figure)
+- `"Include the trial-shift check"`
+- `"Rectification only"`
 
 When an override is present, follow it for the specific requirement
 named; all other requirements remain in full effect. Acknowledge the
@@ -690,6 +828,16 @@ page number. GLYPH SAFETY: ASCII apostrophes for arc-minutes; never
 copy U+2032/U+2033 primes from the export into PDF text (they render
 as black boxes in ReportLab base fonts); no Unicode super/subscripts.
 
+FIGURES (Section 6 only): drawn as vector graphics in the PDF
+(ReportLab shapes, or a charting library's vector output), never a
+picture of a screen. Navy points and zero line, light grey grid lines
+at whole minutes, gold only for a group the caption names. Labels in
+the heading sans-serif at 8 to 9 pt; an ASCII hyphen-minus for a
+negative value. Full text width, about 2.5 to 3.5 inches tall for ten
+events. Keep the figure on one page with its title and caption. On the
+rendered page, check that no label is clipped and no value overlaps a
+point or another value.
+
 GENERATION COLOPHON (required): the final page carries one small-type
 line: "AstroCast {Spec Name} v{version} — generated {YYYY-MM-DD} by
 {AI model} from AstroCast export {export version}". In addition to the
@@ -709,15 +857,17 @@ from there.
 - Italic text for the birth time caveat when applicable.
 - Bold text for section headings only.
 - Section 9 (Key Directions) is the sole table in the interpretive
-  sequence; Section 6 may hold one small table of supplied events and
-  the minutes each implies.
+  sequence, apart from Section 6, which may hold the events table, the
+  competing-matches table and one figure.
 - Section 12 (Methodological Acknowledgements) is a brief attribution
   paragraph styled in smaller or lighter font than body text.
 
 ### What to Keep Out of the Client-Facing Text
 
 - Raw table rows, degree dumps, or technical notation (no "Asc sqr dex
-  Saturn D", no "Months/min -3.1")
+  Saturn D", no "Months/min -3.1"); Section 6 is excepted, where the
+  tables and the worked arithmetic name each direction, its Months/min
+  and the figures
 - Placidus, Ptolemy, Gansten or any author by name anywhere except
   Section 12
 - The hyleg, the alcocoden, the anareta, the length of life, death, or
