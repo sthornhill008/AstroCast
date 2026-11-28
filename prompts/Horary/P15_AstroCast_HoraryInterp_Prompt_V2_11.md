@@ -1,9 +1,17 @@
-# AstroCast — Horary Chart Interpretation Prompt — v2.10
+# AstroCast — Horary Chart Interpretation Prompt — v2.11
 
-**Operator documentation:** [P15 guide](<../guides/P15_AstroCast_HoraryInterp_Prompt_V2_10_UserGuide.md>) · [Revision history](<../history/P15_AstroCast_HoraryInterp_Prompt_V2_10_History.md>). These are optional references.
+**Operator documentation:** [P15 guide](<../guides/P15_AstroCast_HoraryInterp_Prompt_V2_11_UserGuide.md>) · [Revision history](<../history/P15_AstroCast_HoraryInterp_Prompt_V2_11_History.md>). These are optional references.
 
-**Version:** 2.10
-**Date:** 2026-10-15
+**Version:** 2.11
+**Date:** 2026-11-28
+
+## What changed in v2.11
+
+Read with the horary chart export of AstroCast 1.7.2. An export from 1.3.4 onward reads the same way: nothing this version relies on is new in the 1.7.2 horary export, and everything v2.10 aligned with 1.3.4 still holds:
+- One way to submit: paste the whole prompt, then one template from Section 4, then the export (Instructions).
+- Timing is one window in one unit, and where the export shows no perfection the reading says timing cannot be taken (Step 7).
+- A contact of the Moon that the export does not list is said to be not in the export, and no aspect or time is computed outside it (Step 5).
+- The Markdown export prints no joys; the seven joys are listed where the question is asked (Step 3b).
 
 ## What changed in v2.10
 
@@ -106,9 +114,12 @@ protocol.
 
 ## Instructions
 
-1. Copy the preamble (Section 1) into the AI chat
-2. Add the submission template (Section 2)
-3. Paste your AstroCast Markdown horary chart export where indicated
+1. Paste this whole prompt into the AI chat: every section, so the
+   shared operating rules above the Preamble go with it
+2. Add one template from the Chart Submission Templates section
+   (Section 4)
+3. Paste your AstroCast Markdown horary chart export where the
+   template indicates
 4. The AI will produce a structured horary judgment
 
 **Critical:** The horary question is contained in the **Notes** field or
@@ -461,7 +472,11 @@ a) ESSENTIAL DIGNITY (export-supported dignity convention): The chart data provi
 
 b) ACCIDENTAL DIGNITY AND PLANET CONDITIONS: Angular (strong),
    succedent (moderate), or cadent (weak)? Direct or retrograde? In
-   its joy?
+   its joy? The Markdown export prints no joys (its Planetary Sect
+   table has the columns Planet, Sect, In Sect, Role and Hayz), so
+   take a joy from the planet's house and this list alone: Mercury
+   the 1st, the Moon the 3rd, Venus the 5th, Mars the 6th, the Sun
+   the 9th, Jupiter the 11th, Saturn the 12th.
 
    The chart data includes a Planet Conditions table with structured
    bonification and maltreatment assessments. For each significator,
@@ -840,7 +855,13 @@ testimony summary. Use this as a starting point and still perform
 the full Moon reading — the engine provides a summary, you provide
 the complete sequential analysis.
 
-The Moon is the engine of the horary chart. Assess:
+The Moon is the engine of the horary chart. Read it from what the
+export prints: the Moon's first applying aspect, its void-of-course
+state, and the Moon's aspects in orb in the Aspects table with their
+applying or separating marks. A contact the export does not list (the
+Moon's last aspect before those in orb, a later contact in the
+sequence, a clock time for either) is said to be not in the export:
+compute no aspect and no time outside it. Assess:
 
 a) The Moon's last separating aspect: what has already happened.
 b) The Moon's next applying aspect: what will happen next.
@@ -910,12 +931,17 @@ querent's or quesited's fate.
 
 STEP 7 — TIMING:
 
-Attempt timing even when the perfection verdict is uncertain or
-qualified. When the perfection section provides an orb for the
+Give timing only where the export shows a perfection: an applying
+aspect between the significators, or a mechanism the perfection
+section reports as perfecting. Where it shows none (the matter is
+denied, or the judgment is uncertain with no perfecting contact), say
+that timing cannot be taken and why, and take no window from another
+contact. When the perfection section provides an orb for the
 perfecting aspect, use that orb for the timing calculation. When it
 also gives a "**Perfects:**" time, that is the engine's ephemeris
-instant for the aspect; report it beside the symbolic estimate
-rather than in place of it.
+instant for the aspect: name it once as the moment the aspect is
+exact in the sky. It is not the timing window, and it is not offered
+as a second estimate of the event.
 
 a) Count the degrees between the applying significators.
 b) The unit of time depends on signs and houses involved:
@@ -927,9 +953,13 @@ c) The Moon's speed modifies: fast Moon accelerates, slow Moon
 d) Goldstein-Jacobson also used the degree of the applying aspect as
    a timing indicator.
 
-When multiple timing units are plausible (e.g., mutable sign in
-angular house), present the most likely unit first with the
-alternative as a secondary estimate.
+State ONE timing window in ONE unit. Each class above names two
+units, and sign and house may point to different classes (e.g.,
+mutable sign in angular house): choose the unit the testimony
+favours and give the window in it. A slower scale may be named only
+as what a miss of the first would mean ("if nothing has moved within
+N days, the matter runs to as many weeks"), never as a second
+estimate beside the first.
 
 STEP 8 — ARABIC PARTS AND HERMETIC LOTS:
 

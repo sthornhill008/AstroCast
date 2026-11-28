@@ -1,10 +1,27 @@
 # P15 Revision History and Extracted Records
 
-Current release: 2.10 (2026-10-15). Previous release: 2.9.
+Current release: 2.11 (2026-11-28). Previous release: 2.10 (2026-10-15).
 
-Source: AstroCast_HoraryInterp_Prompt_V2_9.md (in Prompts.zip). The source remains unchanged.
+Source: P15_AstroCast_HoraryInterp_Prompt_V2_10.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. Three of the review's findings (Q3, Q4, Q5) and Steve's ruling 4 on the timing; the prompt's own "What changed in v2.11" lists them. Line numbers are v2.11's; the replaced v2.10 passages are in the v2.10 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v2.11, the documentation line links the V2_11 guide and history, the Version line reads 2.11 and the Date line 2026-11-28.
+- **:8-14, What changed in v2.11, new.** The block names AstroCast 1.7.2 and says that an export from 1.3.4 onward reads the same way; this prompt has no Compatible Export line, and the block serves as one.
+- **:117-122, Instructions (Q3, ruling 6).** Paste the whole prompt, then one template from the Chart Submission Templates section (Section 4), then the export where the template indicates. v2.10 said "Copy the preamble (Section 1)" and "Add the submission template (Section 2)"; Section 2 is the Interpretation Structure, and the shared operating rules the Preamble applies stand above Section 1.
+- **:474-479, Step 3b (Q5).** The Markdown export prints no joys, so the seven are listed, from the program's own table (`src\AstroCast.Core\Services\SectService.cs`): Mercury the 1st, the Moon the 3rd, Venus the 5th, Mars the 6th, the Sun the 9th, Jupiter the 11th, Saturn the 12th. v2.10 asked "In its joy?" with nothing to answer from, and the sample reading named the wrong house as a planet's joy.
+- **:858-864, Step 5 (Q4).** The Moon is read from what the export prints (its first applying aspect, its void-of-course state, its aspects in orb); a contact the export does not list is said to be not in the export, and no aspect or time is computed outside it. v2.10 required the Moon's last separating aspect and its whole applying sequence, neither of which the export prints, and the sample reading supplied them from an ephemeris check of its own.
+- **:934-944, :956-962, Step 7 (ruling 4).** Timing is given only where the export shows a perfection; where it shows none the reading says timing cannot be taken, with no window from another contact. One window in one unit; a slower scale only as what a miss of the first would mean. The engine's "**Perfects:**" instant is named once as the moment the aspect is exact, not as a second estimate. v2.10 said "Attempt timing even when the perfection verdict is uncertain or qualified", against its own Content Discipline (:1145-1148), and allowed "the alternative as a secondary estimate".
+
+Also in this file, by Steve's ruling of 2026-11-27: the A/B test matrix's note (:126-128) no longer names one of the maintainer's test charts by its subject; the date and the instruction stay.
+
+The User Guide 1.4 states the one method and says the same for its user.
+
+Unchanged, by instruction: every other rule of v2.10.
+
+## Previous changes (2.10, 2026-10-15)
 
 Aligned with the AstroCast 1.3.4 engine; the prompt's own "What changed in v2.10" lists the changes (R3). O-D3 (R1): every orb prints as truncated degrees and minutes with the prime; a compact `147'` or a decimal belongs to an older export. The Perfection and Application fails lines and the analyser's notes are D°MM′, no longer decimal. R2: a header carrying `**Calendar:** dates before 1582-10-15 are on the Julian calendar` means every date is on the calendar in force; nothing to convert. K2: a relocated horary chart keeps its category, its perfection judged at the place. R4: the Behenian entry keeps Agrippa's fifteen and says the export flags 16. Older lines made true: the **Radicality:** and **Note:** lines, the Dignity and Score columns and the Score and Conditions columns (the field names are the JSON's); the Sun's distance beyond the 8° conjunction orb is read from the longitudes; the Mutual Receptions list names the type; the Moon's phase qualifier prints after the angle; the example's title is the question's first line, and its Planetary Hour carries the Hour Period line.
 
@@ -107,8 +124,8 @@ Source line 1364. Operational method, output requirements, and essential definit
 | T14 | **Topic-conditional Mercury** | Communication-device purchase with Mercury in detriment/fall | Scheduling question with Mercury Rx | Non-Mercury-topic question (should not over-weight Mercury) |
 
 T12, T13, and T14 are new in v2.1 and validate Changes 1, 5, and 8
-respectively. Run T14 against the Apple Neo laptop chart
-(2026-04-14) as the first v2.1 validation target.
+respectively. Run T14 against the test chart of 2026-04-14 as the
+first v2.1 validation target.
 
 ---
 ~~~~
