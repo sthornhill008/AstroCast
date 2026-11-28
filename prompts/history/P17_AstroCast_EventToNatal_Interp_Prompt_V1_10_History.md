@@ -1,10 +1,25 @@
 # P17 Revision History and Extracted Records
 
-Current release: 1.9 (2026-10-20). Previous release: 1.8 (2026-10-15).
+Current release: 1.10 (2026-11-28). Previous release: 1.9 (2026-10-20).
 
-Source: AstroCast_EventToNatal_Interp_Prompt_V1_8.md (in Prompts.zip). The source remains unchanged.
+Source: P17_AstroCast_EventToNatal_Interp_Prompt_V1_9.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. One item of the run's list B (the orb table's pointer) and one of the review's findings (Q17). Line numbers are v1.10's; the replaced v1.9 passages are in the v1.9 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v1.10, the documentation line links the V1_10 guide and history, the Version line reads 1.10 and the Date line 2026-11-28.
+- **:10, Compatible Export.** AstroCast 1.7.2; older exports lack nothing this prompt relies on.
+- **:55, Prompt Configuration (Q17).** Protocol 5, Dual-Context Discipline, is active whenever both event and natal contexts are supplied, which is the protocol's own rule (:147-149). The table had said "when 2+3 or 3+4 co-occur", so the ban on a joint-fate forecast could be skipped.
+- **:84-94, Routing decision sequence (Q17).** The three event routes are defined here (A, a named individual's own event; B, a mundane event of public record; C, an organization's event, and the route when the kind cannot be told). v1.9 defined them only by pointing at P16's decision tree, under a rule that no companion document is needed.
+- **:183-187 (Q17).** The synastry export is all the prompt needs: it embeds both charts whole, so the event's own Ascendant, chart ruler and angular planets are read from the event chart inside it. v1.9 asked for the standalone event chart export as well.
+- **:227-243, Cross-aspect analysis (list B).** The synastry orb table is copied in from P12 (v1.13 :237-252, verbatim). v1.9 pointed at `Synastry/AstroCast_SynastryInterp_Prompt_V1_12.md`, the synastry prompt's old file name and version, and at a techniques reference that is not in the library; that reference is gone.
+
+The User Guide 1.3 names the export and says that one export is enough.
+
+Unchanged, by instruction: every other rule of v1.9, among them the other places that name the parent prompt's decision tree.
+
+## Previous changes — 1.9 (2026-10-20)
 
 Aligned with AstroCast 1.6.0 as landed (master `fe6e238`): the Type B export is a synastry export, and with the Points switch on it carries each chart's `## Asteroids and Lilith` section and `## Inter-Chart Aspects: Asteroids and Lilith` (branches Asteroids and AsteroidsExport). This is run 4 of 4 of the 1.6.0 library work, which it completes (Steve's decision L1: P12, P13, P16 and P17 here; runs 1 to 3 accepted). The decision it rests on: topic 6d's families (Steve, 2026-10-20), P16 and P17 get one line setting the section aside and no shared block. The truth, at fe6e238, under `tests\AstroCast.Tests\Formatting\Golden\Goldens\`: the golden `SynastryMarkdownFormatter_J2000_Secondary_MinorPoints.golden.md` (SG); and CLAUDE.md's *Minor points (asteroids and Lilith)* entry and its exports part (CL); every quoted export value below is on the line cited, and a script checked each against its line. Line numbers are v1.9's; the replaced v1.8 passages follow as extracted records with their v1.8 line numbers. The changes:
 

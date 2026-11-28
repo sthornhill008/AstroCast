@@ -1,13 +1,13 @@
-# AstroCast Event-to-Natal Interpretation Prompt (Type B) — v1.9
+# AstroCast Event-to-Natal Interpretation Prompt (Type B) — v1.10
 
-**Operator documentation:** [P17 guide](<../guides/P17_AstroCast_EventToNatal_Interp_Prompt_V1_9_UserGuide.md>) · [Revision history](<../history/P17_AstroCast_EventToNatal_Interp_Prompt_V1_9_History.md>). These are optional references.
+**Operator documentation:** [P17 guide](<../guides/P17_AstroCast_EventToNatal_Interp_Prompt_V1_10_UserGuide.md>) · [Revision history](<../history/P17_AstroCast_EventToNatal_Interp_Prompt_V1_10_History.md>). These are optional references.
 
-**Version:** 1.9
-**Date:** 2026-10-20
+**Version:** 1.10
+**Date:** 2026-11-28
 **Derived From:** AstroCast Event-to-Natal Interpretation Prompt v1.2
 **Method:** Five-layer Event-to-Natal (Brennan / Lilly / Forrest / Ebertin / Robson / Brady / Classical Electional & Sect)
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Synastry Export (Type B), AstroCast 1.6.0 (older synastry exports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0 and 1.5.0; with declination data v1.0.42+, parans v1.0.61+, techniques data v1.0.101+)
+**Compatible Export:** AstroCast Synastry Export (Type B), AstroCast 1.7.2 (older synastry exports still read, and nothing this prompt relies on is missing from them; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0, 1.5.0 and 1.6.0 to 1.7.1; with declination data v1.0.42+, parans v1.0.61+, techniques data v1.0.101+)
 
 ---
 
@@ -52,7 +52,7 @@ Single-glance defaults for this spec. Operator overrides per the Override Protoc
 | **Complex Dual-Context length** | 4,000-6,000 words (triggers: Route B event + public-figure natal; event stellium of 4+ bodies landing in a single natal house; 5+ inter-chart aspects within 1° orb; double-OOB inter-chart declination parallel) | Yes |
 | **Glossary mode** | Topic-grouped, used-terms only (ten groups) | Yes — Full / Alphabetical / Skip |
 | **Gender/name handling** | Honor Notes field + Gender field; public-figure title honored when Notes field identifies role | Yes |
-| **Safety protocols** | Event Type Voice Routing (always on, from v3.2 parent); Mundane Inheritance (data-triggered, from v3.2 parent); Combat/Military Event Protocol (trigger-conditional, from v3.2 parent); **Public-Figure Natal Protocol (NEW, data-triggered by Notes field)**; Dual-Context Discipline (NEW, composite-active) | Protocols 2, 3 conditional on event data; protocol 4 conditional on natal data; protocol 5 active when 2+3 or 3+4 co-occur |
+| **Safety protocols** | Event Type Voice Routing (always on, from v3.2 parent); Mundane Inheritance (data-triggered, from v3.2 parent); Combat/Military Event Protocol (trigger-conditional, from v3.2 parent); **Public-Figure Natal Protocol (NEW, data-triggered by Notes field)**; Dual-Context Discipline (NEW, composite-active) | Protocols 2, 3 conditional on event data; protocol 4 conditional on natal data; protocol 5 active whenever both event and natal contexts are supplied, regardless of public status or event route |
 | **Inheritance parents** | **Dual-parent composite**: EventChartInterp Type A v3.5 (event side) AND EnhancedBirthInterp (natal side) | — |
 | **Design system** | Navy `#1B2A4A` / Gold `#C5A55A` on white page; 0.75″ side / 0.7″ top-bottom margins; Letter | No |
 | **Footer** | `Created by {AI} with data from AstroCast` | No (safety-gated) |
@@ -81,8 +81,17 @@ covers all practical combinations:
 
 **Routing decision sequence:**
 
-1. Determine event route from the Event Type field, the **Type:** line (per
-   EventChartInterp v3.5 routing decision tree).
+1. Determine the event route from the event chart's **Type:** line
+   and, where it reads Event or Other, from the Notes and
+   Interpretation Context:
+   - **Route A (Personal):** a named individual's own event (a
+     wedding, a birth, a move, a surgery, a personal commitment).
+   - **Route B (Mundane):** a political, military, national, economic
+     or natural event of public record (an election, a treaty, a war,
+     a disaster).
+   - **Route C (Institutional):** an organization's event (a founding,
+     a corporate or product launch); also the route when the kind
+     cannot be told.
 2. Determine natal type from Notes field:
    - Contains "President," "Prime Minister," "Chairman,"
      "CEO," "General," "Governor," "Senator," other
@@ -171,12 +180,11 @@ interpretation**.
 
 From AstroCast 1.6.0 a Type B export made with the Points switch on carries each chart's `## Asteroids and Lilith` section and `## Inter-Chart Aspects: Asteroids and Lilith` (Ceres, Pallas, Juno, Vesta and Black Moon Lilith, the mean lunar apogee). Set them aside: this prompt reads the event's own techniques, which do not use these points.
 
-**For best results:** Provide both the standalone event chart
-export AND the synastry export in the same submission. The
-standalone export provides the event's own Ascendant, chart
-ruler, and angular planets for the condensed assessment. The
-synastry export provides inter-chart aspects, house overlays,
-and natal chart data for the overlay analysis.
+The synastry export is all this prompt needs. It embeds both
+charts whole, so the event's own Ascendant, chart ruler, and
+angular planets for the condensed assessment are read from the
+event chart inside it, beside the inter-chart aspects, house
+overlays, and natal chart data for the overlay analysis.
 
 If the natal chart's Notes field identifies the chart holder
 as a public figure or head of state, Public-Figure Natal
@@ -216,9 +224,23 @@ convention). Concretely:
   inter-chart aspects table: each pair once, A's bodies against B's
   bodies, ASC and MC and B's bodies against A's ASC and MC, headed
   A and B for the two charts in the export's order. Its orbs are the
-  synastry orbs, the wider of the two bodies' categories: see the
-  table in `Synastry/AstroCast_SynastryInterp_Prompt_V1_12.md`
-  (WHAT YOU ARE ANALYZING, item 3) and the techniques reference's §24.
+  synastry orbs:
+   SYNASTRY ORBS (AstroCast 1.3.4; the export prints no orb table):
+   The orb is the wider of the two bodies' categories: luminaries
+   (Sun, Moon), personal (Mercury, Venus, Mars), outer (Jupiter to
+   Pluto, Chiron, the True Node) and angles (ASC, MC).
+   The asteroids and Lilith take 2° in every pair, in their own section, never these categories.
+
+   | Aspect | Luminary | Personal | Outer | Angle |
+   |--------|----------|----------|-------|-------|
+   | Conjunction, opposition | 8° | 7° | 5° | 5° |
+   | Trine, square | 7° | 6° | 4° | 4° |
+   | Sextile | 5° | 4° | 3° | 3° |
+   | Semi-square, sesquiquadrate, semi-sextile, quincunx | 2° | 2° | 1.5° | 1.5° |
+
+   The Notes column reads "exact" below 10′ and "wide" above 5°.
+   There is no applying or separating between two charts: the
+   comparison is static.
 - **Reverse overlay** ("Natal planets in Event houses") is
   secondary — note only if a striking pattern emerges.
 

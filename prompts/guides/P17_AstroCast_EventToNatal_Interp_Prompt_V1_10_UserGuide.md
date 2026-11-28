@@ -1,8 +1,8 @@
-# P17 AstroCast_EventToNatal_Interp_Prompt_V1_9 — User Guide
+# P17 AstroCast_EventToNatal_Interp_Prompt_V1_10 — User Guide
 
-Version: 1.2. Date: 2026-10-20.
+Version: 1.3. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Event_Type_B/P17_AstroCast_EventToNatal_Interp_Prompt_V1_9.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.9 sets the asteroids and Lilith aside when the export carries them; the revision history lists the changes.
+Use the [complete current prompt](<../Event_Type_B/P17_AstroCast_EventToNatal_Interp_Prompt_V1_10.md>), followed by the Synastry export made with the event chart as one of the two charts, and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.10 needs that one export only (it no longer asks for the event's own chart export as well, since the synastry export holds both charts whole), carries the synastry orb table itself, and defines its three event routes in its own text; the revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
