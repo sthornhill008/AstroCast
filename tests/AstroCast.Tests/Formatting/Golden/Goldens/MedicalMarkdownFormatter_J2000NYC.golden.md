@@ -5,6 +5,8 @@
 **Method:** Tropical zodiac, Placidus houses  
 **Tradition:** Galenic melothesia, Ebertin COSI, Nauman Med-Scan  
 
+*Traditional correspondences for educational and historical study. Not medical advice.*
+
 ## Natal Chart
 
 **Date/Time:** 2000-01-01 07:00:00 (America/New_York)  
@@ -413,8 +415,6 @@ Zodiacal Releasing from Spirit (Scorpio): Currently in a Sagittarius Level 1 per
 | Neptune | Anti-Culm. | 03°13′14″ Aquarius | True Node | Culminating | 03°54′30″ Leo | 3.06 |
 | Neptune | Culminating | 03°12′09″ Aquarius | True Node | Anti-Culm. | 03°56′18″ Leo | 3.25 |
 | Neptune | Setting | 03°12′36″ Aquarius | True Node | Rising | 03°55′36″ Leo | 3.62 |
-
-*Traditional correspondences for educational and historical study. Not medical advice.*
 
 ## Temperament Assessment
 

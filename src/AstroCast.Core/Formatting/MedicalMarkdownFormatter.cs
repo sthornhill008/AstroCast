@@ -23,6 +23,14 @@ public static class MedicalMarkdownFormatter
     /// Generate a complete medical astrology report as a Markdown string.
     /// Contains the full natal chart data followed by medical correspondence tables.
     /// </summary>
+    /// <remarks>
+    /// The header's labelled lines (Generated, Software, Method, Tradition and, when given, Health Context) are
+    /// followed by a blank line and then, as a paragraph of its own, the line
+    /// <see cref="ChartMarkdownFormatter.MedicalBasisLine"/>, "Traditional correspondences for educational and
+    /// historical study. Not medical advice.", before the natal chart (branch DirectionNotes, 1.7.2; Steve's
+    /// ruling of 2026-11-27): it is printed once, and no longer before the Temperament Assessment, where branch
+    /// ExportText had left it.
+    /// </remarks>
     /// <param name="chartResult">The natal chart calculation result.</param>
     /// <param name="profile">The medical astrology health profile overlay.</param>
     /// <param name="timeProvider">
@@ -61,16 +69,18 @@ public static class MedicalMarkdownFormatter
         }
         sb.AppendLine();
 
+        // The line that says what the export's tables are, in the header, where a reader meets it first: a
+        // paragraph of its own after the header's labelled lines (branch DirectionNotes, 1.7.2; Steve's ruling
+        // of 2026-11-27). The embedded chart leaves its Medical Astrology Correspondences section out, which
+        // carried the line and a shorter copy of the tables below (branch ExportText, 1.7.2; finding N14);
+        // ExportText printed the line directly before the Temperament Assessment.
+        sb.AppendLine(ChartMarkdownFormatter.MedicalBasisLine);
+        sb.AppendLine();
+
         // Section 2: Full natal chart (reuse ChartMarkdownFormatter, strip header/footer)
         sb.AppendLine("## Natal Chart");
         sb.AppendLine();
         sb.Append(FormatChartSection(chartResult, timeProvider));
-        sb.AppendLine();
-
-        // The export's own sections, under the line that says what they are. The embedded chart leaves its
-        // Medical Astrology Correspondences section out, which carried the line and a shorter copy of the
-        // tables below (branch ExportText, 1.7.2; finding N14).
-        sb.AppendLine(ChartMarkdownFormatter.MedicalBasisLine);
         sb.AppendLine();
 
         // Section 3: Temperament Calculation

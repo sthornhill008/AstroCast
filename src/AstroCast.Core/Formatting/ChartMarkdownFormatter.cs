@@ -68,8 +68,8 @@ public static class ChartMarkdownFormatter
     /// <param name="medicalCorrespondences">
     /// When true (the default), the chart prints its <c>## Medical Astrology Correspondences</c> section. The
     /// medical export passes false (branch ExportText, 1.7.2; finding N14): it prints its own, fuller sections
-    /// after the chart it embeds, under <see cref="MedicalBasisLine"/>, and until 1.7.2 a reader met two
-    /// versions of each table.
+    /// after the chart it embeds, with <see cref="MedicalBasisLine"/> in its header (branch DirectionNotes,
+    /// 1.7.2), and until 1.7.2 a reader met two versions of each table.
     /// </param>
     /// <returns>
     /// A Markdown-formatted chart report. Every orb prints as truncated <c>D°MM′</c> through
@@ -1744,8 +1744,10 @@ public static class ChartMarkdownFormatter
     #region Medical Astrology
 
     /// <summary>
-    /// The line that heads the medical correspondences, in the chart export's section and, since branch
-    /// ExportText (1.7.2; finding N14, Steve's ruling), once at the head of the medical export's own sections.
+    /// The line that heads the medical correspondences, in the chart export's section and, once, in the medical
+    /// export: in its header, as a paragraph of its own under the Tradition line (branch DirectionNotes, 1.7.2;
+    /// Steve's ruling of 2026-11-27). Branch ExportText (1.7.2; finding N14) had printed it at the head of the
+    /// medical export's own sections, directly before the Temperament Assessment.
     /// </summary>
     internal const string MedicalBasisLine =
         "*Traditional correspondences for educational and historical study. Not medical advice.*";

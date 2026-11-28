@@ -128,13 +128,15 @@ public sealed class MedicalMarkdownFormatterTests
     /// <summary>
     /// The medical export prints its correspondences once (branch ExportText, 1.7.2; finding N14): the natal chart
     /// it embeds leaves its own Medical Astrology Correspondences section out, and the line that says the tables
-    /// are not medical advice, which stood only in that section, heads the export's own sections (Steve's
-    /// ruling). Until 1.7.2 the temperament, the planetary correspondences, the zodiacal anatomy and the health
-    /// houses printed twice, in two wordings.
+    /// are not medical advice, which stood only in that section, is printed once, in the export's header: a
+    /// paragraph of its own directly under the Tradition line, before the natal chart, where a reader meets it
+    /// first (branch DirectionNotes, 1.7.2; Steve's ruling of 2026-11-27). ExportText had put it directly before
+    /// the Temperament Assessment, after the embedded chart. Until 1.7.2 the temperament, the planetary
+    /// correspondences, the zodiacal anatomy and the health houses printed twice, in two wordings.
     /// </summary>
     [Fact]
     [Trait("Category", "Unit")]
-    public void Format_PrintsItsCorrespondencesOnce_UnderTheNotMedicalAdviceLine()
+    public void Format_PrintsItsCorrespondencesOnce_WithTheNotMedicalAdviceLineInTheHeader()
     {
         const string basis = "*Traditional correspondences for educational and historical study. Not medical advice.*";
         (ChartResult chart, HealthProfile profile) = CreateTestData();
@@ -143,10 +145,15 @@ public sealed class MedicalMarkdownFormatterTests
 
         lines.Should().NotContain("## Medical Astrology Correspondences");
         lines.Count(l => l == basis).Should().Be(1);
-        int at = lines.IndexOf(basis);
-        lines[at - 1].Should().BeEmpty();
-        lines[at + 1].Should().BeEmpty();
-        lines[at + 2].Should().Be("## Temperament Assessment");
+        int tradition = lines.FindIndex(l => l.StartsWith("**Tradition:**", StringComparison.Ordinal));
+        lines[tradition + 1].Should().BeEmpty();
+        lines[tradition + 2].Should().Be(basis);
+        lines[tradition + 3].Should().BeEmpty();
+        lines[tradition + 4].Should().Be("## Natal Chart");
+        int temperament = lines.IndexOf("## Temperament Assessment");
+        temperament.Should().BeGreaterThan(tradition + 4);
+        lines.Skip(tradition + 4).Should().NotContain(basis, "the line is in the header, not before the Temperament Assessment");
+        lines[temperament - 1].Should().BeEmpty();
         lines.Count(l => l.StartsWith("| Element | Temperament | Qualities | Score |", StringComparison.Ordinal)).Should().Be(1);
         lines.Count(l => l.StartsWith("## Zodiacal Anatomy", StringComparison.Ordinal)).Should().Be(1);
         lines.Should().NotContain("### Zodiacal Anatomy", "that is the sub-heading of the chart's own section");
@@ -292,6 +299,26 @@ public sealed class MedicalMarkdownFormatterTests
         int tradition = lines.FindIndex(l => l.StartsWith("**Tradition:**", StringComparison.Ordinal));
         tradition.Should().BePositive();
         lines[tradition + 1].Should().Be("**Health Context:** Recovering from knee surgery walks daily  ");
+    }
+
+    /// <summary>
+    /// With a health context the header's labelled lines stay together, and the line that says the tables are not
+    /// medical advice follows them as its own paragraph, before the natal chart (branch DirectionNotes, 1.7.2).
+    /// </summary>
+    [Fact]
+    [Trait("Category", "Unit")]
+    public void Format_WithHealthContext_PrintsTheNotMedicalAdviceLineAfterTheHeaderLines()
+    {
+        (ChartResult chart, HealthProfile profile) = CreateTestData();
+
+        List<string> lines = Lines(MedicalMarkdownFormatter.Format(chart, profile, healthContext: "Walks daily"));
+
+        int context = lines.FindIndex(l => l.StartsWith("**Health Context:**", StringComparison.Ordinal));
+        lines[context - 1].Should().StartWith("**Tradition:**");
+        lines[context + 1].Should().BeEmpty();
+        lines[context + 2].Should().Be("*Traditional correspondences for educational and historical study. Not medical advice.*");
+        lines[context + 3].Should().BeEmpty();
+        lines[context + 4].Should().Be("## Natal Chart");
     }
 
     /// <summary>
