@@ -1,12 +1,12 @@
-# AstroCast Transit Timeline Reference Prompt — v2.12
+# AstroCast Transit Timeline Reference Prompt — v2.13
 
-**Operator documentation:** [P04 guide](<../guides/P04_AstroCast_TransitTimeline_Prompt_V2_12_UserGuide.md>) · [Revision history](<../history/P04_AstroCast_TransitTimeline_Prompt_V2_12_History.md>). These are optional references.
+**Operator documentation:** [P04 guide](<../guides/P04_AstroCast_TransitTimeline_Prompt_V2_13_UserGuide.md>) · [Revision history](<../history/P04_AstroCast_TransitTimeline_Prompt_V2_13_History.md>). These are optional references.
 
-**Version:** 2.12
-**Date:** 2026-10-20
+**Version:** 2.13
+**Date:** 2026-11-28
 **Method:** Chronological extraction from transit export data
 **Target Audience:** Astrologer using the timeline as a working reference
-**Compatible Export:** AstroCast Transit Report (its `**Techniques:**` line naming Transits) or Enhanced Transit Timeline Export, AstroCast 1.6.0 (older exports of the family still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.5.0, 1.4.0 and 1.3.4, v1.0.111+ and v1.0.184+; any base chart — natal, event, or entity). A report whose Techniques line lacks Transits holds no transit events and is read with P28, the Directions prompt, or, when its header carries a `**Span:**` line, with P29, the Primary Directions prompt.
+**Compatible Export:** AstroCast Transit Report (its `**Techniques:**` line naming Transits) or Enhanced Transit Timeline Export, AstroCast 1.7.2 (older exports of the family still read; from AstroCast 1.7.2 a retrograde ingress row of the timeline reads `Ingress Virgo → Leo (retrograde)` and gives the boundary crossed as its Position, where an older timeline prints no `(retrograde)` and gives 0° of the sign entered for every ingress; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.6.0 to 1.7.1, 1.5.0, 1.4.0 and 1.3.4, v1.0.111+ and v1.0.184+; any base chart — natal, event, or entity). A report whose Techniques line lacks Transits holds no transit events and is read with P28, the Directions prompt, or, when its header carries a `**Span:**` line, with P29, the Primary Directions prompt.
 
 ---
 
@@ -168,9 +168,9 @@ than skipping it, under this same framing: the policy governs HOW lore
 is voiced; the catastrophizing prohibition governs WHAT may never be
 said.
 
-**Declination Cluster Identification:** Read the natal Declination Aspects table. If the natal chart includes a pre-computed "Declination Clusters" sub-table, use it directly rather than recomputing. Otherwise, identify any clusters (3+ natal points with declinations within a span of 2° or less). Record the cluster zone, its members, and aspect count. When extracting exact passes and stations, note if a transiting planet's declination at the event falls within the cluster zone — add a brief "(dec. cluster activation)" flag to the description. **In addition, a transiting planet's parallel or contraparallel to any individual cluster member is itself a cluster activation — flag it regardless of whether the transiting planet's own declination has reached the zone interior, since the contact to the member is the activation.** This identifies hidden transit activations that operate beneath the longitudinal aspect picture.
+**Declination Cluster Identification:** Read the natal Declination Aspects table. If the natal chart includes a pre-computed "Declination Clusters" sub-table, use it directly rather than recomputing. Otherwise, identify any clusters (3+ natal points with declinations within a span of 2° or less). Record the cluster zone, its members, and aspect count. When extracting exact passes and stations, note if a transiting planet's declination at the event falls within the cluster zone, where the export prints that declination (a Parallel or Contraparallel row gives it; the other rows carry none, and none is computed outside the export) — add a brief "(dec. cluster activation)" flag to the description. **In addition, a transiting planet's parallel or contraparallel to any individual cluster member is itself a cluster activation — flag it regardless of whether the transiting planet's own declination has reached the zone interior, since the contact to the member is the activation.** This identifies hidden transit activations that operate beneath the longitudinal aspect picture.
 
-**OOB Transit Check:** For each transiting planet, check whether it is OOB (|Dec| greater than the obliquity of the ecliptic at the chart's date, about 23°26′ today — the limit the export's OOB column applies; the Sun is never out of bounds) during the report period. If so, note "(OOB)" after the planet name in the Transit column for any exact pass it makes while OOB.
+**OOB Transit Check:** For each transiting planet, check whether it is OOB (|Dec| greater than the obliquity of the ecliptic at the chart's date, about 23°26′ today — the limit the export's OOB column applies; the Sun is never out of bounds) during the report period, where the export prints its declination (a Parallel or Contraparallel row's value; never a declination worked out outside the export). If so, note "(OOB)" after the planet name in the Transit column for any exact pass it makes while OOB.
 
 **Under-the-Beams Flag:** Check the base chart's Planet Conditions table for planets under the Sun's beams (within 17° of the Sun but beyond 8° combustion) or combust. Flag these in the Key Points block when they receive transits during the report period. The transit activates an otherwise muted natal factor — note "(under beams)" or "(combust)" after the planet name in the Description column. Under-the-beams is less severe than combustion but more significant than many astrologers acknowledge.
 
@@ -203,7 +203,7 @@ Scan the "Transit Midpoint Activations" section. Extract every midpoint activati
 - **Date and UTC time** of the exact activation
 - **Residual orb**
 - **Transit description** — transiting planet, midpoint pair (A/B notation), priority flag if present
-- **One-line description** — name the midpoint pair's combined meaning and what the transit planet does to it. Priority midpoints (involving Sun, Moon, ASC or MC, which the export tags "(priority)") deserve fuller descriptions.
+- **One-line description** — name the midpoint pair's combined meaning and what the transit planet does to it. Priority midpoints (involving Sun, Moon, ASC or MC) deserve fuller descriptions. The full transit export tags them "(priority)"; the timeline export prints no tag, so there a pair holding the Sun, Moon, Ascendant or Midheaven is priority.
 
 Include all midpoint activations with exact passes in the period, not just priority ones. Priority midpoints should be flagged as such.
 
@@ -213,7 +213,7 @@ Extract every planetary station within the report period from the "Stations Duri
 
 #### 2E. Ingresses
 
-Extract every sign change within the report period from the "Ingresses During Report Period" section (if present). Include the planet, old sign, new sign, and date. Each ingress prints as the UT date of its instant, with no time (the instant is refined to the second but not printed). No orb applies.
+Extract every sign change within the report period from the "Ingresses During Report Period" section (full transit export, if present) or from the ingress rows of the Events table (enhanced timeline export), which read `Ingress {old sign} → {new sign}`. Include the planet, old sign, new sign, and date. From AstroCast 1.7.2 a timeline row for a planet moving back a sign reads `Ingress Virgo → Leo (retrograde)`, and its Position is the boundary crossed (`0°00' Virgo`). An older timeline prints no `(retrograde)` and gives 0° of the sign entered whatever the direction: where the new sign is the one before the old, reproduce the row and say in the description that the boundary crossed is 0° of the sign left. Each ingress prints as the UT date of its instant, with no time (the instant is refined to the second but not printed). No orb applies.
 
 #### 2F. Transit-to-Natal Entry/Exit Events
 
@@ -240,7 +240,7 @@ Extract transit-to-natal declination aspects (parallels and contraparallels) fro
 
 When using an enhanced timeline export, the Clusters section is pre-computed. Extract each cluster's date range, event count, and recommended Event Type B dates. When using a full transit export, identify clusters manually as the export does: a run of in-period events each within 3 days of the cluster's first event; the first event outside that window starts a new cluster, and a cluster of one is dropped.
 
-Clusters identify the most intense transit pressure zones — dates where multiple transits converge. Apply the Cluster Prioritization Rules (see Section 2 below) to rank each cluster. The recommended Event Type B dates within each cluster are the highest-priority moments for chart casting.
+Clusters identify the most intense transit pressure zones — dates where multiple transits converge. Apply the Cluster Prioritization Rules (see Section 2 below) to rank each cluster. The export's `*Recommended Event Type B dates: ...*` line under a cluster is a first pick by date (the first three dates of an exact pass or an entry in the cluster; a cluster of exits has none), not a ranking. Give those dates as the export's. Any castable moment the reading adds is kept apart from them and said to be the reading's own.
 
 #### 2I. Transits to the Asteroids and Lilith
 
@@ -310,15 +310,15 @@ Each timeline entry gets a one-line description (one sentence, maximum two). The
 - **Name the base chart point's role** — not just "natal Saturn" but "the 7th/6th ruler" or "the chart ruler" or "the benefic of sect." This tells the user what life domain is being activated.
 - **Name the transit planet's action** — what does this planet DO to the base chart point? Saturn structures and tests. Jupiter expands and inflates. Uranus disrupts and liberates. Neptune dissolves and confuses. Pluto transforms and eliminates. Chiron wounds and teaches. The North Node connects to destiny and karmic purpose.
 - **Name the aspect's quality** — conjunction fuses, square forces crisis, opposition creates polarity, trine flows, sextile opens opportunity. Minor aspects: semisextile (30°) a mild stimulus; semisquare (45°) and sesquiquadrate (135°) friction or irritation requiring adjustment; quincunx (150°) misalignment demanding adaptation; the 108° contact (decile family) a subtle, skill- or creativity-toned minor link. (The Glossary carries the export's abbreviation legend: ssx, ssq, ses, qnx, sqn, par, cpar.)
-- **Note the house** — which house of the base chart is being activated. Include the transit planet's house position.
+- **Note the house** — which house of the base chart is being activated. Include the transit planet's house position where the export prints it: the window's `Transit house` line is that house; an Events row carries none, and none is worked out outside the export.
 - **Note the residual orb** — the orb confirms perfection precision. For descriptions, the orb value speaks for itself in the Orb column; mention it in the description only when it is notably exact (< 0°00′01″) or notably wide (> 0°01′).
 - **Note fixed star reactivation (MANDATORY)** — if the transit's natal target carries a fixed star conjunction from the natal Fixed Stars table, the description MUST name the star, its planetary nature, and its primary keyword. This is a reactivation of the base chart's stellar signature and is not optional. Example: "...reactivates Alphard (Saturn-Venus: lack of self-control)." Royal Star reactivations must include the moral condition. **Scope:** the requirement applies to direct longitudinal aspects and to declination parallels/contraparallels that contact the star-bearing natal point. **Midpoint activations do not trigger it** (the contact is to the midpoint degree, not the star-bearing point) — unless the midpoint degree itself lands on a star-bearing point.
-- **Note declination cluster activation** — if the transiting planet's declination at the exact pass falls within a natal declination cluster zone (identified in Step 1B), add a brief note: "Dec. cluster activation ([members])." Also flag a parallel/contraparallel to any individual cluster member as an activation (per Step 1B), even when the transiting planet's own declination sits just outside the zone.
-- **Note OOB transit status** — if the transiting planet is OOB at the time of the exact pass, note this explicitly: "OOB transit — extreme intensity."
+- **Note declination cluster activation** — if the transiting planet's declination at the exact pass, where the export prints it (a declination row), falls within a natal declination cluster zone (identified in Step 1B), add a brief note: "Dec. cluster activation ([members])." Also flag a parallel/contraparallel to any individual cluster member as an activation (per Step 1B), even when the transiting planet's own declination sits just outside the zone.
+- **Note OOB transit status** — if the export's own declination row shows the transiting planet OOB at the time of the exact pass, note this explicitly: "OOB transit — extreme intensity."
 - **For transit-to-transit aspects:** Name both planets' general significations, the aspect quality, and note any connection to the base chart (e.g., "TR Saturn = base chart's 7th ruler dispositor" or "TR Jupiter currently in orb of trine to natal Moon").
 - **For midpoint activations:** Name the midpoint pair's combined signification and the transiting planet's action. For priority midpoints, include the natal points' house positions and roles.
 - **For stations:** Note the UTC time, which base chart point the stationing planet is near and what the station means (Direct = forward momentum resumes; Retrograde = review, reversal, internalization). Station times are precise enough for Event Type B chart casting.
-- **For ingresses:** Note which base chart house the planet is leaving and entering, and what the sign change means for the transit's quality.
+- **For ingresses:** Note which base chart house the planet is leaving and entering where the export prints it (a window's `Transit house` line), and what the sign change means for the transit's quality.
 - **For entries:** Note that the transit's pressure is arriving — what natal point is being contacted, which house domain is activated, and what the transiting planet will do as it moves toward exact. Entry charts show the conditions at first contact.
 - **For exits:** Note that the transit's pressure is releasing — what the transit has done, and what the departure conditions indicate. Exit charts show the conditions at final separation.
 - **For declination aspects:** Note the declination value and whether it's a parallel (conjunction-like) or contraparallel (opposition-like). Declination contacts operate beneath the longitudinal picture and can reinforce or supplement the ecliptic aspects.
@@ -517,9 +517,9 @@ The timeline entry supplies six data elements to the Event Type B request:
 
 The Event Type B chart's interpretation is produced by a downstream AstroCast interpretation prompt, not by TransitTimeline itself. Routing depends on the goal:
 
-- **For transit-specific deepening** (understanding what happens at this transit peak in the chart holder's life): route to the **Transit Interpretation prompt**, submitted with the specific peak date/time as the focal moment within the transit window.
-- **For event-chart analysis** (treating the transit moment as an event chart in its own right): route to the **Event Chart Interpretation prompt** using the transit moment as the event start time.
-- **For event-to-natal overlay analysis** (the synastry-style reading of how the transit moment chart interacts with the base chart): route to a dedicated Event-to-Natal prompt (when available).
+- **For transit-specific deepening** (understanding what happens at this transit peak in the chart holder's life): route to the **Transit Interpretation prompt** (P03), submitted with the specific peak date/time as the focal moment within the transit window.
+- **For event-chart analysis** (treating the transit moment as an event chart in its own right): route to the **Event Chart Interpretation prompt** (P16) using the transit moment as the event start time.
+- **For event-to-natal overlay analysis** (the synastry-style reading of how the transit moment chart interacts with the base chart): route to the **Event-to-Natal prompt** (P17), which reads a Synastry export made with the transit moment's event chart as one of the two charts.
 
 ### Traceability Requirement
 
@@ -594,7 +594,7 @@ Each cluster displays:
 - **Cluster label and Priority rank** (1–6 per Section 2)
 - **Date range** of the cluster
 - **Event count** and member event summary
-- **Recommended Event Type B date(s)** (for Priority 1–2 automatically; for Priority 3–4 when a specific castable moment is identifiable)
+- **Recommended Event Type B date(s)** (for Priority 1–2 automatically; for Priority 3–4 when a specific castable moment is identifiable): the export's own dates given as the export's, any the reading adds marked as the reading's
 - **Priority criteria met** (one-line summary of which Priority rules qualified the cluster)
 
 The asteroids' and Lilith's events (row 4A) never join a cluster or change a cluster's priority.

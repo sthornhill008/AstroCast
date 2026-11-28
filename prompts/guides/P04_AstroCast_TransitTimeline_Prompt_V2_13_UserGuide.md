@@ -1,8 +1,8 @@
-# P04 AstroCast_TransitTimeline_Prompt_V2_12 — User Guide
+# P04 AstroCast_TransitTimeline_Prompt_V2_13 — User Guide
 
-Version: 1.5. Date: 2026-10-20.
+Version: 1.6. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Timeline/P04_AstroCast_TransitTimeline_Prompt_V2_12.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Version 2.12 lists the transits to the natal asteroids and Lilith in a short table of their own when the timeline carries them; the revision history lists the changes.
+Use the [complete current prompt](<../Timeline/P04_AstroCast_TransitTimeline_Prompt_V2_13.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Version 2.13 keeps the timeline to what the export prints: a transiting planet's house and a declination flag are given only where the export carries them, the export's recommended dates are kept apart from any the reading adds, and the three follow-on prompts are named (P03, P16, P17). The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
@@ -16,7 +16,7 @@ Specify the subject, report period where relevant, context, focus, and any outpu
 
 ## Family scope
 
-Subject: the named base-chart person or entity. Preserve one-to-two-sentence event descriptions, sorting, all exact passes, residual orbs, cluster ranks, and castable timestamps.
+Subject: the named base-chart person or entity. Preserve one-to-two-sentence event descriptions, sorting, all exact passes, residual orbs, cluster ranks, and castable timestamps. From AstroCast 1.7.2 the timeline marks a planet moving back a sign as `Ingress Virgo → Leo (retrograde)` and gives the boundary it crossed; an older timeline gives 0° of the sign entered for every ingress, and the reading says so where it matters.
 
 ## Review
 
