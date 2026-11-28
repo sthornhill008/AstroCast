@@ -83,6 +83,24 @@ version: AGPL-3.0-or-later (Steve, 2026-10-15; branch Licence, 1.3.5).
 - A release carries the prompt library on its own as `AstroCast_Prompt_Library_<date>.zip` (the
   `prompts/` folder, the guide and its PDF; `<date>` is the manifest's library release). The zip
   is built again and replaced on the current release whenever a prompt or the guide changes.
+- The library's present release is that of 2026-11-28, for AstroCast 1.7.2 (branch Library172):
+  thirty prompts, of which fifteen took a new version for 1.7.2's exports and after the review of
+  the whole library of 2026-11-27 (P03 v3.13, P04 v2.13, P05 v2.5, P06 v1.15, P07 v1.14, P10 v1.6,
+  P11 v1.11, P12 v1.14, P14 v2.16, P15 v2.11, P17 v1.10, P24 v1.7, P27 v1.7, P28 v1.5, P29 v1.1).
+  `prompts/MANIFEST.md` is the list of record. What a library release keeps:
+  - A prompt that changes is renamed, with its guide and its history, to the new version (`git mv`);
+    its history takes a new entry at its head; the manifest's row, the usage map's row and every
+    version the Prompt Library Guide names follow. An unchanged prompt is not touched by a byte.
+  - A changed prompt's Compatible Export line (P05's Input line; P15's "What changed" block) names
+    the AstroCast release whose exports it was written against and says what an older export lacks
+    or prints differently; a reading of an older export must still work.
+  - Every prompt is submitted whole. P12, P14 and P15 then take one template from their Chart
+    Submission Templates section, with the export pasted where the template says.
+  - A prompt asks only for what its export prints: nothing is computed outside the export, and a
+    medical reading is written only on an operator's request.
+  - No private person's name, birth data or question, no machine's name and no machine path under
+    `prompts/`: examples use the invented charts (Eleanor Hartwell, Daniel Whitfield) or published
+    data.
 - The website for non-technical users is `website/`: `website/AstroCast/` is the folder served
   at `https://www.sthornhill.com/AstroCast/` (uploaded by hand), and `website/README.md` says
   how it is built, checked and uploaded. Every statement on it comes from the documents above.
@@ -2071,7 +2089,12 @@ on what a `Button` is.
   on Maple, landed together on `ff85374` and pushed on 2026-11-28; then branch EphePath (2026-11-28), finding
   N4 of the code audit, the last code branch of the 1.7.2 plan: the ephemeris folder's path reaches the
   library whole on Windows, and each program checks its ephemeris files at start-up and says plainly when
-  they cannot be read (see *Swiss Ephemeris Conventions*); made on Maple, awaiting its landing.
+  they cannot be read (see *Swiss Ephemeris Conventions*); made on Maple, landed on `fa67061` and pushed on
+  2026-11-28; then branch Library172 (2026-11-28), the prompt library run of the 1.7.2 plan: fifteen prompts
+  re-versioned with their guides and histories, the guides of P23 and P24, the manifest, the usage map, the
+  library's README and the Prompt Library Guide (see *Documentation*), with no change to the program, its
+  tests or its goldens (the totals stand at 4626 and 149); made on Maple, awaiting its landing. The guide's
+  PDF, the library zip and the website's prompt links are for branch Docs172 and the release.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
