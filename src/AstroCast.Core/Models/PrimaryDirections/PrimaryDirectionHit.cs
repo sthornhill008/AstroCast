@@ -64,4 +64,17 @@ public sealed class PrimaryDirectionHit
 
     /// <summary>The later of the two dates <see cref="RangeStartUtc"/> is the earlier of; null when it is null.</summary>
     public DateTime? RangeEndUtc { get; init; }
+
+    /// <summary>
+    /// Whether the direction's date turns within the tested birth times (branch DirectionNotes, 1.7.2; finding A5):
+    /// true when <see cref="MonthsPerMinute"/> has a figure and the direction's own date does not lie between the
+    /// dates at a minute before and a minute after the birth, both included, or when the range has its two dates and
+    /// the direction's own date does not lie between the dates at the two ends of the birth-time uncertainty, both
+    /// included. The date as a function of the birth time has a turning point there, as when the point whose
+    /// hemisphere sets the proportion crosses the horizon between the tested birth times; the range then does not
+    /// bound the date and <see cref="MonthsPerMinute"/>, a difference across two minutes, is not a rate. The date,
+    /// the arc and the two figures are as the engine found them: the flag only says how to read them. The exports
+    /// mark such a row with a dagger.
+    /// </summary>
+    public bool IsTurning { get; init; }
 }

@@ -342,7 +342,128 @@ public sealed class PrimaryDirectionServiceTests(EphemerisFixture fixture)
 
     #endregion
 
+    #region The turning row (branch DirectionNotes, 1.7.2)
+
+    /// <summary>
+    /// Person A's converse Moon to Saturn's dexter square (found by script among the invented charts): the
+    /// direction's date turns about five minutes before the recorded birth time. At an uncertainty of 4 or 6
+    /// minutes its own date lies between the dates at the window's two ends and the hit is not turning; at 8, 10
+    /// and 15 it lies outside them and the hit is. The date, the age and the months per minute are the birth's own
+    /// whatever the window.
+    /// </summary>
+    /// <param name="window">The birth-time uncertainty, in minutes.</param>
+    /// <param name="expected">Whether the hit is turning.</param>
+    [Theory]
+    [InlineData(4, false)]
+    [InlineData(6, false)]
+    [InlineData(8, true)]
+    [InlineData(10, true)]
+    [InlineData(15, true)]
+    public void IsTurning_HartwellMoonToSaturnsSquare_FollowsTheWindow(int window, bool expected)
+    {
+        PrimaryDirectionResult result = Service().Calculate(
+            Hartwell(), new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = window });
+
+        PrimaryDirectionHit hit = result.Hits.Single(h =>
+            h.Motion == PrimaryDirectionMotion.Converse
+            && h.Significator == "Moon"
+            && h.Promissor == "Saturn"
+            && h.Aspect == PrimaryDirectionAspect.Square
+            && h.AspectAngle < 0.0);
+
+        hit.IsTurning.Should().Be(expected);
+        DateOnly.FromDateTime(hit.InstantUtc).Should().Be(new DateOnly(1984, 12, 15));
+        hit.Years.Should().BeApproximately(37.20, 0.005);
+        hit.MonthsPerMinute.Should().BeApproximately(-0.2, 0.05);
+        hit.RangeStartUtc.Should().NotBeNull();
+        bool outsideItsRange = hit.InstantUtc < hit.RangeStartUtc || hit.InstantUtc > hit.RangeEndUtc;
+        outsideItsRange.Should().Be(expected);
+    }
+
+    /// <summary>
+    /// On the three invented charts at an uncertainty of 10 minutes no direction turns within the minute, so a hit
+    /// is turning exactly when it has a range and its own date lies outside it; and with no uncertainty set no hit
+    /// of the three is turning.
+    /// </summary>
+    [Fact]
+    public void IsTurning_OnTheInventedCharts_IsTheDateOutsideItsRange()
+    {
+        foreach (ChartResult natal in new[] { J2000Nyc(), Hartwell(), Whitfield() })
+        {
+            PrimaryDirectionResult atTen = Service().Calculate(natal, new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 10 });
+            foreach (PrimaryDirectionHit hit in atTen.Hits)
+            {
+                bool outsideItsRange = hit.RangeStartUtc is DateTime start && hit.RangeEndUtc is DateTime end
+                    && (hit.InstantUtc < start || hit.InstantUtc > end);
+                hit.IsTurning.Should().Be(outsideItsRange, $"{natal.Input.Name}: {hit.Motion} {hit.Significator} {hit.Aspect} {hit.Promissor}");
+            }
+
+            Service().Calculate(natal, PrimaryDirectionSettings.Default).Hits
+                .Should().NotContain(h => h.IsTurning, $"{natal.Input.Name} has no direction that turns within a minute of the birth");
+        }
+    }
+
+    /// <summary>
+    /// The turn inside the minute: person A's chart cast at 09:24:50 (found by script: every reading from 09:24:40
+    /// to 09:25:00) has the same direction's date turning within a minute of the birth, so with no uncertainty set
+    /// the converse Moon to Saturn's dexter square is turning by the dates a minute either side alone, and its
+    /// figure stays.
+    /// </summary>
+    [Fact]
+    public void IsTurning_WithinTheMinute_IsFoundWithoutAWindow()
+    {
+        ChartInput hartwell = GoldenFixtures.HartwellInput("Birth Certificate");
+        ChartInput input = new()
+        {
+            Name = "Eleanor Hartwell at 09:24:50",
+            SourceNotes = hartwell.SourceNotes,
+            LocalDateTime = TurnWithinTheMinuteReading,
+            TimeZone = hartwell.TimeZone,
+            UtcOffsetHours = hartwell.UtcOffsetHours,
+            UseExplicitOffset = hartwell.UseExplicitOffset,
+            Latitude = hartwell.Latitude,
+            Longitude = hartwell.Longitude,
+            LocationName = hartwell.LocationName,
+            EventType = hartwell.EventType,
+            HouseSystem = hartwell.HouseSystem,
+        };
+        ChartResult natal = GoldenFixtures.CreateChartEngine(fixture).Calculate(input);
+
+        PrimaryDirectionResult result = Service().Calculate(natal, PrimaryDirectionSettings.Default);
+
+        PrimaryDirectionHit hit = result.Hits.Single(h =>
+            h.Motion == PrimaryDirectionMotion.Converse
+            && h.Significator == "Moon"
+            && h.Promissor == "Saturn"
+            && h.Aspect == PrimaryDirectionAspect.Square
+            && h.AspectAngle < 0.0);
+        hit.IsTurning.Should().BeTrue();
+        hit.MonthsPerMinute.Should().NotBeNull();
+        hit.RangeStartUtc.Should().BeNull("no uncertainty is set");
+    }
+
+    /// <summary>The reading at which person A's converse Moon to Saturn's dexter square turns within the minute.</summary>
+    private static readonly DateTime TurnWithinTheMinuteReading = new(1947, 10, 5, 9, 24, 50);
+
+    #endregion
+
     #region Helpers
+
+    /// <summary>Person A, Eleanor Hartwell (invented), with a birth-time source.</summary>
+    private ChartResult Hartwell() =>
+        GoldenFixtures.CreateChartEngine(fixture).Calculate(GoldenFixtures.HartwellInput("Birth Certificate"));
+
+    /// <summary>Daniel Whitfield (invented): 1964-12-23 11:00 America/New_York, Albany, New York.</summary>
+    private ChartResult Whitfield() => GoldenFixtures.CreateChartEngine(fixture).Calculate(new ChartInput
+    {
+        Name = "Daniel Whitfield",
+        LocalDateTime = new DateTime(1964, 12, 23, 11, 0, 0),
+        TimeZone = "America/New_York",
+        Latitude = 42.6526,
+        Longitude = -73.7562,
+        LocationName = "Albany, New York, United States",
+        EventType = "Birth",
+    });
 
     /// <summary>The direct Moon conjunct the Midheaven among the hits, or null.</summary>
     private static PrimaryDirectionHit? MoonToMidheaven(IEnumerable<PrimaryDirectionHit> hits) =>

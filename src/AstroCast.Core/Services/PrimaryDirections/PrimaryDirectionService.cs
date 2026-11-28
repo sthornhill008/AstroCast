@@ -32,6 +32,13 @@ namespace AstroCast.Core.Services.PrimaryDirections;
 /// no figure, and nor has a Part of Fortune hit when the sect differs at either instant from the birth's, the Lot
 /// having changed its formula.
 /// </para>
+/// <para>
+/// A hit is marked as turning (<see cref="PrimaryDirectionHit.IsTurning"/>; branch DirectionNotes, 1.7.2, finding
+/// A5) when its own date is not between the dates a minute either side of the birth, or not between the dates at the
+/// two ends of the uncertainty, both ends included (<see cref="IsBetween"/>): its date turns there, so its range does
+/// not bound its date and its months per minute are not a rate. Only dates already in hand are compared; no date,
+/// arc or figure is changed.
+/// </para>
 /// </remarks>
 public sealed class PrimaryDirectionService : IPrimaryDirectionService
 {
@@ -133,12 +140,18 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
         {
             bool isFortune = string.Equals(key.Significator, Speculum.PartOfFortuneName, StringComparison.Ordinal);
 
+            // A hit is turning when its own date is not between the two dates found either side of the birth
+            // (branch DirectionNotes, 1.7.2; finding A5): only the dates already in hand are compared, so nothing
+            // here reads the ephemeris or says how an arc becomes a date
+            bool isTurning = false;
+
             double? monthsPerMinute = null;
             if (minuteBefore.TryGetValue(key, out Direction before)
                 && minuteAfter.TryGetValue(key, out Direction after)
                 && !(isFortune && sectFlipsWithinMinute))
             {
                 monthsPerMinute = (after.JulianDayUt - before.JulianDayUt) / 2.0 / DaysPerMonth;
+                isTurning = !IsBetween(direction.JulianDayUt, before.JulianDayUt, after.JulianDayUt);
             }
 
             DateTime? rangeStart = null;
@@ -152,6 +165,7 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
                 double second = Math.Max(atEarlier.JulianDayUt, atLater.JulianDayUt);
                 rangeStart = JulianDayUtility.JulianDayToInstant(first);
                 rangeEnd = JulianDayUtility.JulianDayToInstant(second);
+                isTurning |= !IsBetween(direction.JulianDayUt, first, second);
             }
 
             hits.Add(new PrimaryDirectionHit
@@ -169,6 +183,7 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
                 MonthsPerMinute = monthsPerMinute,
                 RangeStartUtc = rangeStart,
                 RangeEndUtc = rangeEnd,
+                IsTurning = isTurning,
             });
         }
 
@@ -203,6 +218,22 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
             .ToList()
             .AsReadOnly();
     }
+
+    #region The turning row (branch DirectionNotes, 1.7.2)
+
+    /// <summary>
+    /// Whether a date lies between two others, both included, whichever of the two is the earlier: the test of
+    /// <see cref="PrimaryDirectionHit.IsTurning"/>, which is true when a direction's own date fails it against the
+    /// dates a minute either side of the birth, or against the dates at the two ends of the birth-time uncertainty.
+    /// </summary>
+    /// <param name="julianDayUt">The date, as a Julian Day (UT).</param>
+    /// <param name="one">One of the two dates.</param>
+    /// <param name="other">The other.</param>
+    /// <returns>True when the date is at or after the earlier of the two and at or before the later.</returns>
+    internal static bool IsBetween(double julianDayUt, double one, double other) =>
+        julianDayUt >= Math.Min(one, other) && julianDayUt <= Math.Max(one, other);
+
+    #endregion
 
     #region The order of the hits
 

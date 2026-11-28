@@ -210,6 +210,71 @@ public sealed class PrimaryDirectionSectionFormatterTests
         lines.Should().NotContain(l => l.StartsWith("| Date (UTC)", StringComparison.Ordinal));
     }
 
+    #region The turning row (branch DirectionNotes, 1.7.2)
+
+    /// <summary>The dagger's footnote when an uncertainty is set.</summary>
+    private const string TurningFootnoteWithWindow =
+        "\u2020 This direction's date turns within the birth-time window (its promissor crosses the horizon there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
+
+    /// <summary>The dagger's footnote when no uncertainty is set.</summary>
+    private const string TurningFootnoteWithoutWindow =
+        "\u2020 This direction's date turns within a minute of the recorded birth time (its promissor crosses the horizon there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
+
+    /// <summary>
+    /// A turning row carries a dagger after the value in its Months/min cell and in its Range cell, a space
+    /// between; every other cell is the row's own (finding A5: the values stay, the row is marked).
+    /// </summary>
+    [Fact]
+    public void Row_Turning_CarriesADaggerAfterEachFigure()
+    {
+        PrimaryDirectionHit hit = Hit(isTurning: true);
+
+        PrimaryDirectionSectionFormatter.FormatRow(hit, withRange: true)
+            .Should().Be("| 2016-03-26 | 16.23 | D | Midheaven | cnj | Moon | 16°00′ | -3.0 \u2020 | 2015-04-02 to 2017-03-21 \u2020 |");
+        PrimaryDirectionSectionFormatter.FormatRow(hit, withRange: false)
+            .Should().Be("| 2016-03-26 | 16.23 | D | Midheaven | cnj | Moon | 16°00′ | -3.0 \u2020 |");
+    }
+
+    /// <summary>
+    /// With a turning row among the rows one footnote follows the table, after a blank line, however many rows
+    /// carry the dagger; with an uncertainty set it speaks of the birth-time window.
+    /// </summary>
+    [Fact]
+    public void Table_WithTurningRows_PrintsOneFootnoteAfterABlankLine()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [Hit(), Hit(isTurning: true), Hit(isTurning: true)], "Sub", "None.");
+
+        int lastRow = lines.FindLastIndex(l => l.StartsWith("| 2016-03-26", StringComparison.Ordinal));
+        lines[lastRow + 1].Should().BeEmpty();
+        lines[lastRow + 2].Should().Be(TurningFootnoteWithWindow);
+        lines.Count(l => l.StartsWith('\u2020')).Should().Be(1);
+        lines.Count(l => l.EndsWith("\u2020 |", StringComparison.Ordinal)).Should().Be(2);
+    }
+
+    /// <summary>Without an uncertainty the footnote speaks of a minute of the recorded birth time.</summary>
+    [Fact]
+    public void Table_TurningRowWithoutAWindow_FootnoteSaysWithinAMinute()
+    {
+        List<string> lines = Section(Result(), [Hit(isTurning: true)], "Sub", "None.");
+
+        lines.Should().Contain(TurningFootnoteWithoutWindow);
+        lines.Should().NotContain(TurningFootnoteWithWindow);
+    }
+
+    /// <summary>Without a turning row the table has no dagger and no footnote.</summary>
+    [Fact]
+    public void Table_NoTurningRow_HasNoDaggerAndNoFootnote()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }), [Hit(), Hit()], "Sub", "None.");
+
+        lines.Should().NotContain(l => l.Contains('\u2020'));
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>The section's lines for a result and its hits.</summary>
@@ -237,8 +302,10 @@ public sealed class PrimaryDirectionSectionFormatterTests
         double angle = 0.0,
         double? monthsPerMinute = -2.9539,
         DateTime? rangeStart = null,
-        DateTime? rangeEnd = null) => new()
+        DateTime? rangeEnd = null,
+        bool isTurning = false) => new()
     {
+        IsTurning = isTurning,
         Significator = "Midheaven",
         Promissor = "Moon",
         PromissorKind = PrimaryDirectionPromissorKind.Body,

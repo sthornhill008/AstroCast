@@ -32,6 +32,26 @@ internal static class PrimaryDirectionSectionFormatter
     /// <summary>The cell printed for a figure the engine could not give: an em dash (U+2014).</summary>
     internal const string NoFigure = "—";
 
+    /// <summary>
+    /// The mark a turning row's figures carry, a dagger (U+2020), after the value and a space (branch
+    /// DirectionNotes, 1.7.2; finding A5): <see cref="PrimaryDirectionHit.IsTurning"/>.
+    /// </summary>
+    internal const string TurningMark = "\u2020";
+
+    /// <summary>
+    /// The dagger's footnote, with the words that say where the date turns in the place of {0}:
+    /// <see cref="WithinTheWindow"/> when an uncertainty is set, <see cref="WithinAMinute"/> when none is.
+    /// </summary>
+    private const string TurningFootnoteFormat =
+        TurningMark + " This direction's date turns {0} (its promissor crosses the horizon there). "
+        + "Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
+
+    /// <summary>Where a date turns when an uncertainty is set.</summary>
+    private const string WithinTheWindow = "within the birth-time window";
+
+    /// <summary>Where a date turns when no uncertainty is set: between the dates a minute either side of the birth.</summary>
+    private const string WithinAMinute = "within a minute of the recorded birth time";
+
     /// <summary>The table's header, before the optional Range column.</summary>
     private const string TableHeader = "| Date (UTC) | Age | D/C | Significator | Aspect | Promissor | Arc | Months/min |";
 
@@ -90,6 +110,11 @@ internal static class PrimaryDirectionSectionFormatter
     /// follows. The section and <see cref="PrimaryDirectionMarkdownFormatter.FormatTable"/> both draw it from
     /// here (branch PrimaryPanel, 1.5.0), so the Directions panel's list and the report show the same rows.
     /// </summary>
+    /// <remarks>
+    /// The table's notes follow its rows (branch DirectionNotes, 1.7.2; finding A5), each after a blank line and
+    /// only when a row among <paramref name="hits"/> calls for it: the dagger's footnote
+    /// (<see cref="TurningFootnote"/>) when a row is turning. Nothing follows the none sentence.
+    /// </remarks>
     /// <param name="sb">The string builder to append to.</param>
     /// <param name="settings">The run's settings: the uncertainty decides the Range column.</param>
     /// <param name="hits">The hits to tabulate.</param>
@@ -127,6 +152,34 @@ internal static class PrimaryDirectionSectionFormatter
 
         foreach (PrimaryDirectionHit hit in hits)
             sb.AppendLine(FormatRow(hit, withRange));
+
+        if (TurningFootnote(settings, hits) is string turning)
+        {
+            sb.AppendLine();
+            sb.AppendLine(turning);
+        }
+    }
+
+    /// <summary>
+    /// The dagger's footnote, only when a row among the hits is turning (branch DirectionNotes, 1.7.2; finding
+    /// A5): "\u2020 This direction's date turns within the birth-time window (its promissor crosses the horizon
+    /// there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to
+    /// correct the birth time."; with no uncertainty set, "within a minute of the recorded birth time" in the
+    /// place of "within the birth-time window".
+    /// </summary>
+    /// <param name="settings">The run's settings: the uncertainty decides the words.</param>
+    /// <param name="hits">The hits the table prints.</param>
+    /// <returns>The footnote, or null when no row is turning.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
+    internal static string? TurningFootnote(PrimaryDirectionSettings settings, IReadOnlyList<PrimaryDirectionHit> hits)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(hits);
+
+        if (!hits.Any(hit => hit.IsTurning))
+            return null;
+
+        return string.Format(Inv, TurningFootnoteFormat, settings.BirthTimeUncertaintyMinutes > 0 ? WithinTheWindow : WithinAMinute);
     }
 
     /// <summary>
@@ -188,6 +241,11 @@ internal static class PrimaryDirectionSectionFormatter
     /// significator and promissor by name, the aspect label, the arc as D°MM′, the months per minute signed
     /// to one decimal, and, when asked, the range as two dates; a missing figure prints an em dash.
     /// </summary>
+    /// <remarks>
+    /// A turning row (<see cref="PrimaryDirectionHit.IsTurning"/>) carries <see cref="TurningMark"/> after each
+    /// of the two figures it has, a space between ("+0.8 \u2020"); the values are the hit's own (branch
+    /// DirectionNotes, 1.7.2; finding A5).
+    /// </remarks>
     /// <param name="hit">The hit.</param>
     /// <param name="withRange">Whether the Range column is printed.</param>
     /// <returns>The row.</returns>
@@ -196,15 +254,28 @@ internal static class PrimaryDirectionSectionFormatter
         ArgumentNullException.ThrowIfNull(hit);
 
         string motion = hit.Motion == PrimaryDirectionMotion.Direct ? "D" : "C";
+        string months = FormatMonthsPerMinute(hit.MonthsPerMinute);
+        if (hit.MonthsPerMinute is not null && hit.IsTurning)
+            months = $"{months} {TurningMark}";
+
         string row = string.Create(Inv,
-            $"| {CalendarDateFormatter.Date(hit.InstantUtc)} | {hit.Years:F2} | {motion} | {hit.Significator} | {AspectLabel(hit)} | {hit.Promissor} | {PositionFormatter.FormatArc(hit.Arc)} | {FormatMonthsPerMinute(hit.MonthsPerMinute)} |");
+            $"| {CalendarDateFormatter.Date(hit.InstantUtc)} | {hit.Years:F2} | {motion} | {hit.Significator} | {AspectLabel(hit)} | {hit.Promissor} | {PositionFormatter.FormatArc(hit.Arc)} | {months} |");
 
         if (!withRange)
             return row;
 
-        string range = hit.RangeStartUtc is DateTime start && hit.RangeEndUtc is DateTime end
-            ? $"{CalendarDateFormatter.Date(start)} to {CalendarDateFormatter.Date(end)}"
-            : NoFigure;
+        string range;
+        if (hit.RangeStartUtc is DateTime start && hit.RangeEndUtc is DateTime end)
+        {
+            range = $"{CalendarDateFormatter.Date(start)} to {CalendarDateFormatter.Date(end)}";
+            if (hit.IsTurning)
+                range = $"{range} {TurningMark}";
+        }
+        else
+        {
+            range = NoFigure;
+        }
+
         return $"{row} {range} |";
     }
 

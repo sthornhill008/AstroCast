@@ -89,6 +89,11 @@ public static class PrimaryDirectionMarkdownFormatter
     /// Each line is ended as <see cref="StringBuilder.AppendLine()"/> ends it. The Directions panel lists it,
     /// so the screen and the file show the same rows.
     /// </summary>
+    /// <remarks>
+    /// The table's notes come with it, as the report prints them under its rows (branch DirectionNotes, 1.7.2;
+    /// finding A5): a turning row's daggers and their footnote
+    /// (<see cref="PrimaryDirectionSectionFormatter.AppendTable"/>).
+    /// </remarks>
     /// <param name="result">The primary directions of a chart.</param>
     /// <returns>The table, or the none sentence.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="result"/> is null.</exception>
