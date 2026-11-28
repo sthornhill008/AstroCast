@@ -1,12 +1,12 @@
-# AstroCast Solar Return Interpretation Prompt — v1.14
+# AstroCast Solar Return Interpretation Prompt — v1.15
 
-**Operator documentation:** [P06 guide](<../guides/P06_AstroCast_SolarReturnInterp_Prompt_V1_14_UserGuide.md>) · [Revision history](<../history/P06_AstroCast_SolarReturnInterp_Prompt_V1_14_History.md>). These are optional references.
+**Operator documentation:** [P06 guide](<../guides/P06_AstroCast_SolarReturnInterp_Prompt_V1_15_UserGuide.md>) · [Revision history](<../history/P06_AstroCast_SolarReturnInterp_Prompt_V1_15_History.md>). These are optional references.
 
-**Version:** 1.14
-**Date:** 2026-10-20
+**Version:** 1.15
+**Date:** 2026-11-28
 **Method:** Six-layer (Hand / Greene / Sasportas / Ebertin / Forrest / Tyl)
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Solar Return Export, AstroCast 1.6.0 (older solar return exports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0 and 1.5.0; v1.0.40+, with declination data v1.0.42+, techniques data v1.0.101+, time-lord context for SR/LR/PR exports v1.0.232+, SR-correct profection age semantics v1.0.233+)
+**Compatible Export:** AstroCast Solar Return Export, AstroCast 1.7.2 (older solar return exports still read; from AstroCast 1.7.2 the three "(at Return Ingress)" sections are all read for the year the return opens and print one age, where an older export may print two, the Firdaria summary's a year less than the profection's, when the return falls before the birthday; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0, 1.5.0 and 1.6.0 to 1.7.1; v1.0.40+, with declination data v1.0.42+, techniques data v1.0.101+, time-lord context for SR/LR/PR exports v1.0.232+, SR-correct profection age semantics v1.0.233+)
 
 ---
 
@@ -262,10 +262,14 @@ embedded in the return export's natal reference data) may contain
 Annual Profection, Firdaria, and Zodiacal Releasing sections. When
 present:
 
-1. OPEN the interpretation with the profection year: "At age [N],
-   [Name] is in a [Nth] house profection year. [Lord] is the lord
-   of the year." This REPLACES the generic annual orientation
-   opening.
+1. OPEN the interpretation with the profection year, in the voice in
+   force: "At age [N], you are in a [Nth] house profection year.
+   [Lord] is the lord of the year." in the personal client branch,
+   and "At age [N], [Name] is in a [Nth] house profection year. ..."
+   in the third person (the public-figure branch, or an explicit
+   voice override). Write "a" or "an" by the ordinal ("an 8th", "an
+   11th", "an 18th"; "a 3rd"). This REPLACES the generic annual
+   orientation opening.
 
 2. COMPARE the lord of the year's natal condition to its condition
    in the solar return chart. If the lord is debilitated natally
@@ -295,14 +299,22 @@ present:
    Themes, Lord's Natal Aspects, Profection Table, Summary. The
    "(at Return Ingress)" qualifier on the SR/LR/PR variant signals
    that the time-lord state is evaluated at the return-ingress
-   instant rather than at chart calculation time. In a solar return
-   export only the profection's Age, which item 1 uses, is rounded to
-   the return, the year of life the return opens ("**Age:** 26" for a
-   return the day before the 26th birthday), while its Firdaria and
-   Zodiacal Releasing sections read the year running at the return
-   ("Age 25" in the same export's Firdaria summary); a lunar or
-   planetary return's profection reads the year running at the
-   return too. When both forms are present in a single
+   instant rather than at chart calculation time. From AstroCast
+   1.7.2 all three "(at Return Ingress)" sections of a solar return
+   export are read for the year of life the return opens: the
+   profection's Age, which item 1 uses, the Firdaria summary's Age
+   and the releasing's current periods are those of the birthday that
+   year begins on ("**Age:** 26" and "Age 26:" in the Firdaria
+   summary, for a return the day before the 26th birthday), and the
+   profection's "(as of ...)" date is that birthday when the return
+   falls before it, the return's own day otherwise. In an older
+   export only the profection's Age is the year the return opens,
+   while its Firdaria and Zodiacal Releasing sections read the year
+   running at the return ("Age 25" in the same export's Firdaria
+   summary): use the profection's Age, and read those two sections
+   as they stood on the return's own day. A lunar or planetary
+   return's three sections read the year running at the return, in
+   every version. When both forms are present in a single
    Markdown stream (e.g., a natal export and a return export
    concatenated for overlay analysis), treat the "(at Return Ingress)"
    variant as authoritative for the year ahead and the natal variant
@@ -316,7 +328,19 @@ its as-of date and the start/end dates of each active period it
 discusses (profection year, firdaria sub-period — the major period
 when a node's period is undivided — ZR Level 2, transit or timeline
 windows as applicable), so a reader can see at a glance
-which statements have expired.
+which statements have expired. The as-of date of the three "(at
+Return Ingress)" sections is the date the profection's "(as of ...)"
+prints: the birthday the return's year begins on, or the return's
+own day when it falls on or after that birthday. It is never the
+export's Generated date. State each dated window once, in the
+reading's timing passage (the profection, Firdaria and releasing
+framework that opens Section 1), and refer to it elsewhere by name
+without restating its dates. Give an orb for the contacts the
+reading builds on, not for every contact it names.
+
+DATA NOTE: write a data note only for a conflict or a gap the reading
+actually met. It quotes both values with their labels, as the export
+prints them. When the reading met none, leave the note out.
 
 ### Solar Return Principles 
 

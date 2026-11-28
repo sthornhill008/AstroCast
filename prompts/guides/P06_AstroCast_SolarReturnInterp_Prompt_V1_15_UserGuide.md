@@ -1,8 +1,8 @@
-# P06 AstroCast_SolarReturnInterp_Prompt_V1_14 — User Guide
+# P06 AstroCast_SolarReturnInterp_Prompt_V1_15 — User Guide
 
-Version: 1.2. Date: 2026-10-20.
+Version: 1.3. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Solar Return/P06_AstroCast_SolarReturnInterp_Prompt_V1_14.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.14 reads the return chart's own asteroids and Lilith briefly, for the return's year, when the export carries them; the revision history lists the changes.
+Use the [complete current prompt](<../Solar Return/P06_AstroCast_SolarReturnInterp_Prompt_V1_15.md>), followed by the Solar Return export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.15 reads the Solar Return export of AstroCast 1.7.2, whose profection, Firdaria and Zodiacal Releasing sections are all read for the year the return opens and give one age; an older export may give two, and the reading then uses the profection's. The reading addresses you as "you" unless you ask for the third person, opening sentence included; it dates each timing window once; and it adds a data note only for a conflict or a gap it actually met. The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
@@ -14,7 +14,7 @@ Specify the subject, report period where relevant, context, focus, and any outpu
 
 ## Family scope
 
-Subject: the native during the actual solar-return period. Natal condition, return placements, return-to-natal overlays, and birthday-to-birthday profection windows are distinct layers.
+Subject: the native during the actual solar-return period. The profection, Firdaria and releasing sections are dated as of the birthday the return's year begins on (the return's own day when it falls on or after that birthday), never the day the export was made. Natal condition, return placements, return-to-natal overlays, and birthday-to-birthday profection windows are distinct layers.
 
 ## Review
 
