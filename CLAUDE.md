@@ -917,6 +917,34 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
   `PrimaryDirectionServiceTests` (10), `EphemerisServiceTests.CalculateFixedStarPosition_Regulus_CarriesItsLatitude`,
   `BisectionTests` (1) and `DisplayNameTests` (3) hold it. The export is branch PrimaryExport's (below); the
   panel is PrimaryPanel's.
+  *The turning row and the missing figure* (branch DirectionNotes, 1.7.2; finding A5 of the 1.7.2 code audit,
+  Steve's rulings: the values stay, the row is marked): three members on `PrimaryDirectionHit` say how a hit's
+  two figures are to be read, and no date, age, arc, Months/min or Range value changed. *Turning*
+  (`IsTurning`): a direction's proportion is taken in one point's hemisphere (the promissor's for a converse
+  direction, the significator's for a direct one to a body or the Lot), and when that point crosses the
+  horizon inside the tested birth times the direction's date, as a function of the birth time, turns there:
+  its own date then lies outside its Range and its Months/min, a difference across two minutes, is not a
+  rate. The service marks it from dates it already holds, with no new ephemeris work
+  (`PrimaryDirectionService.IsBetween`): the hit has its Months/min and its own date does not lie between the
+  dates a minute either side of the birth, or it has its Range and its own date does not lie between the dates
+  at the window's two ends, both ends included. The test sees a turn only where it puts the row's own date
+  outside the two dates compared: person A's converse Moon to Saturn's dexter square (1984-12-15), whose date
+  turns about five minutes before her recorded time, is not turning at windows of 4 and 6 minutes and is at 8
+  and more, and her chart cast at 09:24:50 turns within the minute with no window set. *The missing figure*
+  (`NoRangeReasons`, `NoMonthsPerMinuteReasons`, the flags enum `PrimaryDirectionGapReasons`): where the Range
+  is null although a window is set, or the Months/min is null, the reason is recorded from what the service
+  holds at that point. `SectChange`: the hit is to the Part of Fortune and the sect at one of the two instants
+  differs from the birth's (the one case in which the figure is withheld though the direction may exist
+  there). Otherwise, for each of the two instants at which the direction is absent (`GapReason`):
+  `NoSemiArc` when it has no arc there; else `BeforeBirth` when the birth's arc plus the change to that
+  instant's arc, the difference taken the short way round, is below zero (the arc has passed 0° and stands
+  near 360°); else `BeyondAgeLimit`, the key and the age limit having dropped it. Each moved instant keeps the
+  arcs of the directions it did not keep (`ShiftedHits.NotKept`), the arcs `HitsAt`'s own loop computes; only
+  arcs are compared, so nothing says how an arc becomes a date (kept in view for 1.8.0's sidereal-day option).
+  Counted on the three invented charts (J2000 NYC 572 rows, Eleanor Hartwell 538, Daniel Whitfield 578) at
+  windows of 0, 4 and 10 minutes: turning rows 0, 0, 0; 0, 0, 1; 0, 0, 0; rows without a Range 7 and 15; 6
+  and 15; 12 and 33; rows without Months/min 0, 1 and 6 at every window. `PrimaryDirectionServiceTests`
+  (the `IsTurning_*`, `NoRangeReasons_*`, `NoMonthsPerMinuteReasons_*` and `SectFlip_IsTheReason*` tests) hold it.
 - **Primary directions export** (`PrimaryDirectionMarkdownFormatter`, `PrimaryDirectionSectionFormatter`
   (internal), `PositionFormatter.FormatArc`, branch PrimaryExport, 1.5.0; Steve's choices of 2026-10-18):
   Markdown only, as the transit family is. *The section*, one writer for both outputs: `## Primary
@@ -950,6 +978,35 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
   left out, the birth-time caution) and `PrimaryDirectionMarkdownFormatter_Hartwell` (person A, invented, since
   Fixtures; a source given, no uncertainty: 538 rows, 60 left out, no caution) cover it under the three cultures;
   `PrimaryDirectionSectionFormatterTests` (33) and `PrimaryDirectionMarkdownFormatterTests` (8) the rules.
+  *The table's notes* (branch DirectionNotes, 1.7.2; finding A5): `PrimaryDirectionSectionFormatter.AppendTable`
+  writes them after the rows, so the whole-life report, the transit report's section and the Directions
+  panel's list (`FormatTable`) print the same; the section's header lines are unchanged, and nothing follows
+  the none sentence. *Marks:* a turning row carries a dagger (U+2020) after each of its two figures, a space
+  between, `-0.2 †` and `1984-10-27 to 1984-11-15 †`; a figure missing for a recorded reason prints the em
+  dash and a double dagger (U+2021), `— ‡`, in the Range cell and, for the same causes, in the Months/min
+  cell; a figure missing with no reason recorded prints the em dash alone. *Footnotes*, each after a blank
+  line and only when a printed row carries its mark, the dagger's first: `† This direction's date turns
+  within the birth-time window (its promissor crosses the horizon there). Its Range does not bound its date
+  and its Months/min is not a rate, so the row cannot be used to correct the birth time.`, with "within a
+  minute of the recorded birth time" in place of "within the birth-time window" when no uncertainty is set;
+  and `‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age
+  limit.`, the reasons those that occur among the printed rows and no other, joined with "or"
+  (`ReasonWords`): "falls before birth", "falls beyond the age limit" (both: "falls before birth or beyond
+  the age limit"), "is to a Part of Fortune whose formula changes between day and night", and for a
+  direction with no arc there the general form "has no date". A row without Months/min is covered by the
+  same footnote, its reason joining the others; where no printed row lacks a Range with a reason, as when no
+  uncertainty is set, the footnote reads `‡ No Months/min: a minute from the recorded birth time this
+  direction falls beyond the age limit.` *The natures of the promissor stars* (`AppendStarNatures`): after
+  the footnotes, when a printed row has a fixed star as its promissor, a blank line, `### Natures of the
+  Promissor Stars`, a blank line, `| Star | Nature |` with one row for each such star, once, in name order
+  (ordinal), the nature exactly as `FixedStarCatalog` holds it and as the natal Fixed Stars table prints it,
+  then a blank line and `Ptolemaic planetary nature from Robson/classical sources.`, the catalog's own words
+  (`FixedStarCatalog.NatureSource`, from the comment on `FixedStarEntry.Nature`); no table when no printed
+  row has a star. The goldens moved by these alone: J2000 NYC's seven rows without a Range, its footnote and
+  54 stars; person A's one row without Months/min, its footnote and 53 stars; the transit report's
+  directions golden, Capella and Sadalsuud. `PrimaryDirectionNotesTests` (10 names: the marked rows, the
+  footnotes and the table in the report, the panel's list and the transit report's section, on the invented
+  charts) and the three new regions of `PrimaryDirectionSectionFormatterTests` hold it.
 - **Time lords** (`FirdariaAnalyzer`, `ProfectionAnalyzer`, `ZodiacalReleasingAnalyzer`,
   `ChartMarkdownFormatter`, branch H, 1.3.4; rulings T-D8 option a, T-D9 option b, T-D10 year (b) and
   second level (b), T6-4, R-D6): the three analyzers count years by one rule,
@@ -1878,7 +1935,11 @@ on what a `Button` is.
   (2026-11-27), finding A1 of that audit: a solar return export reads its three time-lord sections for the
   year the return opens (see *Return Ages* below); both made on Maple, landed together on `655bff5` and
   pushed the same day; then branch ExportText (2026-11-27), fourteen text faults in the exports from the
-  code audit and the prompt audit (see *Export Text* below), made on Maple, awaiting its landing.
+  code audit and the prompt audit (see *Export Text* below), made on Maple, landed on `a328c28` and pushed on
+  2026-11-28; then branch DirectionNotes (2026-11-28), finding A5 of the code audit: a primary direction
+  whose date turns is marked, a missing Range says why, and the natures of the promissor stars are listed
+  (see *Primary directions* and *Primary directions export* above), with the medical export's "Not medical
+  advice" line moved into its header; made on Maple, awaiting its landing.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
@@ -1941,8 +2002,9 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4563 in `tests/AstroCast.Tests` and 146 in
-  `tests/AstroCast.UiTests` at ExportText, all passing on Windows (4504 and 146 at ReturnAges, 4476 and
+- **Total tests:** 4604 in `tests/AstroCast.Tests` and 146 in
+  `tests/AstroCast.UiTests` at DirectionNotes, all passing on Windows (4563 and 146 at ExportText, 4504 and
+  146 at ReturnAges, 4476 and
   146 at StaleResults and 4411 and 145 at InputChecks, on Windows too; 4297 and 145 at SvgExclude,
   all passing on macOS; 4296 and 145 at Fixtures
   and at DavisonPanel; 4287 and 142 at Davison;
@@ -2701,7 +2763,10 @@ engine's argument): a tenth panel with the settings, the whole-life list and its
   section's table exactly as `ToMarkdown` prints it (header, separator, one row per hit; or "No primary
   direction falls before age 100."), each line ended by `AppendLine`. One writer:
   `PrimaryDirectionSectionFormatter.AppendTable` (internal), which the section calls; every golden is
-  byte-identical.
+  byte-identical. Since branch DirectionNotes (1.7.2) the list carries the table's notes as the report prints
+  them, so the panel shows the same marks on its rows and, under the rows, the same footnotes and the natures
+  of the promissor stars (see *Primary directions export*, the table's notes); the panel's markup and
+  `DirectionsViewModel` are unchanged.
 - **The engine reaches the view model** as a last optional constructor argument (Steve: the scoping's
   eleven construction sites are 26), `IPrimaryDirectionService? primaryDirectionService = null`; null builds
   `new PrimaryDirectionService(ephemeris)`. Both Apps build one beside `TransitService` and pass it by name;
@@ -2880,7 +2945,10 @@ and one printed position (Q12). No product code reads any of the strings changed
   parameter, `medicalCorrespondences` (default true); the medical export passes false, so the chart it
   embeds prints no `## Medical Astrology Correspondences` section, and the export's own fuller sections are
   the only copy. `ChartMarkdownFormatter.MedicalBasisLine`, "*Traditional correspondences for educational
-  and historical study. Not medical advice.*", prints once in the medical export, directly before
+  and historical study. Not medical advice.*", prints once in the medical export: in its header, as a
+  paragraph of its own after the header's labelled lines (under the Tradition line, or under the Health
+  Context line when one is given) and before `## Natal Chart`, a blank line either side (branch
+  DirectionNotes, 1.7.2; Steve's ruling of 2026-11-27). ExportText had printed it directly before
   `## Temperament Assessment`. A chart export of its own is unchanged.
 - **Daily horoscope with an unknown birth time (N15).** The backdrop table has no House column and the
   Entering orb and Exiting orb lines no "(H7)", as the natal summary and the Exact and Active tables
