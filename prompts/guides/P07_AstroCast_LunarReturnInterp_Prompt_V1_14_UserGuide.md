@@ -1,8 +1,8 @@
-# P07 AstroCast_LunarReturnInterp_Prompt_V1_13 — User Guide
+# P07 AstroCast_LunarReturnInterp_Prompt_V1_14 — User Guide
 
-Version: 1.2. Date: 2026-10-20.
+Version: 1.3. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Lunar Return/P07_AstroCast_LunarReturnInterp_Prompt_V1_13.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.13 reads the return chart's own asteroids and Lilith briefly, for the return's month, when the export carries them; the revision history lists the changes.
+Use the [complete current prompt](<../Lunar Return/P07_AstroCast_LunarReturnInterp_Prompt_V1_14.md>), followed by the Lunar Return export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.14 corrects what the export's Sequence number means: it counts the returns in the date range you asked for, so #1 is the first return of that range, not the first after a birthday; the reading places the month in the solar return year from the return's date and the birthday. The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 

@@ -1,12 +1,12 @@
-# AstroCast Lunar Return Interpretation Prompt — v1.13
+# AstroCast Lunar Return Interpretation Prompt — v1.14
 
-**Operator documentation:** [P07 guide](<../guides/P07_AstroCast_LunarReturnInterp_Prompt_V1_13_UserGuide.md>) · [Revision history](<../history/P07_AstroCast_LunarReturnInterp_Prompt_V1_13_History.md>). These are optional references.
+**Operator documentation:** [P07 guide](<../guides/P07_AstroCast_LunarReturnInterp_Prompt_V1_14_UserGuide.md>) · [Revision history](<../history/P07_AstroCast_LunarReturnInterp_Prompt_V1_14_History.md>). These are optional references.
 
-**Version:** 1.13
-**Date:** 2026-10-20
+**Version:** 1.14
+**Date:** 2026-11-28
 **Method:** Four-layer (Hand / Greene / Sasportas / Ebertin / Forrest / Tyl — condensed for monthly scope)
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Lunar Return Export, AstroCast 1.6.0 (older lunar return exports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0 and 1.5.0; v1.0.41+, with declination data v1.0.42+, techniques data v1.0.101+)
+**Compatible Export:** AstroCast Lunar Return Export, AstroCast 1.7.2 (older lunar return exports still read, and nothing this prompt relies on is missing from them: an older export's own profection summary may read "a 8th" or "a 11th" where 1.7.2 prints "an"; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0, 1.5.0 and 1.6.0 to 1.7.1; v1.0.41+, with declination data v1.0.42+, techniques data v1.0.101+)
 
 ---
 
@@ -112,11 +112,14 @@ the context of:
    activate or echo?
 2. **Current transits** — if the user provides transit context, note
    where the lunar return reinforces or modifies active transits.
-3. **Sequence position** — Sequence #1 (just after the birthday)
-   sets the emotional tone for the start of the solar return year;
-   later returns show how the year's emotional story develops. A
-   lunar return shortly before a birthday is the closing month of
-   the prior solar return year.
+3. **Sequence position** — the export's `**Sequence:** #n` counts
+   the returns in the range asked for, so #1 is only the first
+   return of that range. The month's place in the solar return year
+   comes from the return's date and the birthday: the first lunar
+   return after a birthday sets the emotional tone for the start of
+   the solar return year; later returns show how the year's
+   emotional story develops. A lunar return shortly before a
+   birthday is the closing month of the prior solar return year.
 
 If solar return or transit context is not provided, interpret the
 lunar return as a standalone monthly chart.
@@ -297,7 +300,8 @@ return interpretation with a one-line timing reference:
 
 "This lunar return falls during a [Nth] house ([sign]) profection
 year ([lord], ruler of [sign], as lord of the year), within a [ruler]
-firdaria [major/ sub] period."
+firdaria [major/ sub] period." Write "a" or "an" by the ordinal ("an
+8th house", "an 11th house").
 
 The profected sign is the Ascendant's sign advanced one sign a year
 ("**Profected House:** 3rd (Pisces)", lord Jupiter). A node's firdaria
