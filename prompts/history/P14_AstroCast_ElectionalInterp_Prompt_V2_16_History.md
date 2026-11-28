@@ -1,10 +1,30 @@
 # P14 Revision History and Extracted Records
 
-Current release: 2.15 (2026-10-15). Previous release: 2.14.
+Current release: 2.16 (2026-11-28). Previous release: 2.15 (2026-10-15).
 
-Source: AstroCast_ElectionalInterp_Prompt_V2_14.md (in Prompts.zip). The source remains unchanged.
+Source: P14_AstroCast_ElectionalInterp_Prompt_V2_15.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. Four of the review's findings (Q2, Q3, Q14, Q15) and one change of AstroCast 1.7.2 (code finding N11: the electional export prints display names). Line numbers are v2.16's; the replaced v2.15 passages are in the v2.15 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v2.16, the documentation line links the V2_16 guide and history, the Version line reads 2.16 and the Date line 2026-11-28.
+- **:7, Compatible Export (N11).** AstroCast 1.7.2; the line says that an older export prints the code words ("RealEstateListing", "WaningCrescent") where 1.7.2 prints words.
+- **:63, :1168 (Q15).** The Quick Judgment template is 4C; both lines called it 2C.
+- **:76-79, Instructions (Q3, ruling 6).** Paste the whole prompt, then one template from the Chart Submission Templates section (Section 4). v2.15 said "Copy the preamble (Section 1)" and "Add the submission template (Section 2)"; Section 2 is the Interpretation Structure, and the shared operating rules the Preamble applies stand above Section 1.
+- **:172, Health-election caveat (Q2).** One sentence: for a medical election the comparison of the candidates is given as the historical method reads them, and the Recommendation (Layer 6b), the Timing Notes and the gate's lines on them do not apply. v2.15 forbade a date for such an election and, in Layer 6b, the gate and template 4C, required one.
+- **:240-243, the Moon's phase (N11).** The balsamic Moon is the export's Waning Crescent, printed so from 1.7.2 and as "WaningCrescent" before.
+- **:449-456, Working-type derivation (N11).** The nine Election Type values as 1.7.2 prints them, the four code words of older exports, and one sentence mapping a type printed as words to the table's one-word row.
+- **:526-528, Election Type Table (Q14).** Three rows, RealEstateListing, RealEstateClosing and CreativeLaunch, with the significators the prompt's own audit list gives them (Venus, Saturn, the Sun), which are the engine's. v2.15 had no row for three of the nine types the export prints, so they fell to keyword guessing. The key houses are this run's choice from the tradition (the 4th for property, the 7th for the other party, the 10th for price and standing, the 5th for creative work).
+- **:1148-1150, :1222 (Q15).** Five fixed sections, as the table lists them (it said six), and 6 sections in all for one candidate.
+- **:1251-1253, Compliance Gate (Q15).** The planetary hour is named for the candidate instant only, never as a buffer or a supportive window, as the Planetary Hour rule already said; the gate had asked for "the planetary-hour buffer".
+- **:1335-1337, :1360-1362, templates 4A and 4B (Q15).** Notes and added context are the querent's own account, claims to weigh and not verified fact, and a practical constraint is applied before the candidates are ranked, as the family rule says. The templates had read "verified information" and "letting the chart evidence lead".
+
+The User Guide 1.2 states the one method and says the same for its user.
+
+Unchanged, by instruction: every other rule of v2.15, among them the audit list and the keyword map, which keep their one-word type names.
+
+## Previous changes — 2.15 (2026-10-15)
 
 Aligned with the AstroCast 1.3.4 exports; a Compatible Export line names 1.3.4 (R3). O-D3 (R1): every orb prints as truncated degrees and minutes with the prime; a compact `147'` or a decimal belongs to an older export. Before 1.3.4 the electional embed rounded. R2: a header carrying `**Calendar:** dates before 1582-10-15 are on the Julian calendar` means every date is on the calendar in force; nothing to convert. A range bound on 5–14 October 1582 is refused (R3, R-D7). Older lines made true: the Planetary Sect table's Role and Hayz columns, the Proximity column and the Score and Conditions cells (the field names are the JSON's); the Natal Harmony table lists the tightest 15 major aspects; the natal slot holds the chart picked, else the last calculated; the export prints the natal Name and never natal Notes; it names the last phase Waning Crescent; the Natal Chart Summary carries positions, cusps, dignities and key aspects only, so the natal scans go as far as it allows.
 

@@ -1,10 +1,10 @@
-# AstroCast — Electional Chart Interpretation Prompt (Paste-Ready) — v2.15
+# AstroCast — Electional Chart Interpretation Prompt (Paste-Ready) — v2.16
 
-**Operator documentation:** [P14 guide](<../guides/P14_AstroCast_ElectionalInterp_Prompt_V2_15_UserGuide.md>) · [Revision history](<../history/P14_AstroCast_ElectionalInterp_Prompt_V2_15_History.md>). These are optional references.
+**Operator documentation:** [P14 guide](<../guides/P14_AstroCast_ElectionalInterp_Prompt_V2_16_UserGuide.md>) · [Revision history](<../history/P14_AstroCast_ElectionalInterp_Prompt_V2_16_History.md>). These are optional references.
 
-**Version:** 2.15
-**Date:** 2026-10-15
-**Compatible Export:** AstroCast Electional Report export, AstroCast 1.3.4
+**Version:** 2.16
+**Date:** 2026-11-28
+**Compatible Export:** AstroCast Electional Report export, AstroCast 1.7.2 (older electional exports still read: from 1.7.2 the export prints the Election Type and the Moon's phase as words, "Real Estate Listing" and "Waning Crescent", where an older export prints the code words, "RealEstateListing" and "WaningCrescent"; earlier exports: AstroCast 1.3.4 to 1.7.1)
 
 ## Shared operating rules
 
@@ -60,7 +60,7 @@ text. Overrides combine across distinct fields. Resolve them using Shared operat
 | Filename | `{Election_Goal_Short}_{YYYYMMDD-YYYYMMDD}_ElectionalInterp{AI}.pdf` (derivation rule in §4) | Operator may specify alternate filename |
 | Output directory | `{AstroCast folder}\Interp\Electional` | Spec-specific override in submission text |
 | Glossary | Curated (terms used in body), topic-grouped, basic level | `"Full Glossary"` / `"Alphabetical glossary"` / `"Skip glossary"` |
-| Length target | ~1,000–1,500 words per candidate plus ~1,000–1,800 words of overhead (Overview, Comparison, Timing); ~750 for 2C Quick | `"Use N words maximum"` |
+| Length target | ~1,000–1,500 words per candidate plus ~1,000–1,800 words of overhead (Overview, Comparison, Timing); ~750 for 4C Quick | `"Use N words maximum"` |
 | Context grounding | Relevant supplied claims considered; plausible correspondence or material no-clear-fit | "Skip biographical grounding" changes discussion scope only |
 | Health-election caveat | Automatic when election goal/constraints trigger health detectors | `"Skip health caveat"` (rare — only when the medical boundary is already addressed) |
 
@@ -73,8 +73,10 @@ name. Automatic.
 
 ## Instructions
 
-1. Copy the preamble (Section 1) into the AI chat
-2. Add the submission template (Section 2)
+1. Paste this whole prompt into the AI chat: every section, so the
+   shared operating rules above the Preamble go with it
+2. Add one template from the Chart Submission Templates section
+   (Section 4)
 3. Paste your AstroCast Markdown electional chart export where indicated
 4. The AI will produce a structured electional judgment and recommendation
 
@@ -167,7 +169,7 @@ EVIDENTIARY FIREWALL: Apply Shared operating rules.
 
 
 HEALTH-ELECTION CAVEAT:
-Astrological candidate ranking must not determine dates for medical consultations, screenings, medication, surgery, or other treatment. For such a request, explain the historical method only; actual scheduling follows clinical needs. Practical nonclinical activities remain within ordinary electional scope.
+Astrological candidate ranking must not determine dates for medical consultations, screenings, medication, surgery, or other treatment. For such a request, explain the historical method only; actual scheduling follows clinical needs. For such an election the comparison of the candidates is given as the historical method reads them, and the Recommendation (Layer 6b), the Timing Notes and the compliance gate's lines on them do not apply: say so in their place. Practical nonclinical activities remain within ordinary electional scope.
 
 
 When the election involves a health-related activity, the analysis must
@@ -235,8 +237,9 @@ The Moon is the single most important factor in any election. Assess:
   and growth. Waning Moon (Full to New) favors completions, endings,
   and release. First quarter to full is classically strongest for
   enterprises meant to grow. A balsamic Moon (last 45° before New; the
-  export's Waning Crescent, "WaningCrescent" on a candidate's Moon
-  line) is unfavorable for most elections — BUT qualify phase judgment by
+  export's Waning Crescent, printed so on a candidate's Moon line from
+  AstroCast 1.7.2 and as "WaningCrescent" in an older export) is
+  unfavorable for most elections — BUT qualify phase judgment by
   activity type: for DECREASE elections (treating or resolving an
   existing illness, ending a habit, releasing, removing, completing,
   or closing out a matter), a waning or balsamic (Waning Crescent) Moon is supportive
@@ -444,8 +447,13 @@ WORKING-TYPE DERIVATION (interim classifier):
 
 The export's Election Type field is authoritative WHEN it maps to a
 row of the Election Type Table below (the export prints one of nine
-values: BusinessLaunch, Contract, Wedding, Surgery, RealEstateListing,
-RealEstateClosing, CreativeLaunch, Travel, Other). When the field is "Other,"
+values: Business Launch, Contract, Wedding, Surgery, Real Estate
+Listing, Real Estate Closing, Creative Launch, Travel, Other; an
+export older than AstroCast 1.7.2 prints the four of more than one
+word as code words: BusinessLaunch, RealEstateListing,
+RealEstateClosing, CreativeLaunch. The table's rows are named in one
+word: a type printed as words maps to the row of the same name). When
+the field is "Other,"
 "General," blank, or any value not in the table, derive a WORKING
 TYPE from the Election Goal text (and Constraints, when the goal is
 sparse) before proceeding:
@@ -515,6 +523,9 @@ ELECTION TYPE TABLE:
 | Medical         | Moon (body), Jupiter (healing)        | 6th, 1st             |
 | Fitness/Cardio  | Mars (exertion, caution), Sun (vital  | 6th, 1st             |
 |                 |  force), Jupiter (healing)            |                      |
+| RealEstateListing | Venus (appeal, value)               | 4th, 7th (buyer), 10th |
+| RealEstateClosing | Saturn (property, binding terms)    | 4th, 7th, 1st        |
+| CreativeLaunch  | Sun (visibility, recognition)         | 5th, 10th, 1st       |
 | General         | Moon + Ascendant ruler                | 1st                  |
 
 **Note on Fitness/Cardio elections:** Mars signifies physical exertion
@@ -1134,8 +1145,8 @@ what gets narrowed.
 The list below is the single source of truth for sections the output
 PDF contains, in this order, at the suggested depths. The structure is
 data-driven on the export's candidate count (N): one Candidate Analysis
-section per candidate, so the document contains **7 + (N − 1)**
-sections in total (7 sections when N = 1... i.e., 6 fixed sections plus
+section per candidate, so the document contains **6 + (N − 1)**
+sections in total (6 sections when N = 1... i.e., 5 fixed sections plus
 N candidate sections).
 
 Per-section word ranges are suggestions for typical pacing. Where the
@@ -1154,7 +1165,7 @@ compromised for brevity.
 Global prose target: ~1,000–1,500 words per candidate plus
 ~1,000–1,800 words of overhead (Overview, Comparison, Timing),
 excluding reference tables. For the historical three-candidate case
-this reproduces the former ~3,000–5,000-word target. Template 2C
+this reproduces the former ~3,000–5,000-word target. Template 4C
 (Quick Judgment) overrides to 750 words maximum and collapses the
 candidate analyses into a condensed comparison.
 
@@ -1208,7 +1219,7 @@ Global:
 
 Structure (checks against the authoritative Interpretation Structure):
 - [ ] One Candidate Analysis section per candidate in the export;
-      all 6 fixed sections present; correct order
+      all 5 fixed sections present; correct order
 - [ ] Fixed Stars Referenced table included
 - [ ] Glossary of Terms included, topic-grouped by default
 
@@ -1237,8 +1248,9 @@ Content quality:
 - [ ] Algorithm audit performed; score-vs-evidence contradictions
       named
 - [ ] Trade-off acknowledgment for the recommended candidate
-- [ ] Practical timing advice with specific times and the
-      planetary-hour buffer provided
+- [ ] Practical timing advice with specific times; the planetary hour
+      named for the candidate instant only, never as a buffer or a
+      supportive window
 - [ ] Timing advice respects chronological order
 - [ ] Elected-act feasibility addressed when any candidate's clock
       time is incompatible with the activity
@@ -1321,7 +1333,8 @@ analysis following the 6-layer method.
 
 The election goal, querent's natal chart (when attached), candidate
 charts, and all supporting data are in the export. Treat any
-contextual notes as verified information about the querent's situation.
+contextual notes as the querent's own account of the situation: claims
+to weigh, not verified fact.
 
 Analyze each candidate through all six layers, then provide a clear
 recommendation with practical timing advice.
@@ -1344,8 +1357,9 @@ Additional context about the situation:
 - [CONTEXT 2]
 - [CONTEXT 3]
 
-Please provide a complete electional analysis. Use the additional
-context to inform your recommendation, letting the chart evidence lead.
+Please provide a complete electional analysis. Treat the additional
+context as my own account of the situation, not as verified fact, and
+apply any practical constraint in it before ranking the candidates.
 
 ---
 
