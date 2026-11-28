@@ -27,8 +27,8 @@ The installers do not carry the prompts.
 2. Find its prompt in the [usage map](USAGE_MAP.md), which lists every export and the prompt that
    reads it.
 3. In a new chat, paste the whole prompt, then the whole export, then a line or two saying what
-   you want. A few prompts ask for their Preamble and a template instead; each prompt's guide
-   says which.
+   you want. Three prompts (P12, P14 and P15) add one of their own templates after the whole
+   prompt; the usage map says how.
 4. Read the result with chapter 9 of the guide in mind: a reading is interpretation, not fact.
 
 ## The prompts
@@ -81,8 +81,8 @@ Each file name begins with the prompt's ID and ends with its version.
   files, or name your own folder in the request.
 - **The people in the examples are invented.** Eleanor Hartwell and Daniel Whitfield are the same
   invented charts the User Guide uses.
-- **Versions.** This is the library release of 2026-10-22, which matches AstroCast 1.7.0 and
-  later. The prompts are released as a set; when you update, replace the whole folder so the
+- **Versions.** This is the library release of 2026-11-28, which matches AstroCast 1.7.2; exports
+  from earlier versions are still read. The prompts are released as a set; when you update, replace the whole folder so the
   manifest, the usage map, the guides and the prompts agree. The Histories mention earlier
   versions and a `Prompts.zip`; those are kept by the maintainer and are not in this repository.
 

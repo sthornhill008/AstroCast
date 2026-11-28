@@ -1,8 +1,8 @@
 # P23 AstroCast_MedicalInterpretation_Prompt_V1_7 — User Guide
 
-Version: 1.1. Date: 2026-10-15.
+Version: 1.2. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Medical/P23_AstroCast_MedicalInterpretation_Prompt_V1_7.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions.
+Use the [complete current prompt](<../Medical/P23_AstroCast_MedicalInterpretation_Prompt_V1_7.md>), followed by the Medical export (Medical panel, **Export Medical Report (Markdown)**) and your request. A plain chart export is not enough: the prompt reads the Medical export's own sections. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions.
 
 ## Submission
 

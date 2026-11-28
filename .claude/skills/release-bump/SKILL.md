@@ -135,7 +135,7 @@ chore: bump version to 1.3.4
 Opens release 1.3.4. Follows <what landed just before, with commit hashes,
 and what it changed, in a sentence or two>.
 
-Verified on <Maple (Windows) | macOS>: <build scope> with <warning codes> the
+Verified on <the Windows machine | macOS>: <build scope> with <warning codes> the
 only warning code(s); AstroCast.Tests <n>/<n> and AstroCast.UiTests <m>/<m>
 after this bump. <N> csprojs, <4N> fields: three-component 1.3.4 <2N>,
 four-component 1.3.4.0 <2N>, 4/4 lines in each file; <both heads' copies |
