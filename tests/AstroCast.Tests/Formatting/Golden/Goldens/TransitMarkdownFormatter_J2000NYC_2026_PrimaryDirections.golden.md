@@ -490,5 +490,14 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 | 2026-09-05 | 26.68 | D | Sun | sqr dex | Saturn | 26°17′ | -0.2 | 2026-08-17 to 2026-09-25 |
 | 2026-10-26 | 26.82 | D | Ascendant | cnj | Neptune | 26°25′ | -3.1 | 2025-10-19 to 2027-11-01 |
 
+### Natures of the Promissor Stars
+
+| Star | Nature |
+|------|--------|
+| Capella | Mercury-Mars |
+| Sadalsuud | Saturn-Mercury |
+
+Ptolemaic planetary nature from Robson/classical sources.
+
 ---
 *Engine: AstroCast X.Y.Z (SwissEph VER)*

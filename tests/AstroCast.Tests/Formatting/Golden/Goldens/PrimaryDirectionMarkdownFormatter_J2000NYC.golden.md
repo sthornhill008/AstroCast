@@ -1059,5 +1059,66 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 
 ‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.
 
+### Natures of the Promissor Stars
+
+| Star | Nature |
+|------|--------|
+| Alcyone | Moon-Mars |
+| Aldebaran | Mars |
+| Algol | Saturn-Jupiter |
+| Algorab | Mars-Saturn |
+| Almach | Venus |
+| Alnilam | Jupiter-Saturn |
+| Alphard | Saturn-Venus |
+| Alphecca | Venus-Mercury |
+| Altair | Mars-Jupiter |
+| Antares | Mars-Jupiter |
+| Arcturus | Mars-Jupiter |
+| Bellatrix | Mars-Mercury |
+| Betelgeuse | Mars-Mercury |
+| Canopus | Saturn-Jupiter |
+| Capella | Mercury-Mars |
+| Castor | Mercury |
+| Deneb Adige | Venus-Mercury |
+| Deneb Algedi | Saturn-Jupiter |
+| Denebola | Saturn-Venus |
+| Difda | Saturn |
+| Dorsum | Saturn-Jupiter |
+| Etamin | Mars-Moon |
+| Fomalhaut | Venus-Mercury |
+| Hamal | Mars-Saturn |
+| Hyades | Saturn-Mercury |
+| Lesath | Mercury-Mars |
+| Markab | Mars-Mercury |
+| Mirach | Venus |
+| Nashira | Saturn-Jupiter |
+| North Asellus | Mars-Sun |
+| North Scale | Jupiter-Mercury |
+| Polaris | Saturn-Venus |
+| Pollux | Mars |
+| Praesepe | Mars-Moon |
+| Procyon | Mercury-Mars |
+| Ras Algethi | Mars |
+| Ras Alhague | Saturn-Venus |
+| Regulus | Mars-Jupiter |
+| Rigel | Jupiter-Saturn |
+| Sabik | Saturn-Venus |
+| Sadalmelek | Saturn-Mercury |
+| Sadalsuud | Saturn-Mercury |
+| Scheat | Mars-Mercury |
+| Sharatan | Mars-Saturn |
+| Sirius | Jupiter-Mars |
+| Skat | Saturn-Jupiter |
+| South Asellus | Mars-Sun |
+| South Scale | Saturn-Mars |
+| Spica | Venus-Mars |
+| Toliman | Venus-Jupiter |
+| Unukalhai | Saturn-Mars |
+| Vega | Venus-Mercury |
+| Vindemiatrix | Saturn-Mercury |
+| Zosma | Saturn-Venus |
+
+Ptolemaic planetary nature from Robson/classical sources.
+
 ---
 *Engine: AstroCast X.Y.Z (SwissEph VER)*

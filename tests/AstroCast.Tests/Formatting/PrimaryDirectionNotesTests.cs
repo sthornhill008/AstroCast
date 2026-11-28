@@ -196,6 +196,65 @@ public sealed class PrimaryDirectionNotesTests(EphemerisFixture fixture)
 
     #endregion
 
+    #region The natures of the promissor stars
+
+    /// <summary>The heading of the table of natures.</summary>
+    private const string NaturesHeading = "### Natures of the Promissor Stars";
+
+    /// <summary>
+    /// The whole-life report lists, after its table and footnotes, exactly the stars that occur as promissors among
+    /// its rows, each once with the catalog's nature, in name order; the Directions panel's list ends with the same
+    /// table.
+    /// </summary>
+    [Fact]
+    public void Report_ListsTheNaturesOfExactlyTheStarsAmongItsRows()
+    {
+        PrimaryDirectionResult result = Directions(J2000Nyc(), window: 4);
+        List<string> expected = [.. result.Hits
+            .Where(h => h.PromissorKind == PrimaryDirectionPromissorKind.FixedStar)
+            .Select(h => h.Promissor)
+            .Distinct()
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .Select(name => $"| {name} | {FixedStarCatalog.Stars.Single(s => s.DisplayName == name).Nature} |")];
+        expected.Should().NotBeEmpty();
+        expected.Should().Contain("| Alcyone | Moon-Mars |").And.Contain("| Capella | Mercury-Mars |");
+
+        List<string> report = Lines(PrimaryDirectionMarkdownFormatter.ToMarkdown(result, GoldenFixtures.GoldenClock()));
+        List<string> panel = Lines(PrimaryDirectionMarkdownFormatter.FormatTable(result));
+
+        foreach (List<string> lines in new[] { report, panel })
+        {
+            lines.Count(l => l == NaturesHeading).Should().Be(1);
+            int heading = lines.IndexOf(NaturesHeading);
+            heading.Should().BeGreaterThan(lines.FindIndex(l => l.StartsWith('\u2021')), "the natures follow the footnotes");
+            lines[heading - 1].Should().BeEmpty();
+            lines[heading + 1].Should().BeEmpty();
+            lines[heading + 2].Should().Be("| Star | Nature |");
+            lines.Skip(heading + 4).TakeWhile(l => l.StartsWith('|')).Should().Equal(expected);
+        }
+    }
+
+    /// <summary>
+    /// The transit report's section lists the natures of its own rows' stars: J2000 NYC's 2026 holds Capella and
+    /// Sadalsuud and no other star, and person A's 2026, with no star among its two rows, has no table.
+    /// </summary>
+    [Fact]
+    public void TransitReport_ListsTheNaturesOfItsOwnRowsStars_OrNoTable()
+    {
+        List<string> withStars = Lines(TransitReport(J2000Nyc(), new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31), window: 4));
+        List<string> withoutStars = Lines(TransitReport(Hartwell(), new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31), window: 4));
+
+        int heading = withStars.IndexOf(NaturesHeading);
+        heading.Should().BePositive();
+        withStars.Skip(heading + 4).TakeWhile(l => l.StartsWith('|'))
+            .Should().Equal("| Capella | Mercury-Mars |", "| Sadalsuud | Saturn-Mercury |");
+
+        withoutStars.Should().Contain(l => l.StartsWith("| 2026-02-20 | 78.38 | C | Sun | sqr dex | Neptune |", StringComparison.Ordinal));
+        withoutStars.Should().NotContain(NaturesHeading);
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>J2000 NYC.</summary>

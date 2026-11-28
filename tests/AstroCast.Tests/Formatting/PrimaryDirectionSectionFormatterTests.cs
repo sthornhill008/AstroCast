@@ -382,6 +382,64 @@ public sealed class PrimaryDirectionSectionFormatterTests
 
     #endregion
 
+    #region The natures of the promissor stars (branch DirectionNotes, 1.7.2)
+
+    /// <summary>
+    /// When a row's promissor is a fixed star, a short table follows the table and its footnotes: one row for each
+    /// such star, once, in name order, with the catalog's nature, and under it the catalog's own words for where
+    /// its natures come from. A body's row adds nothing to it.
+    /// </summary>
+    [Fact]
+    public void Table_WithStarPromissors_IsFollowedByTheirNaturesInNameOrder()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [Hit(star: "Regulus"), Hit(), Hit(star: "Alcyone", noRange: PrimaryDirectionGapReasons.BeyondAgeLimit), Hit(star: "Regulus")],
+            "Sub", "None.");
+
+        int footnote = lines.FindIndex(l => l.StartsWith('\u2021'));
+        footnote.Should().BePositive();
+        lines.Skip(footnote + 1).Take(9).Should().Equal(
+            "",
+            "### Natures of the Promissor Stars",
+            "",
+            "| Star | Nature |",
+            "|------|--------|",
+            "| Alcyone | Moon-Mars |",
+            "| Regulus | Mars-Jupiter |",
+            "",
+            "Ptolemaic planetary nature from Robson/classical sources.");
+        lines.Count(l => l == "### Natures of the Promissor Stars").Should().Be(1);
+    }
+
+    /// <summary>Each nature in the table is the one the catalog holds for the star, as the natal Fixed Stars table prints it.</summary>
+    [Fact]
+    public void StarNatures_AreTheCatalogsOwn()
+    {
+        List<PrimaryDirectionHit> hits = [.. FixedStarCatalog.Stars.Select(s => Hit(star: s.DisplayName))];
+
+        List<string> lines = Section(Result(), hits, "Sub", "None.");
+
+        int heading = lines.IndexOf("### Natures of the Promissor Stars");
+        List<string> rows = [.. lines.Skip(heading + 4).TakeWhile(l => l.StartsWith('|'))];
+        rows.Should().Equal(FixedStarCatalog.Stars
+            .OrderBy(s => s.DisplayName, StringComparer.Ordinal)
+            .Select(s => $"| {s.DisplayName} | {s.Nature} |"));
+        rows.Should().HaveCount(55);
+    }
+
+    /// <summary>Without a star among the rows' promissors no table of natures prints, and none after the none sentence.</summary>
+    [Fact]
+    public void Table_WithoutStarPromissors_HasNoNaturesTable()
+    {
+        Section(Result(), [Hit(), Hit(isTurning: true)], "Sub", "None.")
+            .Should().NotContain(l => l.Contains("Natures of the Promissor Stars", StringComparison.Ordinal));
+        Section(Result(), [], "Sub", "None.")
+            .Should().NotContain(l => l.Contains("Natures of the Promissor Stars", StringComparison.Ordinal));
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>The section's lines for a result and its hits.</summary>
@@ -412,14 +470,15 @@ public sealed class PrimaryDirectionSectionFormatterTests
         DateTime? rangeEnd = null,
         bool isTurning = false,
         PrimaryDirectionGapReasons noMonths = PrimaryDirectionGapReasons.None,
-        PrimaryDirectionGapReasons noRange = PrimaryDirectionGapReasons.None) => new()
+        PrimaryDirectionGapReasons noRange = PrimaryDirectionGapReasons.None,
+        string? star = null) => new()
     {
         IsTurning = isTurning,
         NoMonthsPerMinuteReasons = noMonths,
         NoRangeReasons = noRange,
         Significator = "Midheaven",
-        Promissor = "Moon",
-        PromissorKind = PrimaryDirectionPromissorKind.Body,
+        Promissor = star ?? "Moon",
+        PromissorKind = star is null ? PrimaryDirectionPromissorKind.Body : PrimaryDirectionPromissorKind.FixedStar,
         Aspect = aspect,
         AspectAngle = angle,
         Motion = PrimaryDirectionMotion.Direct,

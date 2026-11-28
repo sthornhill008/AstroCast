@@ -27,6 +27,13 @@ public static class FixedStarCatalog
     public const double DefaultOrb = 1.0;
 
     /// <summary>
+    /// Where the catalog's natures come from, in the words of <see cref="FixedStarEntry.Nature"/>'s own comment
+    /// (branch DirectionNotes, 1.7.2; finding A5): the primary directions exports print it, with a full stop,
+    /// under their table of the promissor stars' natures.
+    /// </summary>
+    public const string NatureSource = "Ptolemaic planetary nature from Robson/classical sources";
+
+    /// <summary>
     /// Chart point names in sort-priority order for output ordering.
     /// ASC and MC first, then planets in traditional order, then nodes and Chiron.
     /// </summary>

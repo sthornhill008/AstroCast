@@ -73,6 +73,12 @@ internal static class PrimaryDirectionSectionFormatter
     /// <summary>The words for a reason that is not said in a few plain ones: the general form.</summary>
     private const string NoDateWords = "has no date";
 
+    /// <summary>
+    /// The heading of the table of the promissor stars' natures (branch DirectionNotes, 1.7.2; finding A5),
+    /// printed after the table of hits and its footnotes when a printed row has a fixed star as its promissor.
+    /// </summary>
+    internal const string StarNaturesHeading = "### Natures of the Promissor Stars";
+
     /// <summary>The table's header, before the optional Range column.</summary>
     private const string TableHeader = "| Date (UTC) | Age | D/C | Significator | Aspect | Promissor | Arc | Months/min |";
 
@@ -135,8 +141,9 @@ internal static class PrimaryDirectionSectionFormatter
     /// The table's notes follow its rows (branch DirectionNotes, 1.7.2; finding A5), each after a blank line and
     /// only when a row among <paramref name="hits"/> calls for it: the dagger's footnote
     /// (<see cref="TurningFootnote"/>) when a row is turning, then the double dagger's
-    /// (<see cref="NoFigureFootnote"/>) when a row's missing figure has its reason. Nothing follows the none
-    /// sentence.
+    /// (<see cref="NoFigureFootnote"/>) when a row's missing figure has its reason, then the natures of the
+    /// promissor stars (<see cref="AppendStarNatures"/>) when a row's promissor is a fixed star. Nothing follows
+    /// the none sentence.
     /// </remarks>
     /// <param name="sb">The string builder to append to.</param>
     /// <param name="settings">The run's settings: the uncertainty decides the Range column.</param>
@@ -187,6 +194,48 @@ internal static class PrimaryDirectionSectionFormatter
             sb.AppendLine();
             sb.AppendLine(noFigure);
         }
+
+        AppendStarNatures(sb, hits);
+    }
+
+    /// <summary>
+    /// Appends the natures of the promissor stars (branch DirectionNotes, 1.7.2; finding A5), only when a hit
+    /// has a fixed star as its promissor: a blank line, the heading <see cref="StarNaturesHeading"/>, a blank
+    /// line, a table of Star and Nature with one row for each such star, once, in name order (ordinal), the
+    /// nature exactly as <see cref="FixedStarCatalog"/> holds it and as the natal Fixed Stars table prints it,
+    /// then a blank line and the catalog's own words for where its natures come from
+    /// (<see cref="FixedStarCatalog.NatureSource"/>) with a full stop. Only stars among the hits given are
+    /// listed, so a reading need not take a directed star's nature from memory. No blank line follows.
+    /// </summary>
+    /// <param name="sb">The string builder to append to.</param>
+    /// <param name="hits">The hits the table prints.</param>
+    /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
+    internal static void AppendStarNatures(StringBuilder sb, IReadOnlyList<PrimaryDirectionHit> hits)
+    {
+        ArgumentNullException.ThrowIfNull(sb);
+        ArgumentNullException.ThrowIfNull(hits);
+
+        // A promissor star is named by its catalog display name; a name the catalog does not hold has no
+        // nature to print and is left out
+        List<FixedStarEntry> stars = [.. hits
+            .Where(hit => hit.PromissorKind == PrimaryDirectionPromissorKind.FixedStar)
+            .Select(hit => hit.Promissor)
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal)
+            .Select(name => FixedStarCatalog.Stars.FirstOrDefault(star => string.Equals(star.DisplayName, name, StringComparison.Ordinal)))
+            .OfType<FixedStarEntry>()];
+        if (stars.Count == 0)
+            return;
+
+        sb.AppendLine();
+        sb.AppendLine(StarNaturesHeading);
+        sb.AppendLine();
+        sb.AppendLine("| Star | Nature |");
+        sb.AppendLine("|------|--------|");
+        foreach (FixedStarEntry star in stars)
+            sb.AppendLine($"| {star.DisplayName} | {star.Nature} |");
+        sb.AppendLine();
+        sb.AppendLine(FixedStarCatalog.NatureSource + ".");
     }
 
     /// <summary>
