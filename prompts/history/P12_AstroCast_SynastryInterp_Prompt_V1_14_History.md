@@ -1,10 +1,22 @@
 # P12 Revision History and Extracted Records
 
-Current release: 1.13 (2026-10-20). Previous release: 1.12 (2026-10-15).
+Current release: 1.14 (2026-11-28). Previous release: 1.13 (2026-10-20).
 
-Source: AstroCast_SynastryInterp_Prompt_V1_12.md (in Prompts.zip). The source remains unchanged.
+Source: P12_AstroCast_SynastryInterp_Prompt_V1_13.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. One of the review's findings (Q3) under Steve's ruling 6: one method everywhere, the whole prompt, then one template from its Chart Submission Templates section, then the export. Line numbers are v1.14's; the replaced v1.13 passages are in the v1.13 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v1.14, the documentation line links the V1_14 guide and history, the Version line reads 1.14 and the Date line 2026-11-28.
+- **:8, Compatible Export.** AstroCast 1.7.2; older exports lack nothing this prompt relies on.
+- **:87-92, Instructions (Q3).** The three steps: paste the whole prompt, add one template from the Chart Submission Templates section (Section 3), paste the export where the template indicates. v1.13 said "Copy the preamble (Section 1)" and "Add the submission template (Section 2)". Section 2 is the Compliance Gate, and the Preamble applies shared operating rules ("EVIDENTIARY FIREWALL: Apply Shared operating rules") that stand above Section 1, outside the block the user was told to copy.
+
+The User Guide 1.3 states the same method.
+
+Unchanged, by instruction: every other rule of v1.13, the templates' own wording included.
+
+## Previous changes — 1.13 (2026-10-20)
 
 Aligned with AstroCast 1.6.0 as landed (master `fe6e238`), whose synastry export, when both charts carry Ceres, Pallas, Juno, Vesta and Black Moon Lilith (the Points switch on), prints each person's five and their inter-chart contacts in a section of their own (branches Asteroids and AsteroidsExport). This is run 4 of 4 of the 1.6.0 library work, which it completes (Steve's decision L1: P12, P13, P16 and P17 here; runs 1 to 3 accepted). The decisions it rests on: topic 6d and L2, the shared block, drafted by Claude and approved by Steve, 2026-10-20 (`v160-shared-block.md` in the maintainer's archive, 37 lines, SHA-256 fc43adedaf8f4a2e7db64ba5f272fc747ce70fdf06ef427d8610722b027106d5; B below), pasted verbatim; and topic 6d's families (Steve, 2026-10-20): synastry reads each chart's five to the other's planets and angles, with a note on Juno (commitment and the terms of the bond) and Lilith (attraction, power and what each exposes in the other, never a prediction of infidelity). The truth, at fe6e238, under `tests\AstroCast.Tests\Formatting\Golden\Goldens\`: the golden `SynastryMarkdownFormatter_J2000_Secondary_MinorPoints.golden.md` (SG); and CLAUDE.md's *Minor points (asteroids and Lilith)* entry, its exports and Points row parts (CL); every quoted export value below is on the line cited, and a script checked each against its line. Line numbers are v1.13's; the replaced v1.12 passages follow as extracted records with their v1.12 line numbers. The changes:
 

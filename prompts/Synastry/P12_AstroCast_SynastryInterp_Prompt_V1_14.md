@@ -1,11 +1,11 @@
-# AstroCast — Synastry Interpretation Prompt — v1.13
+# AstroCast — Synastry Interpretation Prompt — v1.14
 
-**Operator documentation:** [P12 guide](<../guides/P12_AstroCast_SynastryInterp_Prompt_V1_13_UserGuide.md>) · [Revision history](<../history/P12_AstroCast_SynastryInterp_Prompt_V1_13_History.md>). These are optional references.
+**Operator documentation:** [P12 guide](<../guides/P12_AstroCast_SynastryInterp_Prompt_V1_14_UserGuide.md>) · [Revision history](<../history/P12_AstroCast_SynastryInterp_Prompt_V1_14_History.md>). These are optional references.
 
-**Version:** 1.13
-**Date:** 2026-10-20
+**Version:** 1.14
+**Date:** 2026-11-28
 **Target Audience:** General audience with basic astrology interest; not professional astrologers
-**Compatible Export:** AstroCast synastry export, AstroCast 1.6.0 (older synastry exports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0 and 1.5.0; v1.0.101+; Relationship field optional)
+**Compatible Export:** AstroCast synastry export, AstroCast 1.7.2 (older synastry exports still read, and nothing this prompt relies on is missing from them; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on; earlier exports: AstroCast 1.3.4, 1.4.0, 1.5.0 and 1.6.0 to 1.7.1; v1.0.101+; Relationship field optional)
 
 ---
 
@@ -84,9 +84,12 @@ interested in astrology but not a professional astrologer.
 
 ## Instructions
 
-1. Copy the preamble (Section 1) into the AI chat
-2. Add the submission template (Section 2)
-3. Paste your AstroCast synastry Markdown export where indicated
+1. Paste this whole prompt into the AI chat: every section, so the
+   shared operating rules above the Preamble go with it
+2. Add one template from the Chart Submission Templates section
+   (Section 3)
+3. Paste your AstroCast synastry Markdown export where the template
+   indicates
 4. The AI will produce a synthesized synastry interpretation
 
 **Tip:** If the chart exports include Note fields with biographical

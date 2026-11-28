@@ -1,8 +1,8 @@
-# P12 AstroCast_SynastryInterp_Prompt_V1_13 — User Guide
+# P12 AstroCast_SynastryInterp_Prompt_V1_14 — User Guide
 
-Version: 1.2. Date: 2026-10-20.
+Version: 1.3. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Synastry/P12_AstroCast_SynastryInterp_Prompt_V1_13.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.13 reads the asteroids and Lilith in both charts and between them when the export carries them; the revision history lists the changes.
+Use the [complete current prompt](<../Synastry/P12_AstroCast_SynastryInterp_Prompt_V1_14.md>): paste the whole of it, then one template from its Chart Submission Templates section (Section 3), with the Synastry export pasted where the template says. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.14 corrects the prompt's own Instructions, which told you to copy only its Preamble and pointed to the wrong section for the templates; nothing else changed. The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
