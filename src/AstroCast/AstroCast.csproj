@@ -15,6 +15,14 @@
     <Description>AstroCast — Astrological Chart Calculator</Description>
     <ApplicationIcon>..\..\AstroCast.ico</ApplicationIcon>
     <!--
+      The Windows application manifest: UTF-8 as the process's code page, so the
+      ephemeris folder's path reaches the Swiss Ephemeris library whole whatever
+      letters the profile or the chosen install folder holds (branch EphePath,
+      1.7.2; finding N4). It repeats the default manifest's one entry (asInvoker)
+      and sets no display-scaling value. See app.manifest.
+    -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!--
       Mapsui.Wpf 5.0.2 transitively references legacy .NET Framework-only packages
       (OpenTK, OpenTK.GLWpfControl, SkiaSharp.Views.WPF) that are optional fallbacks
       not exercised when the WPF+Skia renderer is used. Suppress the NU1701 noise

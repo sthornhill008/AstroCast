@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+  <!--
+    The Windows head's application manifest (branch EphePath, 1.7.2; finding N4).
+
+    WHY IT EXISTS: activeCodePage. The Swiss Ephemeris library takes its ephemeris folder as a C string
+    (swe_set_ephe_path) and opens its files through its own C runtime, both in the process's ANSI code
+    page. The folder is the program's own plus "ephe", and the per-user install puts the program under
+    the Windows profile, or in a folder the user chose. Without this entry a letter the system's code
+    page cannot hold (a Polish, Greek or Japanese name on a Western system) was replaced on the way, the
+    library looked in a folder that does not exist, and no chart could be cast. With UTF-8 as the
+    process's code page every path survives, and the marshalling in SwissEphInterop carries it unchanged.
+    Windows 10 version 1903 and later honour the entry; an earlier Windows ignores it and behaves as
+    before.
+
+    WHAT MUST STAY: the trustInfo block is the whole of the default manifest the build embedded until
+    1.7.2 (asInvoker, no UI access); it is repeated here because a manifest of our own replaces the
+    default one. Removing activeCodePage brings the fault back. No display-scaling (DPI) setting belongs
+    here: WPF sets its own, and changing it is finding N25, not this branch.
+  -->
+  <assemblyIdentity version="1.0.0.0" name="AstroCast" />
+
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
+    <security>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <activeCodePage xmlns="http://schemas.microsoft.com/SMI/2019/WindowsSettings">UTF-8</activeCodePage>
+    </windowsSettings>
+  </application>
+</assembly>
