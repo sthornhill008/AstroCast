@@ -1,7 +1,7 @@
 # AstroCast Prompt Library Guide
 
-*For the prompt library release of 2026-10-22 (manifest 2026-10-22, shared contract 1.0), which
-matches AstroCast 1.7.0 and later.*
+*For the prompt library release of 2026-11-28 (manifest 2026-11-28, shared contract 1.0), which
+matches AstroCast 1.7.2; exports from earlier versions are still read.*
 
 AstroCast calculates; it does not interpret. Every report it writes is a plain Markdown file of
 positions, aspects, dignities and timings. The prompt library is the other half: thirty prompts,
@@ -86,11 +86,11 @@ Every reading follows the same four steps.
    named file and a layout it specifies; some assistants produce one, others return the text.
    Either is fine. Chapter 6 says what to look for and where to keep the result.
 
-Three prompts work a little differently: for **P12** (synastry), **P14** (electional) and **P15**
-(horary) you paste the prompt's *Preamble* section rather than the whole file, then one of the
-prompt's own submission templates, with the export where the template says. Chapter 5 shows the
-difference. And the three **medical** prompts, P23, P24 and P25, are for education and research
-only, and your request says so; chapter 5 has that too.
+Three prompts add a step: for **P12** (synastry), **P14** (electional) and **P15** (horary) you
+paste the whole prompt, as for the others, then one of the prompt's own submission templates,
+with the export where the template says. Chapter 5 shows the steps. And the three **medical**
+prompts, P23, P24 and P25, are for education and research only, and your request says so;
+chapter 5 has that too.
 
 Each prompt sets the length of what comes back, and your request can override it ("Use 1,500
 words maximum" is a line the prompts understand). P01, the full natal reading, aims at 4,000 to
@@ -225,14 +225,14 @@ The **Universal Submission Wrapper**, also in `helpers/`, is the shorter alterna
 that holds the assistant to the prompt's own method, subject and output, with one line for your
 overrides and one for the export.
 
-### The three preamble-and-template prompts
+### The three prompts with their own templates
 
-**P12** (synastry), **P14** (electional) and **P15** (horary) are submitted in two pieces rather
-than whole. Each says so in its *Instructions* section:
+**P12** (synastry), **P14** (electional) and **P15** (horary) are submitted whole, like every
+other prompt, and then with one of their own templates. Each says so in its *Instructions* section:
 
-1. Copy the prompt's **Section 1, Preamble** — the long block that begins the numbered sections —
-   into the chat. It is the complete instruction to the assistant; the sections after it are the
-   prompt's reference material and its templates.
+1. Paste the **whole prompt** into the chat: every section, from its first line. The shared rules
+   at its head belong to the instruction, and its Preamble relies on them, so nothing is left
+   out.
 2. Add one of the prompt's **submission templates** from its *Chart Submission Templates* section
    (a standard submission, one with context or focus areas, and for P14 and P15 a quick
    judgment).
@@ -451,8 +451,8 @@ line follows the chart's type: Born, Event or Asked. Reads the five in their rel
 
 ### Relationships
 
-**P12 — Synastry** [`Synastry/`]. Reads the Synastry export of two people. Submitted as the
-Preamble plus a template (chapter 5). Both people with balanced attention and the direction of
+**P12 — Synastry** [`Synastry/`]. Reads the Synastry export of two people. Submitted whole,
+with one of its own templates (chapter 5). Both people with balanced attention and the direction of
 each contact kept straight; research names both in third person. Reads both people's five and the
 contacts between them.
 
@@ -474,18 +474,18 @@ Chapter 8.1 walks through making one from a Transit Timeline's recommended date.
 
 ### Events, questions and elections
 
-**P16 — Event Chart** [`Event_Type_A/`]. Reads the Chart export of an event (Type Event, or one
-of the named kinds). Routes the event as personal, institutional or mundane before it writes, and
+**P16 — Event Chart** [`Event_Type_A/`]. Reads the Chart export of an event (Type Event; name
+the kind of event in the chart's Notes or in your request). Routes the event as personal, institutional or mundane before it writes, and
 keeps its conclusions to the event. Sets the five aside.
 
 **P15 — Horary** [`Horary/`]. Reads the Chart export of a horary chart (Type Horary, the question
-in the Horary Question section). Submitted as the Preamble plus a template. A judgment after Lilly
+in the Horary Question section). Submitted whole, with one of its own templates. A judgment after Lilly
 and Goldstein-Jacobson: significators, reception, perfection and its impediments, and a qualified
 answer; not a personality reading. The prompt reads the engine's own horary analysis lines from the
 export (perfection, application, the stationing planets). Never carried.
 
-**P14 — Electional** [`Election/`]. Reads the Election panel's Electional Report. Submitted as the
-Preamble plus a template. Ranks the candidate moments and recommends one, after applying your
+**P14 — Electional** [`Election/`]. Reads the Election panel's Electional Report. Submitted
+whole, with one of its own templates. Ranks the candidate moments and recommends one, after applying your
 real-world constraints — a valid answer is that no candidate is feasible. The goal, type, range,
 constraints and natal chart are all in the report's header. Never carried.
 
@@ -706,8 +706,23 @@ Both files can be titled "Primary Directions Report". Check the header, not the 
 | Aspect | Conjunction, opposition, sextile, square or trine (sinister or dexter), antiscion or contra-antiscion |
 | Promissor | What reaches it: a planet, Chiron, the True Node, or one of the catalogue's 55 stars |
 | Arc | The arc of direction in degrees |
-| Months/min | How many months the date moves for each minute of birth time, with a sign: `-3.0` means a birth one minute later brings the date about three months earlier |
-| Range | Only with an Uncertainty set: the earliest and latest dates within it |
+| Months/min | How many months the date moves for each minute of birth time, with a sign: `-3.0` means a birth one minute later brings the date about three months earlier. A dash (`— ‡`) where there is no figure |
+| Range | Only with an Uncertainty set: the dates at that many minutes either side of the birth time. A dash (`— ‡`) where the direction does not exist at one end of that window |
+
+**The marks under the table (AstroCast 1.7.2).** A figure may carry a mark, and a footnote under
+the table explains it. A double dagger beside a dash (`— ‡`) means the figure is missing, and the
+footnote gives the reason, for example
+`‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.`
+A dagger after a value (`-0.2 †`) marks a row whose date *turns* within the birth-time window:
+for that row the Range does not bound the date and the Months/min is not a rate, so neither can
+be used to correct the birth time. The test behind the dagger marks a row only when its own date
+falls outside the dates it compares, so an unmarked row is not proved free of a turn. An export
+from before 1.7.2 prints a bare dash and marks no row.
+
+**The natures of the stars (AstroCast 1.7.2).** When a listed direction is from a fixed star, a
+table follows the footnotes, `### Natures of the Promissor Stars`, giving each such star once with
+its traditional planetary nature (Capella, Mercury-Mars). P03, P28 and P29 take a promissor
+star's nature from this table and state none for an export that has no such table.
 
 **What P29 writes.** It does not read all 500 rows. It takes, in order: directions to the angles
 and the lights; among those the conjunctions, then the hard aspects of Saturn, Mars, Jupiter and
@@ -761,9 +776,13 @@ developments with no date are no use here.
    `Rectification events: married, 1972-06-10; mother died, 1988-11-02; moved abroad, 1994-03-15`
 
    (Dated events already in the chart's Notes are read too.)
-3. Read Section 6 of the reading, *Rectification Notes*. For each event it names the directions
-   whose meaning fits and whose date lies near, and the correction each implies, with the
-   arithmetic shown.
+3. Read Section 6 of the reading, *Rectification Notes*. For each event it chooses one working
+   match, the direction whose meaning fits and whose date lies nearest, and sets them out in an
+   events table with the correction each implies and one event worked through as arithmetic.
+   With three or more events that give a figure it adds a figure, "How much the result moves"
+   (one point for each event, in minutes of birth time either side of the recorded time), and a
+   second table, "Competing matches", with the next most plausible direction for each event. It
+   closes with one sentence of result.
 4. If the notes propose a correction, test it: change the birth time on the Chart panel by that
    many minutes, **Calculate & Save** under a new name (a chart saved under a changed name is a
    new chart, so the original is kept), run the directions again and see whether the *other*
@@ -773,7 +792,8 @@ developments with no date are no use here.
 
 > correction in minutes = (event date − listed date, in months) ÷ Months/min
 
-A positive result means a later birth, a negative one an earlier birth. An invented example: the
+A month here is 30.43685 days (365.2422 ÷ 12), the unit the export's Months/min uses. A positive
+result means a later birth, a negative one an earlier birth. An invented example: the
 Midheaven's conjunction with the Moon is listed for 2016-03-26 with Months/min `-3.0`. An event
 that fits it happened on 2016-09-26, six months later. 6 ÷ −3.0 = −2: the event implies a birth
 two minutes earlier. Mind the sign: a negative Months/min means a later birth brings the date
@@ -791,8 +811,24 @@ two minutes earlier. Mind the sign: a negative Months/min means a later birth br
   set: either the fit is wrong or the estimate was too narrow.
 - **A dash gives no figure.** Where Months/min shows `—`, the direction cannot be used for
   arithmetic.
+- **A marked row is never a working match.** A row with a dagger (`†`) gives no figure and no
+  range test. And where the events disagree by more than the Range allows, P29 says so rather
+  than force a fit, since an unmarked row may still turn.
 - **A corrected time is a hypothesis.** The reading says so every time, and gives it as
   something to test against further events, never as the birth time.
+
+**Three requests.** `No chart` leaves the figure out and keeps the tables. `Include the
+trial-shift check` adds a small table: with the working matches held fixed, the mean gap in days
+between the events and their directions at trial shifts of −1, −0.5, 0, +0.5 and +1 minute. It
+must be computed by code; an assistant that cannot run code says so and gives no figures, and
+the check describes the matches already chosen, so it tests nothing. `Rectification only` gives a
+short report that is the rectification section and little else: a title page, a note on the
+method and the birth time, Section 6, and the acknowledgements.
+
+**A public figure's events.** If you add `Use public biographical knowledge` for a public figure,
+or ask the assistant to research the person's events, dated events it finds count as supplied
+events. Each must be verified and cited, in a numbered list of sources after the tables; an
+event it cannot verify is left out, and the section says so.
 
 **Without events.** If you supply none, Section 6 explains the column and points to the
 directions that move most with the time, the angles first and then the Part of Fortune, so you
@@ -847,7 +883,7 @@ words.
 
 ## 10. Versions, and keeping up to date
 
-**Every prompt carries its version in its file name** (`_v3_7`, `_V1_13`, `_1_6`) and in its
+**Every prompt carries its version in its file name** (`_v3_7`, `_V1_14`, `_1_7`) and in its
 header, with its date and the AstroCast release whose export it was written against
 (`**Compatible Export:** AstroCast Chart Markdown Export, AstroCast 1.6.0`). Older exports are
 still read: a prompt written for 1.6.0 reads a 1.3.4 export, and simply finds no asteroids
@@ -858,7 +894,8 @@ a section an older prompt does not know, and the prompt will set it aside.
 the release it matches, and what changed in the latest release of the library. The library is
 released as a set, dated, when AstroCast's exports change or when a reading rule is settled; the
 2026-10-22 release matched AstroCast 1.7.0 and added P30 for the Davison export new in that
-version. When a prompt changes, its file name changes with it, the previous file is kept in the
+version, and the 2026-11-28 release matches AstroCast 1.7.2 and gives fifteen prompts a new
+version, for that release's exports and after a review of the whole library. When a prompt changes, its file name changes with it, the previous file is kept in the
 project's archive, and its History records what moved and why.
 
 **The Histories** (`prompts/history/`) are for whoever maintains the library: each lists the
@@ -889,7 +926,7 @@ Export PDF. (From the usage map, `prompts/USAGE_MAP.md`, which is kept with the 
 | Chart | Calculate & Save (or Load), then Save Markdown | Chart (Type: Birth) | P01 (full natal reading), P02 (shorter natal reading), P26 (factual chart PDF), P27 (chart wheel) |
 | Export | Export JSON | Chart JSON | P26, P27 |
 | Chart | Type: Horary, with the Horary Question's Category and Question; Calculate & Save, then Save Markdown | Horary chart | P15 |
-| Chart | Type: Event, or a named kind (Wedding / Marriage, Surgery and the rest); Calculate & Save, then Save Markdown | Event chart | P16 (the event's own chart), P25 (decumbiture), P27 |
+| Chart | Type: Event; name the kind in Notes or in the request; Calculate & Save, then Save Markdown | Event chart | P16 (the event's own chart), P25 (decumbiture), P27 |
 | Synastry | Calculate Synastry, then Export Synastry MD | Synastry (two people) | P12, P27 |
 | Synastry | Calculate Synastry with an event chart as one of the two, then Export Synastry MD | Synastry, Type B (an event to a natal chart) | P17 |
 | Synastry | Calculate Composite, then Export Composite MD | Composite | P13, P27 |
