@@ -245,6 +245,75 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
 - House system: pass the chart's system to `swe_houses()` (`'P'` for Placidus, the default; `HouseSystem`)
 - True Node (not Mean Node): use `SE_TRUE_NODE`
 - Body constants: SE_SUN=0, SE_MOON=1, SE_MERCURY=2, ..., SE_PLUTO=9, SE_TRUE_NODE=11, SE_CHIRON=15
+- **The ephemeris path on Windows** (branch EphePath, 1.7.2; finding N4 of the 1.7.2 code audit, Steve's
+  ruling 5: both parts in 1.7.2). The library takes its folder as a C string: the eleven imports of
+  `SwissEphInterop.cs` are `CharSet.Ansi`, so on Windows the path is written in the process's ANSI code page,
+  and the library (`swedll64.dll`, its C runtime linked in) reads it, and opens its files, in the same one.
+  The folder is the program's own plus `ephe`, so it holds the Windows profile's name or the folder the user
+  chose. Until 1.7.2 the process's code page was the system's: a letter it cannot hold was replaced on the
+  way, the library looked in a folder that does not exist, and every chart failed at Chiron while the Sun to
+  Pluto still answered from the library's built-in model with a log warning only. Measured on Maple (code
+  page 1252) with `master`'s published CLI copied into five folders: `Jose Muller` and `José Müller` read
+  Chiron; `Łukasz` reached the library as `Lukasz`, `Ελένη` as `?????` and `太郎` as `??`, and each run ended
+  with an unhandled exception. macOS is not affected (the marshalling there is UTF-8).
+  - *The method: UTF-8 as the process's code page, by manifest.* The WPF head and the CLI each carry an
+    application manifest (`src/AstroCast/app.manifest`, `src/AstroCast.Cli/app.manifest`, named by
+    `<ApplicationManifest>` in each csproj) whose `activeCodePage` is `UTF-8`. Windows 10 version 1903 and
+    later then give the process UTF-8 as its ANSI code page: the marshaller writes the path in UTF-8, the
+    library reads it back whole, and nothing in the interop changed, so a path that survived before reaches
+    the same folder as before. With it the CLI reads Chiron (11°37′03″ Sagittarius) from all five folders.
+    The folder's short (8.3) path was weighed and not taken: short names are a setting of each volume (on
+    for `C:` and `D:` on Maple), a folder made while they are off has none, and it needs new interop code.
+  - *What must not be undone.* Each manifest's `activeCodePage` entry: removing it brings the fault back.
+    Each manifest's `trustInfo` block (`asInvoker`, no UI access): it is the whole of the default manifest
+    the build embedded until 1.7.2, repeated because a manifest of the project's own replaces the default.
+    `CharSet.Ansi` on the imports: it is what becomes UTF-8. And no display-scaling (DPI) setting is added
+    to either manifest: WPF sets its own, and changing it is finding N25, for 1.8.0. The Avalonia head's own
+    `app.manifest` holds its DPI settings and was not changed; that head is not shipped on Windows.
+  - *What the manifest does not reach:* a process that is not one of the two programs (the test host,
+    `dotnet AstroCast.Cli.dll`, PowerShell loading the Core DLL, the Avalonia head run on Windows, a later
+    MCP server until it has the entry too) and a Windows before 10 version 1903. There the fault is as it
+    was, and the start-up check below says so in plain words.
+  - *Nothing else depends on the code page:* the eleven imports are the only `CharSet.Ansi` in `src`; the
+    CLI sets `Console.OutputEncoding` to UTF-8 itself; SQLite, Serilog, QuestPDF with Skia, and NodaTime
+    take paths and text as Unicode or UTF-8. Microsoft's documentation of `activeCodePage` notes that GDI
+    does not honour it per process; the heads draw their text through WPF and Skia, which take Unicode.
+- **The start-up check of the ephemeris files** (`EphemerisFilesCheck`, `Core/Services`; branch EphePath,
+  1.7.2; finding N4, part 2). Directly after it makes its `EphemerisService`, each program calls
+  `EphemerisFilesCheck.Run(ephemeris, folder, logger)`: it reads Chiron's position at J2000.0
+  (JD 2451545.0) by `CalculatePosition` and discards it. Chiron, because it has no built-in model: a
+  position of the Sun is answered without the files. It catches `EphemerisCalculationException` only,
+  changes no chart and keeps nothing; in the sandbox's two starts of the Windows head it took 12 ms and
+  11 ms.
+  - *The log:* `Ephemeris files check passed for {folder} in {n} ms` (Information), or `Ephemeris files
+    check failed for {folder}` with the exception (Error); the folder is its full path.
+  - *The message,* returned when the read fails and built in the one place
+    (`EphemerisFilesCheck.FailureMessage`): `AstroCast cannot read its ephemeris files in {folder}. Charts
+    cannot be calculated until this is fixed. ` and then the cause with its remedy. When the folder's path
+    does not survive the process's code page (`SurvivesTheCodePage`: the path to the bytes the library is
+    handed and back, `Marshal.StringToHGlobalAnsi` and `PtrToStringAnsi`, compared ordinally): `The
+    folder's name has letters outside your Windows language's character set: install AstroCast in a folder
+    with a plain name.` Otherwise: `The files may be missing or damaged: install AstroCast again.` It names
+    the folder and no file.
+  - *How each program shows it,* as it shows its other start-up problems, and then stops: the WPF head a
+    message box titled `AstroCast — Startup Error`, then `Shutdown(1)`; the Avalonia head standard error and
+    its start-up `MessageWindow` (see *Head Parity*), exit code 1; the CLI `ERROR: {message}` and exit code
+    1. When the check passes the CLI prints `Ephemeris files read from: {folder}`.
+  - *Tests.* `WindowsManifestTests` (6 names: each of the two projects names its manifest, sets UTF-8 and
+    keeps `asInvoker`, read from the source) and `EphemerisFilesCheckTests` (8 names, in the "Ephemeris"
+    collection: the suite's folder passes and is logged; a folder with no files fails with the files
+    message; on Windows a copy of the suite's files in a folder named with Polish, Greek and Japanese
+    letters fails in the test host with the name message, or passes where the host's code page is UTF-8; the
+    two messages; all three programs call the one check after they make the service). No test can show
+    Chiron read from such a folder: the test host has no manifest. That is shown on the built programs: the
+    CLI from the five folders, and the installed Windows head in Windows Sandbox from
+    `C:\Łukasz Ελένη 太郎\AstroCast\` (system code page 1252), whose log reads `Ephemeris files check passed
+    for C:\Łukasz Ελένη 太郎\AstroCast\ephe in 12 ms`. The released 1.7.1 starts from the same folder and
+    logs nothing of the fault.
+  - *A test that points the library elsewhere puts it back.* The library keeps one ephemeris path for the
+    whole process and is closed once, by the fixture. A test that makes an `EphemerisService` over another
+    folder is in the "Ephemeris" collection, disposes nothing, and ends by making one over the suite's own
+    `ephe` folder, then reads Chiron through the shared fixture.
 
 ## Astrological Calculation Rules
 
@@ -1994,12 +2063,15 @@ on what a `Button` is.
   2026-11-28; then branch DirectionNotes (2026-11-28), finding A5 of the code audit: a primary direction
   whose date turns is marked, a missing Range says why, and the natures of the promissor stars are listed
   (see *Primary directions* and *Primary directions export* above), with the medical export's "Not medical
-  advice" line moved into its header; made on Maple, and with the two footnote wordings of Steve's rulings of
-  2026-11-28 merged into `master` locally on `469f6ef` that day, not yet pushed; then branch WindowsFit
+  advice" line moved into its header, and the two footnote wordings of Steve's rulings of 2026-11-28 on
+  `469f6ef`; then branch WindowsFit
   (2026-11-28), four things a Windows user meets: the Saved Charts buttons kept in view beside a long row
   (A9; see *Head Parity*), the no-key message naming the key file's path (A7; see *Base Map*), and the
-  installer remembering its folder and filling in the Apps entry (A6, N3, N19; see *Versioning*); made on
-  Maple, awaiting its landing.
+  installer remembering its folder and filling in the Apps entry (A6, N3, N19; see *Versioning*); both made
+  on Maple, landed together on `ff85374` and pushed on 2026-11-28; then branch EphePath (2026-11-28), finding
+  N4 of the code audit, the last code branch of the 1.7.2 plan: the ephemeris folder's path reaches the
+  library whole on Windows, and each program checks its ephemeris files at start-up and says plainly when
+  they cannot be read (see *Swiss Ephemeris Conventions*); made on Maple, awaiting its landing.
 - **Landed for 1.3.4:** every code branch, D, G, F, O-D3, R2, R3, H, K2, L2, L3, O-6 and O-8,
   then Docs-2; the prompt library's pass followed the tag.
 - **In 1.3.5:** branch Licence, AstroCast under the AGPL with an About window in both heads; the
@@ -2062,8 +2134,9 @@ on what a `Button` is.
     between samples and an ingress and return within one day are not seen; a station's
     before/beyond flag uses the detector's slowest-day date; the timeline's Events table sorts
     an ingress at 12:00 of its date; and the span-edge noon fallback.
-- **Total tests:** 4612 in `tests/AstroCast.Tests` and 149 in
-  `tests/AstroCast.UiTests` at WindowsFit, all passing on Windows (4604 and 146 at DirectionNotes, 4563 and
+- **Total tests:** 4626 in `tests/AstroCast.Tests` and 149 in
+  `tests/AstroCast.UiTests` at EphePath, all passing on Windows (4612 and 149 at WindowsFit, 4604 and 146 at
+  DirectionNotes, 4563 and
   146 at ExportText, 4504 and 146 at ReturnAges, 4476 and
   146 at StaleResults and 4411 and 145 at InputChecks, on Windows too; 4297 and 145 at SvgExclude,
   all passing on macOS; 4296 and 145 at Fixtures
