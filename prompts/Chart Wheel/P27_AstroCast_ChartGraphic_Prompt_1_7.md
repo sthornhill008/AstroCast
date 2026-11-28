@@ -1,16 +1,18 @@
-# AstroCast Universal Chart Graphic Prompt — v1.6
+# AstroCast Universal Chart Graphic Prompt — v1.7
 
-**Operator documentation:** [P27 guide](<../guides/P27_AstroCast_ChartGraphic_Prompt_1_6_UserGuide.md>) · [Revision history](<../history/P27_AstroCast_ChartGraphic_Prompt_1_6_History.md>). These are optional references.
+**Operator documentation:** [P27 guide](<../guides/P27_AstroCast_ChartGraphic_Prompt_1_7_UserGuide.md>) · [Revision history](<../history/P27_AstroCast_ChartGraphic_Prompt_1_7_History.md>). These are optional references.
 
-**Version:** 1.6
-**Date:** 2026-10-20
-**Compatible Export:** AstroCast chart, relocation, synastry, composite, return, transit, event and electional exports, AstroCast 1.6.0 (older exports from the same families still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on)
+**Version:** 1.7
+**Date:** 2026-11-28
+**Compatible Export:** AstroCast chart, relocation, synastry, composite, return, transit, event and electional exports, AstroCast 1.7.2 (older exports from the same families still read, and nothing this prompt relies on is missing from them; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on)
 
 ## Purpose and defaults
 
-Produce two pages per chart: **page 1 full chart with wheel, built-in positions/cusps panel and aspect grid; page 2 enlarged wheel detail**. No separate tabular report or interpretation. Default theme: black-and-white. These page and theme defaults apply consistently throughout. A one-page, grid-detail, or alternate-theme version requires an explicit override. Electional candidates each receive a labeled two-page pair.
+Produce two pages per chart: **page 1 full chart with wheel, built-in positions/cusps panel and aspect grid; page 2 enlarged wheel detail**. No separate tabular report or interpretation. Default theme: black-and-white. The black-and-white default is the theme of the chart drawing itself (the wheel, its panel and its grid); the page around it, with its headings, rules and footer, follows PDF style and delivery below. These page and theme defaults apply consistently throughout. A one-page, grid-detail, or alternate-theme version requires an explicit override. Electional candidates each receive a labeled two-page pair.
 
-Filename: `{Name}_ChartGraphic{AI}.pdf`; synastry `{PersonA}_{PersonB}_SynastryGraphic{AI}.pdf`; returns `{Name}_{ReturnType}{Year}_Graphic{AI}.pdf`; electional `{Goal}_ElectionalGraphic{AI}.pdf`. Use the matching interpretation's directory, or an explicit operator path; if neither is known, state the chosen workspace output path. Sanitize filename-invalid characters without changing displayed identities.
+**Single image (on request).** When the operator asks for a `"Single image"`, deliver in place of the PDF one square PNG, 1600 × 1600 pixels, of the full chart: the page-1 chart (wheel, built-in positions/cusps panel and aspect grid) placed unstretched and centred on a white square, its aspect lines coloured by aspect type (the renderer's light colour theme, never a dark one) and everything else as the default. The size is chosen for forums and social sites: it stays sharp at twice the width such pages usually show an image, and it is under the 2048-pixel edge at which the larger sites downscale an upload. Show the chart's name as the export gives it, in a title line above the chart, unless the request says to leave it off ("no name"); then no name appears anywhere in the image, the renderer's own title included. A small credit line stands at the foot of the image: "Created by {AI} with data from AstroCast". An export with several charts (electional candidates) gets one image for each. The two-page PDF remains the default, and the single image is never added to it unasked.
+
+Filename: `{Name}_ChartGraphic{AI}.pdf`; synastry `{PersonA}_{PersonB}_SynastryGraphic{AI}.pdf`; returns `{Name}_{ReturnType}{Year}_Graphic{AI}.pdf`; electional `{Goal}_ElectionalGraphic{AI}.pdf`; the single image `{Name}_ChartImage{AI}.png`, or `ChartImage{AI}.png` when the name is left off. Use the matching interpretation's directory, or an explicit operator path; if neither is known, state the chosen workspace output path. Sanitize filename-invalid characters without changing displayed identities.
 
 ## Input integrity
 
@@ -77,13 +79,15 @@ For page 1 use `ChartDrawer.generate_svg_string`; page 2 uses `generate_wheel_on
 
 ## Geometry and conversion
 
-Read each SVG's actual viewBox or width/height. Rasterize with a single target dimension or compute the other from that ratio; never force a landscape full chart into a square. Fit within the available page rectangle using `scale = min(available_width / svg_width, available_height / svg_height)`. Center without cropping labels. Keep wheel-only output square only when its actual SVG is square.
+Read each SVG's actual viewBox or width/height. Rasterize with a single target dimension or compute the other from that ratio; never force a landscape full chart into a square. Fit within the available page rectangle using `scale = min(available_width / svg_width, available_height / svg_height)`. Center without cropping labels. Keep wheel-only output square only when its actual SVG is square. The single image is the one square output of a full chart: fit the unstretched chart inside the square by the same scale rule and leave the rest of the canvas white.
 
 Resolve CSS variables using the renderer. If conversion fails on CSS rgb syntax, inspect and normalize supported forms rather than assuming a simple three-integer regex fixes every color. Verify that labels, aspect glyphs and cusps survive conversion; retain the SVG as a diagnostic artifact.
 
 ## PDF style and delivery
 
-PDF is the default unless the operator explicitly chooses another format. Use US Letter, 0.75-inch margins, a white background, navy #1B2A4A headings, gold #C5A55A rules, near-black #1A1A1A body, and optional cream #F0EDE4 alternating table rows. Use a readable serif body near 10.5pt/15pt leading and sans-serif headings. Wrap every table cell in a styled paragraph; repeat table headers across pages. Keep headings with following content; check widows/orphans, page bounds, and glyph coverage. Use ASCII apostrophes/quotes for minutes/seconds with fonts lacking prime glyphs. Visually inspect every page. Every page has a numbered footer, "Created by {AI} with data from AstroCast". The last page includes the current prompt name/version, actual generation date, model and export version (or "unavailable"). If PDF generation is unavailable, state the limitation and request a format choice rather than silently substituting text.
+PDF is the default unless the operator explicitly chooses another format; the single image is the one other format this prompt defines. Use US Letter, 0.75-inch margins, a white background, navy #1B2A4A headings, gold #C5A55A rules, near-black #1A1A1A body, and optional cream #F0EDE4 alternating table rows. Use a readable serif body near 10.5pt/15pt leading and sans-serif headings. Wrap every table cell in a styled paragraph; repeat table headers across pages. Keep headings with following content; check widows/orphans, page bounds, and glyph coverage. Use ASCII apostrophes/quotes for minutes/seconds with fonts lacking prime glyphs. Visually inspect every page. Every page has a numbered footer, "Created by {AI} with data from AstroCast". The last page includes the current prompt name/version, actual generation date, model and export version (or "unavailable"). If PDF generation is unavailable, state the limitation and request a format choice rather than silently substituting text.
+
+**What may be delivered.** One of four things, and nothing else: the two-page PDF; the single image, when asked for; when the drawing tools cannot be run in this session, a complete script that draws the chart from the export's values, for the operator to run, marked as not run; or a plain statement that the chart cannot be drawn here, with the reason. Never deliver a wheel drawn freehand, with glyphs and lines placed by eye instead of computed from the export's values by a tested renderer, and never one made by an image generator: either looks like a chart and is not one.
 
 ## Internal checks
 

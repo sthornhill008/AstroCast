@@ -1,8 +1,8 @@
-# P27 AstroCast_ChartGraphic_Prompt_1_6 — User Guide
+# P27 AstroCast_ChartGraphic_Prompt_1_7 — User Guide
 
-Version: 1.2. Date: 2026-10-20.
+Version: 1.3. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Chart Wheel/P27_AstroCast_ChartGraphic_Prompt_1_6.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.6 draws the asteroids and Lilith on each chart whose export carries them; the revision history lists the changes.
+Use the [complete current prompt](<../Chart Wheel/P27_AstroCast_ChartGraphic_Prompt_1_7.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions. Version 1.7 adds a single image on request and says what an assistant may deliver when it cannot draw; the revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
@@ -10,7 +10,7 @@ On the Chart panel, in the Houses section, tick **Points**, "Include asteroids a
 
 ## Submission
 
-Supply the complete current prompt and matching export. Specify any page/theme/output variant. The interpretive research preset is not applicable. Validate exact chart time, roles, settings and source-to-renderer agreement.
+Supply the complete current prompt and matching export. Specify any page/theme/output variant. The default is a two-page PDF in black and white. Ask for a "Single image" to get instead one square PNG (1600 × 1600 pixels, sized for forums and social sites) of the full chart with coloured aspect lines, the chart's name above it and a small credit line below; add "no name" to leave the name off. An assistant that cannot run the drawing tools should give you a script to run or say plainly that it cannot draw the chart: a wheel drawn freehand or by an image generator is not a chart, and the prompt forbids both. The interpretive research preset is not applicable. Validate exact chart time, roles, settings and source-to-renderer agreement.
 
 ## Family scope
 

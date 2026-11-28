@@ -1,17 +1,33 @@
 # P27 Revision History and Extracted Records
 
-Current release: 1.6 (2026-10-20). Previous release: 1.5 (2026-10-15).
+Current release: 1.7 (2026-11-28). Previous release: 1.6 (2026-10-20).
 
-Source: AstroCast_ChartGraphic_Prompt_1_5.md (in Prompts.zip). The source remains unchanged.
+Source: P27_AstroCast_ChartGraphic_Prompt_1_6.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. One item of the run's list B, the single-image option, as Steve's ruling 10 sets it, and one of the review's findings (Q18), which the ruling joins to it. Line numbers are 1.7's; the replaced 1.6 passages are in the 1.6 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v1.7, the documentation line links the 1_7 guide and history, the Version line reads 1.7 and the Date line 2026-11-28.
+- **:7, Compatible Export.** AstroCast 1.7.2; older exports lack nothing this prompt relies on.
+- **:11, Purpose and defaults (Q18).** One sentence on what the black-and-white default covers: the chart drawing itself, not the page around it, whose navy and gold are set under PDF style and delivery. 1.6 stated the theme two ways.
+- **:13, Single image (ruling 10), new.** On the request "Single image": one square PNG of the full chart (wheel, positions and cusps panel, aspect grid) with coloured aspect lines, the chart's name in a title line unless the request says "no name", a small credit line at the foot, one image for each chart of a several-chart export. The size is 1600 × 1600 pixels, this run's choice: sharp at twice the width a forum or social page usually shows an image, and under the 2048-pixel edge at which the larger sites downscale an upload. The two-page PDF stays the default.
+- **:15, Filename (ruling 10).** `{Name}_ChartImage{AI}.png`, or `ChartImage{AI}.png` when the name is left off.
+- **:82, Geometry (ruling 10).** The single image is the one square output of a full chart: the unstretched chart fitted inside the square, the rest of the canvas white. The rule against forcing a landscape chart into a square stands.
+- **:88, :90, PDF style and delivery (Q18).** The single image is the one other format the prompt defines. A new paragraph, What may be delivered: the PDF, the single image when asked for, a script marked as not run, or a plain statement that the chart cannot be drawn; never a wheel drawn freehand or made by an image generator. 1.6 required working drawing tools and said nothing for an assistant without them.
+
+The User Guide 1.3 gives the request, what comes back, and what to expect from an assistant that cannot draw.
+
+Unchanged, by instruction: every other rule of 1.6.
+
+## Previous changes — 1.6 (2026-10-20)
 
 Aligned with AstroCast 1.6.0 as landed (master `fe6e238`), whose exports carry Ceres, Pallas, Juno, Vesta and Black Moon Lilith, the mean lunar apogee, when its Points switch is on (branches Asteroids, AsteroidsExport, AsteroidsTiming and AsteroidsPanel). This is run 1 of 4 of the 1.6.0 library work (Steve's decision L1, 2026-10-20: P01, P02, P26 and P27 here). The decisions it rests on: L3 (Steve, 2026-10-20), P27 adds the five to Kerykeion's active points when the export carries them, their drawn positions compared with the export like every body's; and Claude's default for this run, which Steve may overrule: P27 draws and never interprets, so it carries no shared block. The truth, at fe6e238, under `tests\AstroCast.Tests\Formatting\Golden\Goldens\`: the golden `ChartMarkdownFormatter_ToMarkdown_J2000NYC_MinorPoints.golden.md` (G) and the golden `ChartJsonFormatter_ToJson_J2000NYC_MinorPoints.golden.json` (J); and CLAUDE.md's *Minor points (asteroids and Lilith)* entry with its Points row part (CL); every quoted export value below is on the line cited, and a script checked each against its line. Line numbers are 1.6's; the replaced 1.5 passages follow as extracted records with their 1.5 line numbers. The changes:
 
 - **:1, :3, :5, :6, header.** The title reads v1.6, the documentation line links the 1_6 guide and history, the Version line reads 1.6 and the Date line 2026-10-20 (Extract 1).
 - **:7, Compatible Export.** AstroCast 1.6.0, the same families of export; older exports from them still read, and the asteroids and Lilith appear only in exports from 1.6.0 made with the Points switch on (CL :227-229; CL :354-361) (Extract 1).
 - **:17, Input integrity.** The words "its node the True Node and no Lilith" now read as P26 3.5's: its node the True Node; Black Moon Lilith, when the export carries it, the mean lunar apogee (G :51; CL :219-220 and :222-223), in the `## Asteroids and Lilith` section in Markdown (G :49) and the `minorPoints` array in JSON (J :188), never the true or osculating apogee; the five's aspects the five Ptolemaic aspects at 2°, to the Sun through Pluto, the Ascendant and the Midheaven only (G :51; CL :239-244); a chart's own aspects and a comparison's orbs as before (Extract 2).
-- **:59, Rendering implementation.** P26 3.5's paragraph (L3): `Ceres`, `Pallas`, `Juno`, `Vesta` and `Mean_Lilith`, Kerykeion v5's names, never `True_Lilith`, added to the active points when the export carries the five, their drawn positions compared with the export as every body's; their aspect lines and grid cells only those the export lists (G :65-71); if the installed Kerykeion cannot restrict them so, the five drawn without aspect lines and the delivery note saying so (P27 makes no separate table, so its fallback ends there). No Kerykeion is installed on Maple, so this run could not test whether v5 can restrict them. Nothing was replaced.
+- **:59, Rendering implementation.** P26 3.5's paragraph (L3): `Ceres`, `Pallas`, `Juno`, `Vesta` and `Mean_Lilith`, Kerykeion v5's names, never `True_Lilith`, added to the active points when the export carries the five, their drawn positions compared with the export as every body's; their aspect lines and grid cells only those the export lists (G :65-71); if the installed Kerykeion cannot restrict them so, the five drawn without aspect lines and the delivery note saying so (P27 makes no separate table, so its fallback ends there). No Kerykeion is installed on the Windows machine, so this run could not test whether v5 can restrict them. Nothing was replaced.
 - **:74, Chart routing.** After the table and its paragraph: each chart whose export section carries the five draws them; synastry, each person's from that person's own `## Asteroids and Lilith` section (G :49; CL :289-290, the embedded charts carry the section); composite, the composite five from the supplied section, drawn from the supplied positions as the composite's other positions are (CL :284-289); a chart whose export prints no such section draws none. No row of the table changed. Nothing was replaced.
 - **:92, Internal checks.** As P26 3.5's: the five's drawn positions compared with the export, as every body's (L3). Nothing was replaced.
 
