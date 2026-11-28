@@ -1,12 +1,12 @@
-# AstroCast Directions Interpretation Prompt — v1.4
+# AstroCast Directions Interpretation Prompt — v1.5
 
-**Operator documentation:** [P28 guide](<../guides/P28_AstroCast_DirectionsInterp_Prompt_V1_4_UserGuide.md>) · [Revision history](<../history/P28_AstroCast_DirectionsInterp_Prompt_V1_4_History.md>). These are optional references.
+**Operator documentation:** [P28 guide](<../guides/P28_AstroCast_DirectionsInterp_Prompt_V1_5_UserGuide.md>) · [Revision history](<../history/P28_AstroCast_DirectionsInterp_Prompt_V1_5_History.md>). These are optional references.
 
-**Version:** 1.4
-**Date:** 2026-10-22
+**Version:** 1.5
+**Date:** 2026-11-28
 **Method:** Tyl-centred (Tyl / Ebertin / Hand / Greene / Sasportas / Forrest / Galenic Medical)
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Solar Arc Report, Secondary Progressions Report, Solar Arc and Progressions Report, Primary Directions Report, Solar Arc and Primary Directions Report, Progressions and Primary Directions Report, or Solar Arc, Progressions and Primary Directions Report, AstroCast 1.6.0 (older directions reports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on) — a report of a period, its header carrying a `**Report Period:**` line, whose `**Techniques:**` line names Solar Arcs, Secondary Progressions, Primary Directions, or any of them, and not Transits (earlier exports: AstroCast 1.5.0, the same reports without the asteroids and Lilith; AstroCast 1.4.0, the first three titles). A report whose Techniques line names Transits is read with P03, the Transit Interpretation prompt; the whole-life Primary Directions Report, whose header carries a `**Span:**` line, is read with P29, the Primary Directions prompt. Neither is read with this one.
+**Compatible Export:** AstroCast Solar Arc Report, Secondary Progressions Report, Solar Arc and Progressions Report, Primary Directions Report, Solar Arc and Primary Directions Report, Progressions and Primary Directions Report, or Solar Arc, Progressions and Primary Directions Report, AstroCast 1.7.2 (older directions reports still read; in the Primary Directions section the `†` and `‡` marks with their footnotes and the `### Natures of the Promissor Stars` table print only from AstroCast 1.7.2, so an older export shows a bare `—` where a figure is missing and gives no nature for a promissor star; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on) — a report of a period, its header carrying a `**Report Period:**` line, whose `**Techniques:**` line names Solar Arcs, Secondary Progressions, Primary Directions, or any of them, and not Transits (earlier exports: AstroCast 1.6.0 to 1.7.1, the same reports without the marks, the footnotes and the natures table; AstroCast 1.5.0, the same reports without the asteroids and Lilith; AstroCast 1.4.0, the first three titles). A report whose Techniques line names Transits is read with P03, the Transit Interpretation prompt; the whole-life Primary Directions Report, whose header carries a `**Span:**` line, is read with P29, the Primary Directions prompt. Neither is read with this one.
 
 ---
 
@@ -231,7 +231,14 @@ the aspect, `cnj`, `opp`, or `sxt`, `sqr` or `tri` with `sin` or
 `dex`, or `antiscion` or `contra-antiscion`; the promissor, the body,
 node, Chiron or star that touches it; the arc; Months/min, the months
 the date moves for one minute of birth time; and the Range, the dates
-at the set uncertainty either way. A report of primary directions
+at the set uncertainty either way. From AstroCast 1.7.2 a figure may
+carry a mark, explained in a footnote under the table: a dagger
+(`-0.2 †`) on a row whose date turns within the birth-time window, so
+that its Range does not bound its date and its Months/min is not a
+rate; and a double dagger beside a dash (`— ‡`) where a figure is
+missing, with the reason. When a printed row's promissor is a fixed
+star, a `### Natures of the Promissor Stars` table follows the
+footnotes, one row for each such star. A report of primary directions
 alone carries the header lines `**Aspects:** Primary directions: majors`
 and `**Techniques:** Primary Directions` and the title
 `# Primary Directions Report`, which the whole-life report also
@@ -248,8 +255,9 @@ and `### Progressed Hits to the Asteroids and Lilith`; in the solar arcs,
 and `### Solar Arc Hits to the Asteroids and Lilith`.
 
 **Seven reports, one prompt.** A report holds the sections its
-Techniques line names, in the order solar arcs, progressions, primary
-directions: read each one present. Without progressions, mark the
+Techniques line names, in the order the export prints them, secondary
+progressions, solar arcs, primary directions: read each one present.
+Without progressions, mark the
 progressed-Moon and progressed-body sections of the output N/A, say in
 the overview that the report carries no progressions, and do not infer
 the progressed Moon. Without solar arcs, mark the solar arc sections
@@ -394,7 +402,10 @@ report holds them:
   fixed star act by conjunction only: supporting testimony, weaker than
   a body's own contact, a star read by its attributed nature and never
   as a prediction of catastrophe (the Fixed Star Lore Policy below
-  applies). The aspect's `sin` or `dex` (sinister or dexter) is a
+  applies). A promissor star's nature is the one the export's
+  `### Natures of the Promissor Stars` table gives; for an export
+  without that table, state no nature for a promissor star and say the
+  export gives none. The aspect's `sin` or `dex` (sinister or dexter) is a
   nuance at most; never reverse a direction's meaning on it.
 - **With the solar arcs.** A primary direction and a solar arc to the
   same natal point in the period are two motions agreeing, not one
@@ -738,7 +749,15 @@ Check the **Birth Time Source** field:
   is not formed a minute either side of the birth, or a Part of Fortune
   direction changes sect). The Range column, when present, gives the
   dates at the set uncertainty either way (`2025-10-19 to 2027-11-01`),
-  or `—` on the same two conditions. Directions to the angles and the
+  or `—` when the direction is not formed at one end of that window,
+  or a Part of Fortune direction changes sect there. From AstroCast
+  1.7.2 such a `—`, in either column, carries a double dagger (`— ‡`)
+  and a footnote under the table gives the reason, for example
+  `‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.`;
+  an older export prints the bare `—`, read the same way. A row whose
+  figures each carry a dagger (`-0.2 †`) is one whose date turns
+  within the birth-time window: read that direction by its year and
+  take no timing from either figure. Directions to the angles and the
   Part of Fortune move most, those to the Sun and Moon least (`-0.2`
   for the Sun's square from Saturn): time an angle direction by season
   in the prose, and list it in Sections 6 and 9 with the export's date,
@@ -825,7 +844,7 @@ When the chart is quiet, do not pad to reach a minimum.
 | # | Section | Target length | Purpose |
 |---|---------|---------------|---------|
 | T | Title Page | — | Report title ("Solar Arc Directions", "Secondary Progressions" or "Directions and Progressions" as the export's title says; with primary directions, "Primary Directions" or the export's own combination, such as "Solar Arc and Primary Directions"), chart holder name, report period, natal data line, Report Generated date, "Created by {AI} with data from AstroCast" attribution, birth time caveat when applicable. |
-| 1 | The Year's Shape — Opening Overview | 150–250 words | Warm summary of the period's major themes. Name the 2–3 hits that matter most, with their dates. Say which techniques the report holds. When Interpretation Context provided, frame through it. When Sensitive-Period Framing activates, name the configuration briefly. |
+| 1 | The Year's Shape — Opening Overview | 150–250 words | Warm summary of the period's major themes. Name the 2–3 hits that matter most, with their dates. When the period holds no hit (each hits table prints its "none" sentence), say so and read the aspects in orb at the report start instead; press no dated hit out of a period that has none. Say which techniques the report holds. When Interpretation Context provided, frame through it. When Sensitive-Period Framing activates, name the configuration briefly. |
 | 2 | The Directions — Solar Arcs | 500–1,200 words | One subsection per significant direction or cluster, angles first, then the hard aspects, then the rest; each weaves the natal promise, the need, the life domain, the dated hit or its distance from exact, shadow-and-growth. Omitted when the report holds no solar arc section. |
 | 2A | Health and Constitutional Timing | 250–400 words | Included ONLY when Layer 7 activated. Opens with constitutional temperament and the mandatory basis note; covers health-significant directions by body region; closes with the note repeated. |
 | 3 | Hidden Pictures — Midpoint Directions | 200–400 words | The midpoint hits of the period not already woven into Section 2, read as three-body pictures in plain language, Sun/Moon and angle pictures first. Omitted when the report holds no solar arc section. |
@@ -836,7 +855,7 @@ When the chart is quiet, do not pad to reach a minimum.
 | 7 | Synthesis — Pulling It Together | 200–350 words | Step back; describe the overall arc; what life is asking. Return to Interpretation Context when present. **Name any technique convergences per the Techniques-Convergence Synthesis Rule with counts.** |
 | 8 | Three-Sentence Portrait | — | Exactly three vivid, specific, memorable sentences that capture the essence of this period. |
 | 9 | Key Directions and Contextual Events | Reference table | Two-column table: direction, progression or primary direction with its date, contextual interpretation. Ordered chronologically; aspects in orb without a hit in the period grouped at the end with "before" or "after". Named convergences noted in the contextual column. |
-| 10 | Fixed Stars Referenced | Reference table | Every fixed star mentioned in the body, its nature, and its significance. |
+| 10 | Fixed Stars Referenced | Reference table | Every fixed star mentioned in the body, its nature, and its significance. A promissor star's nature is the one in the export's Natures of the Promissor Stars table; where the export has no such table its nature cell reads "not given in the export". |
 | 11 | Glossary of Terms | Reference section, topic-grouped | Curated definitions of technical terms used in the body. |
 | 12 | Methodological Acknowledgements | — | Brief closing colophon naming the astrological traditions synthesized. Styled in smaller or lighter font than body text. |
 

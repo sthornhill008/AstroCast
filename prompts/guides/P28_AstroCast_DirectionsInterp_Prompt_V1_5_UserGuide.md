@@ -1,8 +1,8 @@
-# P28 AstroCast_DirectionsInterp_Prompt_V1_4 — User Guide
+# P28 AstroCast_DirectionsInterp_Prompt_V1_5 — User Guide
 
-Version: 1.4. Date: 2026-10-22.
+Version: 1.5. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Directions/P28_AstroCast_DirectionsInterp_Prompt_V1_4.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Version 1.4 counts a primary direction toward the Sensitive-Period Framing protocol's fourth trigger as it counts a solar arc or a progression; the revision history lists the changes.
+Use the [complete current prompt](<../Directions/P28_AstroCast_DirectionsInterp_Prompt_V1_5.md>), followed by the report (a Transits-panel report made without Transits; see below) and your request. All operational rules are embedded in that file. Version 1.5 reads the reports of AstroCast 1.7.2: the marks and footnotes of the Primary Directions table, and the export's own table of star natures. When a period holds no exact hit the reading now says so and reads the aspects in orb at the report's start. The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
@@ -13,6 +13,8 @@ In the Transits panel (Transits & Progressions), set the Start Date and End Date
 Press **Calculate**, then **Export Report MD**. The file and its title name the techniques: `{Name}_SolarArcs_{Start}_{End}.md` ("# Solar Arc Report"), `{Name}_Progressions_{Start}_{End}.md` ("# Secondary Progressions Report"), `{Name}_SolarArcsProgressions_{Start}_{End}.md` ("# Solar Arc and Progressions Report"), and with primary directions `{Name}_PrimaryDirections_{Start}_{End}.md` ("# Primary Directions Report"), `_SolarArcsPrimaryDirections_`, `_ProgressionsPrimaryDirections_` or `_SolarArcsProgressionsPrimaryDirections_`. The header carries a `**Report Period:**` line, and its `**Techniques:**` line names the techniques without Transits. **Export Timeline MD** and the Daily Horoscope's export are disabled for these reports. A report produced with Transits checked is a Transit Report and is read with P03.
 
 Do not confuse a report of primary directions alone with the Directions panel's whole-life list: both are titled "# Primary Directions Report", but the whole-life list (**Export Directions MD**, on the Directions panel or in the Export panel's **Primary Directions** group, file `{Name}_PrimaryDirections_0-100.md`) carries a `**Span:**` line instead of a report period, and is read with P29.
+
+From AstroCast 1.7.2 a figure in the Primary Directions table may carry a mark: a dagger (†) on a row whose date turns within the birth-time window, and a double dagger (‡) beside a dash where a figure is missing, each explained in a footnote under the table. When a listed direction is from a fixed star, a `### Natures of the Promissor Stars` table follows; the reading takes a promissor star's nature from it and, for an older export without it, states none.
 
 A longer period suits these reports: the directions move about a degree a year, so a year or two shows several exact hits where a month may show none.
 
