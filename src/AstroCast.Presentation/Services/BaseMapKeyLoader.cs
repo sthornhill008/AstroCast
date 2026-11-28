@@ -80,18 +80,28 @@ public static class BaseMapKeyLoader
     }
 
     /// <summary>
+    /// The full path of the override file for a data directory: the file <see cref="Load"/> reads first, and
+    /// the one place a user's own key belongs (branch WindowsFit, 1.7.2; finding A7). The no-key message names
+    /// it (<see cref="BaseMapSettings.NoKeyMessageFor"/>). The file is not opened, and need not exist.
+    /// </summary>
+    /// <param name="dataDirectory">The app's data directory; null for none.</param>
+    /// <returns>
+    /// The directory's full path joined with <see cref="OverrideFileName"/>, or null when
+    /// <paramref name="dataDirectory"/> is null, empty or white space.
+    /// </returns>
+    public static string? OverrideFilePath(string? dataDirectory) =>
+        string.IsNullOrWhiteSpace(dataDirectory)
+            ? null
+            : Path.Combine(Path.GetFullPath(dataDirectory), OverrideFileName);
+
+    /// <summary>
     /// Reads the override file in <paramref name="dataDirectory"/>, if there is one.
     /// </summary>
     /// <returns>The trimmed key, or null when the file is absent, empty or unreadable.</returns>
     private static string? ReadOverrideFile(string? dataDirectory)
     {
-        if (string.IsNullOrWhiteSpace(dataDirectory))
-        {
-            return null;
-        }
-
-        string path = Path.Combine(dataDirectory, OverrideFileName);
-        if (!File.Exists(path))
+        string? path = OverrideFilePath(dataDirectory);
+        if (path is null || !File.Exists(path))
         {
             return null;
         }

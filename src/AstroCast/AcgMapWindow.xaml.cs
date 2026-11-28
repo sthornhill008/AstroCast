@@ -137,10 +137,11 @@ public partial class AcgMapWindow : Window
         // The legend is added once: RefreshMap replaces layers, never widgets.
         AcgMapControl.Map.Widgets.Enqueue(CreateLegend());
 
-        // With no key there is no base map, and a line under the legend says so.
+        // With no key there is no base map, and a line under the legend says so, and where the
+        // key file goes (finding A7).
         if (_baseMapKey is null)
         {
-            AcgMapControl.Map.Widgets.Enqueue(CreateNoKeyNotice());
+            AcgMapControl.Map.Widgets.Enqueue(CreateNoKeyNotice(dataDirectory));
         }
 
         // Initial render if data is already available (the typical entry path
@@ -412,12 +413,13 @@ public partial class AcgMapWindow : Window
 
     /// <summary>
     /// Build the one-line notice shown under the legend when there is no key
-    /// (<see cref="BaseMapSettings.NoKeyMessage"/>), in the legend's style with
-    /// dark-red text.
+    /// (<see cref="BaseMapSettings.NoKeyMessageFor"/>: the no-key line and where the key file
+    /// goes, the same words in both heads), in the legend's style with dark-red text.
     /// </summary>
-    private static TextBoxWidget CreateNoKeyNotice() => new()
+    /// <param name="dataDirectory">The app's data directory, as the window was given it; null for none.</param>
+    private static TextBoxWidget CreateNoKeyNotice(string? dataDirectory) => new()
     {
-        Text = BaseMapSettings.NoKeyMessage,
+        Text = BaseMapSettings.NoKeyMessageFor(dataDirectory),
         TextSize = 12,
         TextColor = Color.FromArgb(255, 139, 0, 0), // DarkRed
         BackColor = Color.FromArgb(220, 255, 255, 255),

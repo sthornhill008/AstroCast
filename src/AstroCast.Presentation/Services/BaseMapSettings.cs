@@ -55,10 +55,36 @@ public static class BaseMapSettings
     public const string CartoAttributionUrl = "https://carto.com/attribution/";
 
     /// <summary>
-    /// The one line a map window shows under its legend when there is no key, in place of
-    /// the base map.
+    /// What a map window says under its legend when there is no key, in place of the base
+    /// map: the opening of <see cref="NoKeyMessageFor"/>, and the whole of it when the window
+    /// was given no data directory.
     /// </summary>
     public const string NoKeyMessage = "Base map unavailable: no CARTO key";
+
+    /// <summary>
+    /// The one line a map window shows under its legend when there is no key (branch
+    /// WindowsFit, 1.7.2; finding A7): <see cref="NoKeyMessage"/>, then where the key file
+    /// goes, "Base map unavailable: no CARTO key. Put your key in a text file named
+    /// carto-key.txt at: {full path}", the path being the one
+    /// <see cref="BaseMapKeyLoader"/> itself reads for the window's data directory
+    /// (<see cref="BaseMapKeyLoader.OverrideFilePath"/>). Both heads build the line here, so
+    /// both print the same words. Until 1.7.2 the line was <see cref="NoKeyMessage"/> alone,
+    /// and a user had to find the folder from the guide.
+    /// </summary>
+    /// <remarks>
+    /// The loader reads from two places, the override file and the key built into the app at
+    /// build time; only the first is a user's to fill, so that is the one named. No key file
+    /// is opened to build the line, and no key is ever part of it.
+    /// </remarks>
+    /// <param name="dataDirectory">The app's data directory, as the window was given it; null for none.</param>
+    /// <returns>
+    /// The line, or <see cref="NoKeyMessage"/> alone when <paramref name="dataDirectory"/> is
+    /// null, empty or white space and there is no place to name.
+    /// </returns>
+    public static string NoKeyMessageFor(string? dataDirectory) =>
+        BaseMapKeyLoader.OverrideFilePath(dataDirectory) is string path
+            ? $"{NoKeyMessage}. Put your key in a text file named {BaseMapKeyLoader.OverrideFileName} at: {path}"
+            : NoKeyMessage;
 
     /// <summary>The largest zoom level <see cref="TileUrl"/> accepts.</summary>
     private const int MaxZoomLevel = 30;

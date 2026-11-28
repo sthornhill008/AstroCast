@@ -246,6 +246,44 @@ public sealed class AcgMapWindowTests
         window.Close();
     }
 
+    /// <summary>
+    /// With no key and a data folder, the one line under the legend also says where the key file goes
+    /// (branch WindowsFit, 1.7.2; finding A7): the words are <see cref="BaseMapSettings.NoKeyMessageFor"/>'s
+    /// for the folder the window was given, ending in the file the loader reads, and the line still starts
+    /// under the legend at its left edge.
+    /// </summary>
+    [AvaloniaFact]
+    public async Task MapWindow_WithNoKeyAndADataFolder_SaysWhereTheKeyFileGoes()
+    {
+        string dataDirectory = Path.Combine(Path.GetTempPath(), "astrocast-acgmap-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(dataDirectory);
+        try
+        {
+            using RecordingTileHandler handler = new();
+            using HttpClient client = new(handler);
+            (AcgMapWindow window, MapControl map) = Show(client, () => null, dataDirectory);
+
+            await Pump(() => false, TimeSpan.FromSeconds(2));
+
+            string expected = "Base map unavailable: no CARTO key. Put your key in a text file named carto-key.txt at: "
+                + Path.Combine(dataDirectory, "carto-key.txt");
+            Assert.Equal(expected, BaseMapSettings.NoKeyMessageFor(dataDirectory));
+            TextBoxWidget legend = Legend(map);
+            TextBoxWidget notice = Assert.Single(map.Map.Widgets.OfType<TextBoxWidget>(), w => w.Text == expected);
+            Assert.Empty(handler.Requests);
+            MRect legendEnvelope = Assert.IsType<MRect>(legend.Envelope);
+            MRect noticeEnvelope = Assert.IsType<MRect>(notice.Envelope);
+            Assert.True(noticeEnvelope.MinY >= legendEnvelope.MaxY, "The no-key line is not under the legend.");
+            Assert.Equal(legendEnvelope.MinX, noticeEnvelope.MinX, 6);
+
+            window.Close();
+        }
+        finally
+        {
+            Directory.Delete(dataDirectory, recursive: true);
+        }
+    }
+
     #region Helpers
 
     /// <summary>
