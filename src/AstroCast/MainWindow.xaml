@@ -2696,9 +2696,24 @@
                 </Grid>
 
                 <!-- Charts ListView -->
+                <!--
+                    A row with buttons never scrolls sideways (branch WindowsFit, 1.7.2;
+                    finding A9). With a ListView's default horizontal scrolling each row
+                    is measured with unlimited width: the star column took the full
+                    length of the longest name, place or keyword line, the Auto column
+                    with Load and Delete was placed after it, and Stretch made every row
+                    as wide as the widest, so one saved chart with a long place put the
+                    buttons of every row past the pane's edge, behind a scroll bar. With
+                    horizontal scrolling disabled each row gets the viewport's width, the
+                    Auto column keeps the buttons in view, and the star column takes the
+                    rest: each of its three lines is trimmed with an ellipsis and carries
+                    its full text as its tooltip. The Avalonia head's ListBox never
+                    scrolled sideways; it has the same ellipsis and tooltips.
+                -->
                 <ListView ItemsSource="{Binding SavedCharts}"
                           SelectionMode="Single"
-                          HorizontalContentAlignment="Stretch">
+                          HorizontalContentAlignment="Stretch"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border BorderBrush="#FFDDDDDD"
@@ -2713,14 +2728,20 @@
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="{Binding Name}"
                                                    FontWeight="SemiBold"
-                                                   FontSize="13" />
+                                                   FontSize="13"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding Name}" />
                                         <!-- The type by name, the place and the reading as typed (1.4.0, E3-6). -->
                                         <TextBlock FontSize="11" Foreground="#FF666666"
-                                                   Text="{Binding Converter={StaticResource DisplayTextConverter}}" />
+                                                   Text="{Binding Converter={StaticResource DisplayTextConverter}}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding Converter={StaticResource DisplayTextConverter}}" />
                                         <TextBlock Text="{Binding Keywords}"
                                                    FontSize="10"
                                                    Foreground="#FF999999"
-                                                   FontStyle="Italic">
+                                                   FontStyle="Italic"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding Keywords}">
                                             <TextBlock.Style>
                                                 <Style TargetType="TextBlock">
                                                     <Setter Property="Visibility" Value="Visible" />

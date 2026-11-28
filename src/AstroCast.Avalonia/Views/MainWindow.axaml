@@ -3491,17 +3491,33 @@
                                     Padding="4,6">
                                 <Grid ColumnDefinitions="*,Auto">
 
+                                    <!--
+                                        A row with buttons never scrolls
+                                        sideways (branch WindowsFit, 1.7.2;
+                                        finding A9). The ListBox does not
+                                        scroll horizontally, so the star
+                                        column takes what the buttons leave;
+                                        each of the three lines is trimmed
+                                        with an ellipsis and carries its full
+                                        text as its tooltip, as in the WPF
+                                        head. Until 1.7.2 a long line was cut
+                                        mid-word with nothing to show for it.
+                                    -->
                                     <StackPanel Grid.Column="0">
                                         <TextBlock Text="{Binding Name}"
                                                    FontWeight="SemiBold"
-                                                   FontSize="13" />
+                                                   FontSize="13"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding Name}" />
                                         <!--
                                             The type by name, the place and the
                                             reading as typed (1.4.0, E3-6):
                                             DisplayText.SavedChartDetail.
                                         -->
                                         <TextBlock FontSize="11" Foreground="#FF666666"
-                                                   Text="{Binding Converter={StaticResource DisplayTextConverter}}" />
+                                                   Text="{Binding Converter={StaticResource DisplayTextConverter}}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding Converter={StaticResource DisplayTextConverter}}" />
                                         <!--
                                             WPF hides this with two DataTriggers,
                                             one for {x:Null} and one for "".
@@ -3513,6 +3529,8 @@
                                                    FontSize="10"
                                                    Foreground="#FF999999"
                                                    FontStyle="Italic"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding Keywords}"
                                                    IsVisible="{Binding Keywords,
                                                        Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                                     </StackPanel>

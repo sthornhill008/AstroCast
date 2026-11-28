@@ -190,6 +190,81 @@ public sealed class SavedChartsPaneTests
     }
 
     /// <summary>
+    /// A saved chart with a long name, a long place line and long keywords keeps its Load and Delete buttons
+    /// inside the list, at the size the window opens with and at its minimum size, and each of the row's three
+    /// lines is trimmed with an ellipsis and carries its full text as its tooltip (branch WindowsFit, 1.7.2;
+    /// finding A9).
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The fault was the WPF head's: its list scrolled sideways, so one long row pushed every row's buttons
+    /// past the pane's edge. This head's <c>ListBox</c> never scrolled sideways, so its buttons were already
+    /// in view and a long line was simply cut; the ellipsis and the tooltip are what this branch adds here,
+    /// so both heads read alike. A row with buttons never scrolls sideways in either head.
+    /// </para>
+    /// <para>
+    /// The buttons' places are read from the laid-out tree, as rectangles in the list's own coordinates,
+    /// never from a picture.
+    /// </para>
+    /// </remarks>
+    /// <param name="width">The window's width.</param>
+    /// <param name="height">The window's height.</param>
+    [AvaloniaTheory]
+    [InlineData(950, 600)]
+    [InlineData(900, 500)]
+    public void ChartRow_WithLongLines_KeepsItsButtonsInsideTheList_AndTrimsItsText(int width, int height)
+    {
+        const string longName = "Eleanor Margaret Hartwell-Whitfield of Harrisburg, the long-named example chart";
+        const string longKeywords = "example, invented, long, keywords, that, run, well, past, the, width, of, the, saved, charts, pane";
+        MainViewModel vm = MainViewModelFactory.Create();
+        ChartEntity chart = Chart(longName);
+        chart.LocationName = "Harrisburg, Dauphin County, Pennsylvania, United States of America";
+        chart.Keywords = longKeywords;
+        vm.SavedCharts.Add(chart);
+        vm.SavedCharts.Add(Chart("Ada Lovelace"));
+
+        MainWindow window = new() { DataContext = vm, Width = width, Height = height };
+        window.Show();
+        Dispatcher.UIThread.RunJobs();
+        window.Measure(new global::Avalonia.Size(width, height));
+        window.Arrange(new global::Avalonia.Rect(0, 0, width, height));
+        Dispatcher.UIThread.RunJobs();
+
+        ListBox list = Assert.Single(
+            window.GetLogicalDescendants().OfType<ListBox>(),
+            l => l.GetVisualAncestors().OfType<DockPanel>()
+                  .Any(d => d.Name == "SavedChartsPane"));
+
+        List<Button> rowButtons = list.GetVisualDescendants().OfType<Button>()
+            .Where(b => b.Content as string is "Load" or "Delete").ToList();
+        Assert.Equal(4, rowButtons.Count);
+        foreach (Button button in rowButtons)
+        {
+            global::Avalonia.Point? origin = global::Avalonia.VisualExtensions.TranslatePoint(
+                button, new global::Avalonia.Point(0, 0), list);
+            Assert.NotNull(origin);
+            Assert.True(button.Bounds.Width > 0, $"The {button.Content} button has no width.");
+            Assert.True(origin.Value.X >= 0, $"The {button.Content} button starts left of the list.");
+            Assert.True(
+                origin.Value.X + button.Bounds.Width <= list.Bounds.Width,
+                $"The {button.Content} button ends at {origin.Value.X + button.Bounds.Width:F1}, past the list's width of {list.Bounds.Width:F1}.");
+        }
+
+        ListBoxItem row = list.GetVisualDescendants().OfType<ListBoxItem>().First(i => ReferenceEquals(i.DataContext, chart));
+        List<TextBlock> lines = row.GetVisualDescendants().OfType<TextBlock>()
+            .Where(t => t.GetVisualAncestors().OfType<Button>().FirstOrDefault() is null).ToList();
+        Assert.Equal(3, lines.Count);
+        Assert.Equal(longName, lines[0].Text);
+        Assert.Equal(longKeywords, lines[2].Text);
+        foreach (TextBlock line in lines)
+        {
+            Assert.Equal(global::Avalonia.Media.TextTrimming.CharacterEllipsis, line.TextTrimming);
+            Assert.Equal(line.Text, ToolTip.GetTip(line) as string);
+            Assert.True(line.Bounds.Width <= list.Bounds.Width, "A line of the row is wider than the list.");
+        }
+    }
+
+    /// <summary>
     /// The search box commits each keystroke to
     /// <see cref="MainViewModel.SearchText"/> without waiting for focus to leave.
     /// </summary>
