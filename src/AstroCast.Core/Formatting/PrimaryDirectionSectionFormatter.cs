@@ -39,18 +39,21 @@ internal static class PrimaryDirectionSectionFormatter
     internal const string TurningMark = "\u2020";
 
     /// <summary>
-    /// The dagger's footnote, with the words that say where the date turns in the place of {0}:
-    /// <see cref="WithinTheWindow"/> when an uncertainty is set, <see cref="WithinAMinute"/> when none is.
+    /// The dagger's footnote when an uncertainty is set. It names no cause (Steve's ruling of 2026-11-28): the
+    /// point that crosses the horizon is the promissor of a converse direction and the significator of a direct
+    /// one, and the footnote as first built named the promissor alone.
     /// </summary>
-    private const string TurningFootnoteFormat =
-        TurningMark + " This direction's date turns {0} (its promissor crosses the horizon there). "
+    private const string TurningFootnoteWithWindow =
+        TurningMark + " This direction's date turns within the birth-time window. "
         + "Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
 
-    /// <summary>Where a date turns when an uncertainty is set.</summary>
-    private const string WithinTheWindow = "within the birth-time window";
-
-    /// <summary>Where a date turns when no uncertainty is set: between the dates a minute either side of the birth.</summary>
-    private const string WithinAMinute = "within a minute of the recorded birth time";
+    /// <summary>
+    /// The dagger's footnote when no uncertainty is set: the date turns between the dates a minute either side of
+    /// the birth, and the table has no Range to speak of (Steve's ruling of 2026-11-28).
+    /// </summary>
+    private const string TurningFootnoteWithoutWindow =
+        TurningMark + " This direction's date turns within a minute of the recorded birth time. "
+        + "Its Months/min is not a rate, so the row cannot be used to correct the birth time.";
 
     /// <summary>
     /// The mark a missing figure carries when its reason is known, a double dagger (U+2021), after the em dash
@@ -307,10 +310,11 @@ internal static class PrimaryDirectionSectionFormatter
 
     /// <summary>
     /// The dagger's footnote, only when a row among the hits is turning (branch DirectionNotes, 1.7.2; finding
-    /// A5): "\u2020 This direction's date turns within the birth-time window (its promissor crosses the horizon
-    /// there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to
-    /// correct the birth time."; with no uncertainty set, "within a minute of the recorded birth time" in the
-    /// place of "within the birth-time window".
+    /// A5): the dagger and "This direction's date turns within the birth-time window. Its Range does not bound
+    /// its date and its Months/min is not a rate, so the row cannot be used to correct the birth time."; with no
+    /// uncertainty set, where the table has no Range, the dagger and "This direction's date turns within a
+    /// minute of the recorded birth time. Its Months/min is not a rate, so the row cannot be used to correct the
+    /// birth time.". Neither names a cause (Steve's rulings of 2026-11-28 on decisions 2 and 7).
     /// </summary>
     /// <param name="settings">The run's settings: the uncertainty decides the words.</param>
     /// <param name="hits">The hits the table prints.</param>
@@ -324,7 +328,7 @@ internal static class PrimaryDirectionSectionFormatter
         if (!hits.Any(hit => hit.IsTurning))
             return null;
 
-        return string.Format(Inv, TurningFootnoteFormat, settings.BirthTimeUncertaintyMinutes > 0 ? WithinTheWindow : WithinAMinute);
+        return settings.BirthTimeUncertaintyMinutes > 0 ? TurningFootnoteWithWindow : TurningFootnoteWithoutWindow;
     }
 
     /// <summary>

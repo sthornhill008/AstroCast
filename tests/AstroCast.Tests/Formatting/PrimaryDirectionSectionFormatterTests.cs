@@ -214,11 +214,11 @@ public sealed class PrimaryDirectionSectionFormatterTests
 
     /// <summary>The dagger's footnote when an uncertainty is set.</summary>
     private const string TurningFootnoteWithWindow =
-        "\u2020 This direction's date turns within the birth-time window (its promissor crosses the horizon there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
+        "\u2020 This direction's date turns within the birth-time window. Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
 
     /// <summary>The dagger's footnote when no uncertainty is set.</summary>
     private const string TurningFootnoteWithoutWindow =
-        "\u2020 This direction's date turns within a minute of the recorded birth time (its promissor crosses the horizon there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
+        "\u2020 This direction's date turns within a minute of the recorded birth time. Its Months/min is not a rate, so the row cannot be used to correct the birth time.";
 
     /// <summary>
     /// A turning row carries a dagger after the value in its Months/min cell and in its Range cell, a space

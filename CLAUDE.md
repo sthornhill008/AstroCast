@@ -930,7 +930,11 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
   at the window's two ends, both ends included. The test sees a turn only where it puts the row's own date
   outside the two dates compared: person A's converse Moon to Saturn's dexter square (1984-12-15), whose date
   turns about five minutes before her recorded time, is not turning at windows of 4 and 6 minutes and is at 8
-  and more, and her chart cast at 09:24:50 turns within the minute with no window set. *The missing figure*
+  and more, and her chart cast at 09:24:50 turns within the minute with no window set. A fuller test, whether
+  the governing point is on the same side of the horizon at the window's two ends, which the service could
+  make from what it already holds, is for 1.8.0 (Steve's ruling of 2026-11-28): at a window of 10 minutes the
+  three invented charts have one marked row and eight unmarked rows whose governing point crosses the horizon
+  inside the window. *The missing figure*
   (`NoRangeReasons`, `NoMonthsPerMinuteReasons`, the flags enum `PrimaryDirectionGapReasons`): where the Range
   is null although a window is set, or the Months/min is null, the reason is recorded from what the service
   holds at that point. `SectChange`: the hit is to the Part of Fortune and the sect at one of the two instants
@@ -986,9 +990,12 @@ The root holds two solution files, so a bare `dotnet build` stops with MSB1011: 
   dash and a double dagger (U+2021), `— ‡`, in the Range cell and, for the same causes, in the Months/min
   cell; a figure missing with no reason recorded prints the em dash alone. *Footnotes*, each after a blank
   line and only when a printed row carries its mark, the dagger's first: `† This direction's date turns
-  within the birth-time window (its promissor crosses the horizon there). Its Range does not bound its date
-  and its Months/min is not a rate, so the row cannot be used to correct the birth time.`, with "within a
-  minute of the recorded birth time" in place of "within the birth-time window" when no uncertainty is set;
+  within the birth-time window. Its Range does not bound its date and its Months/min is not a rate, so the
+  row cannot be used to correct the birth time.`, and when no uncertainty is set, where the table has no
+  Range, `† This direction's date turns within a minute of the recorded birth time. Its Months/min is not a
+  rate, so the row cannot be used to correct the birth time.` (neither names a cause, Steve's rulings of
+  2026-11-28: the point that crosses the horizon is the promissor of a converse direction and the
+  significator of a direct one, and the footnote as first built named the promissor alone);
   and `‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age
   limit.`, the reasons those that occur among the printed rows and no other, joined with "or"
   (`ReasonWords`): "falls before birth", "falls beyond the age limit" (both: "falls before birth or beyond

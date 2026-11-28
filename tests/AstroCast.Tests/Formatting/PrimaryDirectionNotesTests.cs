@@ -41,7 +41,7 @@ public sealed class PrimaryDirectionNotesTests(EphemerisFixture fixture)
 
     /// <summary>The dagger's footnote when an uncertainty is set.</summary>
     private const string TurningFootnote =
-        "\u2020 This direction's date turns within the birth-time window (its promissor crosses the horizon there). Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
+        "\u2020 This direction's date turns within the birth-time window. Its Range does not bound its date and its Months/min is not a rate, so the row cannot be used to correct the birth time.";
 
     /// <summary>
     /// The whole-life report marks the turning row and explains it once: the row's date, age, arc, Months/min and
