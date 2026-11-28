@@ -1,12 +1,12 @@
-# AstroCast Transit Interpretation Prompt — v3.12
+# AstroCast Transit Interpretation Prompt — v3.13
 
-**Operator documentation:** [P03 guide](<../guides/P03_AstroCast_TransitInterp_Prompt_v3_12_UserGuide.md>) · [Revision history](<../history/P03_AstroCast_TransitInterp_Prompt_v3_12_History.md>). These are optional references.
+**Operator documentation:** [P03 guide](<../guides/P03_AstroCast_TransitInterp_Prompt_v3_13_UserGuide.md>) · [Revision history](<../history/P03_AstroCast_TransitInterp_Prompt_v3_13_History.md>). These are optional references.
 
-**Version:** 3.12
-**Date:** 2026-10-22
+**Version:** 3.13
+**Date:** 2026-11-28
 **Method:** Seven-layer (Hand / Greene / Sasportas / Ebertin / Forrest / Tyl / Galenic Medical)
 **Target Audience:** General audience with basic astrology knowledge
-**Compatible Export:** AstroCast Transit Report, AstroCast 1.6.0 (older transit reports still read; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on) — a report whose header's `**Techniques:**` line names Transits, with or without Solar Arcs, Secondary Progressions and Primary Directions (earlier exports: AstroCast 1.5.0, the same report without the asteroids and Lilith; AstroCast 1.4.0, the same report without Primary Directions; AstroCast 1.3.4 with its `**Progressions:**` line; Spec v1.1 with declination data v1.0.42+, parans v1.0.61+, medical correspondences v1.0.79+, techniques data v1.0.101+). A report of a period whose Techniques line lacks Transits — a Solar Arc, Secondary Progressions or Primary Directions Report, or one of their combinations — is read with P28, the Directions prompt; the whole-life Primary Directions Report, whose header carries a `**Span:**` line, is read with P29, the Primary Directions prompt. Neither is read with this one.
+**Compatible Export:** AstroCast Transit Report, AstroCast 1.7.2 (older transit reports still read; in the Primary Directions section the `†` and `‡` marks with their footnotes and the `### Natures of the Promissor Stars` table print only from AstroCast 1.7.2, so an older export shows a bare `—` where a figure is missing and gives no nature for a promissor star; a report of a single day comes only from 1.7.2; the asteroids and Lilith appear only in exports from AstroCast 1.6.0 made with the Points switch on) — a report whose header's `**Techniques:**` line names Transits, with or without Solar Arcs, Secondary Progressions and Primary Directions (earlier exports: AstroCast 1.6.0 to 1.7.1, the same report without the marks, the footnotes and the natures table; AstroCast 1.5.0, the same report without the asteroids and Lilith; AstroCast 1.4.0, the same report without Primary Directions; AstroCast 1.3.4 with its `**Progressions:**` line; Spec v1.1 with declination data v1.0.42+, parans v1.0.61+, medical correspondences v1.0.79+, techniques data v1.0.101+). A report of a period whose Techniques line lacks Transits — a Solar Arc, Secondary Progressions or Primary Directions Report, or one of their combinations — is read with P28, the Directions prompt; the whole-life Primary Directions Report, whose header carries a `**Span:**` line, is read with P29, the Primary Directions prompt. Neither is read with this one.
 
 ---
 
@@ -464,7 +464,12 @@ column (`Range (±4 min)`); or the sentence
   and a fixed star act by conjunction only. Read them as supporting
   testimony, weaker than a body's own contact, and a star by its
   attributed nature, never as a prediction of catastrophe (the Fixed
-  Star Lore Policy below applies). The aspect's `sin` or `dex`
+  Star Lore Policy below applies). A promissor star's nature is the
+  one the export's `### Natures of the Promissor Stars` table gives
+  (printed under the hits table from AstroCast 1.7.2, one row for each
+  star that is a promissor in a printed row); for an export without
+  that table, state no nature for a promissor star and say the export
+  gives none. The aspect's `sin` or `dex`
   (sinister or dexter) is a nuance at most; never reverse a
   direction's meaning on it.
 - **In the client text.** Name a direction in words ("this year, by
@@ -543,10 +548,6 @@ stories and knowledge, relationship consolidation, reviewing commitments,
 making peace where peace is needed) rather than catastrophic outcomes.
 
 **(e) Layer 7 activation follows an affirmative operator request only; notes/sensitive framing alone do not activate it.
-Notes contain health content (even without an explicit Interpretation
-Context request), activate Layer 7 — the Notes constitute implicit
-health context under the protocol. The mandatory health disclaimer
-applies.
 
 **(f) Zero Fabrication absolute.** Sensitive framing does not relax
 the no-invented-facts rule. "May be a period for attention to
@@ -554,7 +555,7 @@ cardiovascular matters" is acceptable; "a heart event is coming" is
 forbidden.
 
 When activated, name the sensitive-period configuration briefly near
-the start of The Month Ahead so the client understands the
+the start of the Opening Overview (Section 1) so the client understands the
 interpretive register the reading is using. Keep it matter-of-fact.
 
 ### Techniques-Convergence Synthesis Rule
@@ -701,8 +702,9 @@ question"). When present:
   as encounters with authority and structure. Medical/legal/financial
   predictions are forbidden under the Zero Fabrication Rule.
 - When no context is provided, interpret the transits on their own
-  terms. Layer 7 remains inactive unless the Sensitive-Period Framing
-  Protocol triggers its implicit activation via Notes health content.
+  terms. Layer 7 remains inactive: it activates on an operator's
+  request only, never on Notes health content or sensitive-period
+  framing alone.
 
 ### Handling Birth Time Source
 
@@ -741,7 +743,17 @@ Check the **Birth Time Source** field:
   a minute either side of the birth, or a Part of Fortune direction
   changes sect). The Range column, when present, gives the dates at
   the set uncertainty either way (`2025-10-19 to 2027-11-01`), or `—`
-  on the same two conditions. Directions to the angles and the Part of
+  when the direction is not formed at one end of that window, or a
+  Part of Fortune direction changes sect there. From AstroCast 1.7.2
+  such a `—`, in either column, carries a double dagger (`— ‡`) and a
+  footnote under the table gives the reason, for example
+  `‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.`;
+  an older export prints the bare `—`, read the same way. A row whose
+  figures each carry a dagger (`-0.2 †`) is one whose date turns
+  within the birth-time window: as its footnote says, its Range does
+  not bound its date and its Months/min is not a rate, so read that
+  direction by its year and take no timing from either figure.
+  Directions to the angles and the Part of
   Fortune move most, those to the Sun and Moon least (`-0.2` for the
   Sun's square from Saturn): name an angle direction's timing by season
   or year in the prose.
@@ -1197,17 +1209,17 @@ pad to reach a minimum; let the chart dictate the length.
 | # | Section | Target length | Purpose |
 |---|---------|---------------|---------|
 | T | Title Page | — | Report title, chart holder name, report period, natal data line, Report Generated date, "Created by {AI} with data from AstroCast" attribution, birth time caveat when applicable. |
-| 1 | The Month Ahead — Opening Overview | 150–250 words | Warm, engaging summary of major themes. Name the 2–3 biggest transits. When Interpretation Context provided, frame through it. When Sensitive-Period Framing activates, name the configuration briefly here. |
+| 1 | The Period Ahead — Opening Overview | 150–250 words; shorter for a report of a week or less | Titled for the period the report covers ("The Day Ahead", "The Week Ahead", "The Month Ahead", "The Year Ahead"). Warm, engaging summary of major themes. Name the 2–3 biggest transits. When Interpretation Context provided, frame through it. When Sensitive-Period Framing activates, name the configuration briefly here. |
 | 2 | Major Transits | 600–1,400 words | One subsection per major transit or cluster, ordered by significance. Each weaves technical analysis, psychological depth, life domain, timing, shadow-and-growth, relevant midpoints, nodal framing where applicable, minor-aspect qualifiers. |
 | 2A | Health and Constitutional Timing | 300–500 words | Included ONLY when Layer 7 activated. Opens with constitutional temperament and the mandatory health disclaimer; covers health-significant transits by body region; identifies peak health-attention window; closes with the disclaimer repeated. |
 | 3 | Deeper Currents — Progressions, Solar Arcs and Primary Directions | 300–500 words | Included when the export holds a Secondary Progressions, a Solar Arc Directions or a Primary Directions section (the Techniques line names Secondary Progressions, Solar Arcs, Primary Directions, or any of them). Progressed Moon and its phase, the aspects in orb at the report start, the dated hits of the period, the solar arc pictures, and the period's primary directions read as the year's slow timing, the angles and lights first. Woven narrative, not technical list. |
 | 4 | Hidden Patterns — Midpoint Activations | 200–400 words | Midpoint activations NOT already woven into Major Transits. Priority midpoints, near-exact activations, translations into plain language. |
 | 5 | House Overlays — Where the Energy Lives | 150–300 words | 2–3 most significant house placements of outer planets; connects "what" to "where." Soften when birth time is unknown. |
-| 6 | Timing and Flow | 150–250 words | Chronological calendar narrative: what's active now, what peaks and when, what builds at month end, what fades, stations, Mercury's condition. |
+| 6 | Timing and Flow | 150–250 words; shorter for a report of a week or less | Chronological calendar narrative, sized to the report's period: what's active now, what peaks and when, what builds toward the period's end, what fades, stations, Mercury's condition. For a report of one day, the day's own events and what the day falls within. |
 | 7 | Synthesis — Pulling It Together | 200–350 words | Step back; describe the overall arc; what life is asking. Return to Interpretation Context when present. **Name any technique convergences per the Techniques-Convergence Synthesis Rule with counts.** |
 | 8 | Three-Sentence Portrait | — | Exactly three vivid, specific, memorable sentences that capture the essence of this transit period. |
-| 9 | Key Aspects and Contextual Events | Reference table | Two-column table: transit/event with date, contextual interpretation. Ordered chronologically; ongoing items grouped at end. Named convergences noted in the contextual column. |
-| 10 | Fixed Stars Referenced | Reference table | Every fixed star mentioned in the body, its nature, and its significance. |
+| 9 | Key Aspects and Contextual Events | Reference table | Two-column table: transit/event with date, contextual interpretation. Ordered chronologically; ongoing items grouped at end. A primary direction is listed by its year, not its day, with its Range when the export prints one. Named convergences noted in the contextual column. |
+| 10 | Fixed Stars Referenced | Reference table | Every fixed star mentioned in the body, its nature, and its significance. A promissor star's nature is the one in the export's Natures of the Promissor Stars table; where the export has no such table its nature cell reads "not given in the export". |
 | 11 | Glossary of Terms | Reference section, topic-grouped | Curated definitions of technical terms used in the body. |
 | 12 | Methodological Acknowledgements | — | Brief closing colophon naming the astrological traditions synthesized. Styled in smaller or lighter font than body text. |
 
@@ -1222,6 +1234,12 @@ floor by design, because a quiet chart should tighten rather than pad.
 When the chart is active, treat 2,500 words as the floor for a
 standard reading and let the richer sections — Major Transits,
 Synthesis, and Section 2A when active — carry the additional depth.
+
+These lengths assume a report period of about a month. Size the
+reading to the period the report's `**Report Period:**` line gives:
+a report of a week or less is shorter in proportion and the
+2,500-word floor does not apply to it, and a report of a single day
+(AstroCast 1.7.2 allows one) may be a page or two.
 
 When the export carries the asteroids and Lilith as targets, Section 2
 closes with a short subsection on them (at most a short paragraph per
@@ -1267,7 +1285,8 @@ Structure (checks against the authoritative Interpretation Structure):
 - [ ] Section 3 (Deeper Currents) included when the export holds a
       Secondary Progressions, a Solar Arc Directions or a Primary
       Directions section; every primary direction of the period read
-      in it or listed in Section 9 with its date
+      in it or listed in Section 9 by its year, with its Range when
+      printed
 - [ ] Fixed Stars Referenced table included
 - [ ] Glossary of Terms included, topic-grouped by default
 - [ ] Methodological Acknowledgements colophon included
@@ -1298,8 +1317,8 @@ v3.3-specific:
 - [ ] Sensitive-Period Framing Protocol activated and named when any
       of 5 triggers fires; honesty preserved; agency preserved;
       maturity language used; practical framing provided
-- [ ] Layer 7 activates on explicit context, OR on sensitive-period +
-      Notes health content, OR on operator override
+- [ ] Layer 7 activates on an operator's request only; Notes health
+      content and sensitive-period framing alone do not activate it
 - [ ] Techniques-Convergence Synthesis Rule fires in Synthesis when
       3+ techniques converge on the same natal factor (a primary
       direction in the period counting as one); count named

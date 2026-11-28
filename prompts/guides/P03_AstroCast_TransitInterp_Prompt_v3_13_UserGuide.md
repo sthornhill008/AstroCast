@@ -1,8 +1,8 @@
-# P03 AstroCast_TransitInterp_Prompt_v3_12 — User Guide
+# P03 AstroCast_TransitInterp_Prompt_v3_13 — User Guide
 
-Version: 1.5. Date: 2026-10-22.
+Version: 1.6. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Transit/P03_AstroCast_TransitInterp_Prompt_v3_12.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Version 3.12 reads a Birth Time Source of Not specified as Unknown everywhere, as its Primary Directions part already did; the revision history lists the changes.
+Use the [complete current prompt](<../Transit/P03_AstroCast_TransitInterp_Prompt_v3_13.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Version 3.13 reads the Transit Report of AstroCast 1.7.2: the health layer is written only when you ask for it; a primary direction is listed by its year; the reading is sized to the report's period, which may now be a single day; and a promissor star's nature comes from the export's own table. The revision history lists the changes.
 
 ## Producing the export (AstroCast 1.6.0)
 
@@ -12,11 +12,13 @@ In the Transits panel (Transits & Progressions), set the Start Date and End Date
 
 Press **Calculate**, then **Export Report MD**. With Transits checked the file is `{Name}_Transits_{Start}_{End}.md`, titled "# Transit Report", and its header's `**Techniques:**` line names the techniques run, Primary Directions last; this prompt reads it. A report produced without Transits is read with P28, the Directions prompt, even when it holds only primary directions and is titled "# Primary Directions Report". The whole-life list from the Directions panel's **Export Directions MD** (also in the Export panel's **Primary Directions** group), `{Name}_PrimaryDirections_0-100.md`, carries a `**Span:**` line instead of a report period and is read with P29.
 
+From AstroCast 1.7.2 the Start Date and End Date may be the same day: the reading is then short, and its sections are named and sized for the day. In the Primary Directions section a figure may carry a mark: a dagger (†) on a row whose date turns within the birth-time window, and a double dagger (‡) beside a dash where a figure is missing, each explained in a footnote under the table; a `### Natures of the Promissor Stars` table follows when a listed direction is from a fixed star. The reading takes a promissor star's nature from that table and, for an older export without it, states none.
+
 If the chart's Birth Time Source was left blank, the report prints "Not specified" and the reading treats the time as unconfirmed throughout: it carries the birth-time caveat and softens the houses and angles; the Primary Directions section prints a Birth time line, and its dates move with the birth time by the Months/min column, so the reading times those directions, especially the angles', by season.
 
 ## Submission
 
-Specify the subject, report period where relevant, context, focus, and any output override. For personal research use `Context: unvarnished and honest`. This does not permit external biography or activate medical analysis. An explicit voice instruction overrides the preset. For a blind test, remove names and biography while retaining chart settings and birth-time reliability.
+Specify the subject, report period where relevant, context, focus, and any output override. For personal research use `Context: unvarnished and honest`. This does not permit external biography or activate medical analysis. The health layer (Section 2A) is written only when your request asks for it; a health note in the chart's Notes does not switch it on. An explicit voice instruction overrides the preset. For a blind test, remove names and biography while retaining chart settings and birth-time reliability.
 
 ## Family scope
 
