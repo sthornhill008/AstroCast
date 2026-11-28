@@ -83,6 +83,24 @@ public partial class App : Application
             string ephePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ephe");
             _ephemerisService = new EphemerisService(ephePath, _logger);
 
+            // 2a. The ephemeris files are read once, now (branch EphePath, 1.7.2; finding N4):
+            //     one position that needs them, discarded. When they cannot be read the user
+            //     is told at once, in the shared check's plain words, in the box this head
+            //     shows its other start-up problems in, and the program stops. Until 1.7.2
+            //     it started as usual and every chart then failed with a file name in the
+            //     status bar.
+            if (EphemerisFilesCheck.Run(_ephemerisService, ephePath, _logger) is string unreadable)
+            {
+                MessageBox.Show(
+                    unreadable,
+                    "AstroCast — Startup Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                Shutdown(1);
+                return;
+            }
+
             // 3. AspectService
             IAspectService aspectService = new AspectService(_ephemerisService, _logger);
 

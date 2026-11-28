@@ -145,6 +145,18 @@ public sealed partial class App : Application
             // 2. EphemerisService — ephe/ ships beside the executable.
             _ephemerisService = new EphemerisService(AppPaths.EphemerisDirectory, _logger);
 
+            // 2a. The ephemeris files are read once, now (branch EphePath, 1.7.2; finding N4):
+            //     one position that needs them, discarded. When they cannot be read the user
+            //     is told at once, in the shared check's plain words, in the window this head
+            //     shows its other start-up problems in, and the program stops when it closes.
+            if (EphemerisFilesCheck.Run(_ephemerisService, AppPaths.EphemerisDirectory, _logger) is string unreadable)
+            {
+                Console.Error.WriteLine(unreadable);
+                ShowStartupFailure(desktop, unreadable);
+                base.OnFrameworkInitializationCompleted();
+                return;
+            }
+
             // 3. AspectService
             IAspectService aspectService = new AspectService(_ephemerisService, _logger);
 

@@ -40,6 +40,17 @@ Console.WriteLine();
 
 // Create services and chart engine
 using EphemerisService ephemeris = new(ephePath, Log.Logger);
+
+// The ephemeris files are read once, now (branch EphePath, 1.7.2; finding N4): one position
+// that needs them, discarded. When they cannot be read the shared check's plain message is
+// printed as this program prints its other start-up problems, and the run stops.
+if (EphemerisFilesCheck.Run(ephemeris, ephePath, Log.Logger) is string unreadable)
+{
+    Console.WriteLine($"ERROR: {unreadable}");
+    return 1;
+}
+
+Console.WriteLine($"Ephemeris files read from: {ephePath}");
 AspectService aspectService = new(ephemeris, Log.Logger);
 MidpointService midpointService = new(Log.Logger);
 DignityService dignityService = new();
