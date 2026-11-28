@@ -1,10 +1,23 @@
 # P05 Revision History and Extracted Records
 
-Current release: 2.4 (2026-10-15). Previous release: 2.3.
+Current release: 2.5 (2026-11-28). Previous release: 2.4 (2026-10-15).
 
-Source: AstroCast_DailyHoroscopeInterp_Prompt_V2_3.md (in Prompts.zip). The source remains unchanged.
+Source: P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_4.md (in Prompts.zip). The source remains unchanged.
 
 ## Current changes
+
+The 1.7.2 library run. Source: the 1.7.2 library review of 2026-11-27 and Steve's rulings of 2026-11-27 and 2026-11-28. Two of the review's findings (Q8, Q9), the first with a change of AstroCast 1.7.2 (code finding N15: with a Birth Time Source of Unknown the daily export prints no house anywhere). Line numbers are V2.5's; the replaced V2.4 passages are in the V2.4 prompt (in Prompts.zip, and in the repository's history). The changes:
+
+- **:1, :3, :5, :6, header.** The title reads v2.5, the documentation line links the V2_5 guide and history, the Version line reads 2.5 and the Date line 2026-11-28.
+- **:8, Input.** AstroCast 1.7.2, older exports still read; the line says what an older export with an Unknown source still printed (a House column in the backdrop table, `(H7)` in the Entering orb and Exiting orb lines).
+- **:233-255, Birth Time Source (Q8), new.** V2.4 named the Birth Time Source nowhere and required houses, angles and the sect throughout. With `Unknown` or `Not specified` they are not known. With `Unknown` the export prints no house, and each day is written by planet, sign and theme; with `Not specified` the printed houses are unconfirmed and softened or left out, as P03 reads that source; in both the sect calibration is not applied.
+- **:413-421, Dated timing windows (Q9).** The rule is limited to the dates the daily export prints. "(before)" and "(beyond)" are said in plain words, and no entry or exit date is supplied. V2.4 required dated profection, firdaria and releasing periods, which the daily export does not carry.
+
+The User Guide 1.2 names the Daily Horoscope export (it said "the matching chart export") and says what the reading does with an unconfirmed birth time.
+
+Unchanged, by instruction: every other rule of V2.4.
+
+## Previous changes — 2.4 (2026-10-15)
 
 Aligned with the AstroCast 1.3.4 exports; the Input line names 1.3.4 (R3). R2: a header carrying `**Calendar:** dates before 1582-10-15 are on the Julian calendar` means every date is on the calendar in force; nothing to convert. A daily report across October 1582 runs Thursday 4 then Friday 15 October, and a bound in 5–14 October is refused (R3, R-D7). O-D3 (R1): every orb prints as truncated degrees and minutes with the prime; a compact `147'` or a decimal belongs to an older export. D (T-D3, T-D5; R10): the backdrop's In Orb cell is the passage's entry and exit, not the whole report; Mars only while slow or stationing. T-D15 (R5): a transit orb table from TransitOrbs with the Mars rule (listed only while slow or stationing). Older lines made true: the backdrop table prints no orb (the Active rows' orbs are at 12:00); the daily export prints no transiting positions or dignities; it lists no Sun, Moon, Mercury or Venus transits; the Method line names the chart's own house system.
 

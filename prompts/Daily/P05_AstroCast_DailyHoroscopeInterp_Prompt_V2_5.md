@@ -1,11 +1,11 @@
-# AstroCast Daily Horoscope Interpretation Prompt — v2.4
+# AstroCast Daily Horoscope Interpretation Prompt — v2.5
 
-**Operator documentation:** [P05 guide](<../guides/P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_4_UserGuide.md>) · [Revision history](<../history/P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_4_History.md>). These are optional references.
+**Operator documentation:** [P05 guide](<../guides/P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_5_UserGuide.md>) · [Revision history](<../history/P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_5_History.md>). These are optional references.
 
-**Version:** 2.4
-**Date:** 2026-10-15
+**Version:** 2.5
+**Date:** 2026-11-28
 **Chart Type:** Daily Horoscope (transit-to-natal, per-day digest)
-**Input:** AstroCast Daily Horoscope Markdown export (AstroCast 1.3.4)
+**Input:** AstroCast Daily Horoscope Markdown export (AstroCast 1.7.2; older exports still read. From 1.7.2 an export whose Birth Time Source is Unknown prints no house anywhere; an older one still printed a House column in its backdrop table and `(H7)` in its Entering orb and Exiting orb lines, which are not read)
 **Output:** Professional PDF — cover page + per-day sections + colophon
 
 ---
@@ -230,6 +230,29 @@ The export prints no orb table; an Active row is listed when its transit is in o
 A Mars transit is listed only while Mars, in orb, moves slower than 0.3°/day, as it does near a station, so a
 report may hold no Mars transit.
 
+### Birth Time Source (read before the scans)
+
+Read the header's `**Birth Time Source:**` line. When it reads
+`Unknown` or `Not specified`, the birth time is not confirmed, so the
+houses, the angles (Ascendant and MC) and the sect (day or night
+chart) are not known:
+
+- With `Unknown` the export prints no house: the Natal Chart Summary
+  has no ASC or MC row and its House cells read `N/A`, and from
+  AstroCast 1.7.2 the backdrop table has no House column and the
+  Entering orb and Exiting orb lines carry no `(H7)`. An older export
+  still printed those two; do not read them. Write each day by
+  planet, sign and theme: wherever a scan or a section below asks for
+  a house or an angle, leave that part out, and decide a section
+  whose test is a house (Career & Finances, Love & Relationships) by
+  the planets and aspects involved.
+- With `Not specified` the export prints the houses and angles of the
+  time as recorded. They are unconfirmed: give a house theme in
+  softer language ("this likely touches...") or leave it out.
+- In both cases the sect calibration of Scan 2 is not applied, and
+  the reading supplies no house, angle or sect that the export does
+  not print.
+
 ### Scan 1 — Weekly Backdrop Assessment
 
 Read the **Slow-Moving Transit Backdrop** section in the export.
@@ -388,10 +411,14 @@ days. A long report earns its readability from restraint, not volume
 (Daily Repetition Discipline, rule #4).
 
 DATED TIMING WINDOWS (required): any section discussing timing states
-its as-of date and the start/end dates of each active period it
-discusses (profection year, firdaria sub-period, ZR Level 2, transit
-or timeline windows as applicable), so a reader can see at a glance
-which statements have expired.
+the dates the export prints for it (the report period, the day, and a
+backdrop transit's In Orb entry and exit dates), so a reader can see
+at a glance which statements have expired. Where the In Orb cell
+reads "(before)" or "(beyond)", say in plain words that the transit
+was already in orb before the report began, or stays in orb after it
+ends; never supply an entry or exit date the export does not print.
+The daily export carries no profection, firdaria or zodiacal
+releasing periods, so none is dated.
 
 ### Day Header
 

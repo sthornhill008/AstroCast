@@ -1,8 +1,8 @@
-# P05 AstroCast_DailyHoroscopeInterp_Prompt_V2_4 — User Guide
+# P05 AstroCast_DailyHoroscopeInterp_Prompt_V2_5 — User Guide
 
-Version: 1.1. Date: 2026-10-15.
+Version: 1.2. Date: 2026-11-28.
 
-Use the [complete current prompt](<../Daily/P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_4.md>), followed by the matching chart export and your request. All operational rules are embedded in that file. Historical excerpts are retained separately; they are not submission instructions.
+Use the [complete current prompt](<../Daily/P05_AstroCast_DailyHoroscopeInterp_Prompt_V2_5.md>), followed by the Daily Horoscope export and your request. All operational rules are embedded in that file. Version 2.5 has a rule for a birth time that is not confirmed: when the export's Birth Time Source reads Unknown or Not specified, the reading does not state houses, angles or a day or night chart as known, and with Unknown, where the export prints no house, each day is written by planet and theme. Entry and exit dates are given only where the export prints them. Historical excerpts are retained separately; they are not submission instructions.
 
 ## Submission
 
