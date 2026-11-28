@@ -275,6 +275,113 @@ public sealed class PrimaryDirectionSectionFormatterTests
 
     #endregion
 
+    #region The missing figure (branch DirectionNotes, 1.7.2)
+
+    /// <summary>
+    /// A row whose Range is missing for a recorded reason prints the em dash and a double dagger, and so does its
+    /// Months/min cell when that figure is missing for a recorded reason; a figure that is there is untouched.
+    /// </summary>
+    [Fact]
+    public void Row_MissingFigureWithAReason_CarriesTheDoubleDagger()
+    {
+        PrimaryDirectionHit rangeOnly = Hit(noRange: PrimaryDirectionGapReasons.BeforeBirth);
+        PrimaryDirectionHit both = Hit(
+            monthsPerMinute: null, noMonths: PrimaryDirectionGapReasons.BeyondAgeLimit, noRange: PrimaryDirectionGapReasons.BeyondAgeLimit);
+
+        PrimaryDirectionSectionFormatter.FormatRow(rangeOnly, withRange: true).Should().EndWith("| 16°00′ | -3.0 | — \u2021 |");
+        PrimaryDirectionSectionFormatter.FormatRow(both, withRange: true).Should().EndWith("| 16°00′ | — \u2021 | — \u2021 |");
+        PrimaryDirectionSectionFormatter.FormatRow(both, withRange: false).Should().EndWith("| 16°00′ | — \u2021 |");
+    }
+
+    /// <summary>
+    /// The double dagger's footnote names the reasons that occur among the rows and no other, in plain words joined
+    /// with "or".
+    /// </summary>
+    /// <param name="first">One row's reasons.</param>
+    /// <param name="second">Another row's reasons.</param>
+    /// <param name="expected">The words after "this direction".</param>
+    [Theory]
+    [InlineData(PrimaryDirectionGapReasons.BeforeBirth, PrimaryDirectionGapReasons.BeforeBirth, "falls before birth")]
+    [InlineData(PrimaryDirectionGapReasons.BeyondAgeLimit, PrimaryDirectionGapReasons.BeyondAgeLimit, "falls beyond the age limit")]
+    [InlineData(PrimaryDirectionGapReasons.BeforeBirth, PrimaryDirectionGapReasons.BeyondAgeLimit, "falls before birth or beyond the age limit")]
+    [InlineData(PrimaryDirectionGapReasons.SectChange, PrimaryDirectionGapReasons.SectChange, "is to a Part of Fortune whose formula changes between day and night")]
+    [InlineData(PrimaryDirectionGapReasons.BeyondAgeLimit, PrimaryDirectionGapReasons.SectChange, "falls beyond the age limit or is to a Part of Fortune whose formula changes between day and night")]
+    [InlineData(PrimaryDirectionGapReasons.NoSemiArc, PrimaryDirectionGapReasons.NoSemiArc, "has no date")]
+    [InlineData(PrimaryDirectionGapReasons.BeforeBirth | PrimaryDirectionGapReasons.BeyondAgeLimit, PrimaryDirectionGapReasons.NoSemiArc, "falls before birth or beyond the age limit or has no date")]
+    public void Table_MissingRanges_FootnoteNamesTheReasonsThatOccur(
+        PrimaryDirectionGapReasons first, PrimaryDirectionGapReasons second, string expected)
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [Hit(), Hit(noRange: first), Hit(noRange: second)], "Sub", "None.");
+
+        string footnote = $"\u2021 No Range: at one end of the birth-time window this direction {expected}.";
+        int lastRow = lines.FindLastIndex(l => l.StartsWith("| 2016-03-26", StringComparison.Ordinal));
+        lines[lastRow + 1].Should().BeEmpty();
+        lines[lastRow + 2].Should().Be(footnote);
+        lines.Count(l => l.StartsWith('\u2021')).Should().Be(1);
+    }
+
+    /// <summary>When a row is turning and another has no range, the dagger's footnote comes first, a blank line between the two.</summary>
+    [Fact]
+    public void Table_TurningAndMissing_PrintsTheDaggersFootnoteFirst()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [Hit(isTurning: true), Hit(noRange: PrimaryDirectionGapReasons.BeforeBirth)], "Sub", "None.");
+
+        int dagger = lines.IndexOf(TurningFootnoteWithWindow);
+        dagger.Should().BePositive();
+        lines[dagger + 1].Should().BeEmpty();
+        lines[dagger + 2].Should().Be("\u2021 No Range: at one end of the birth-time window this direction falls before birth.");
+    }
+
+    /// <summary>
+    /// With no uncertainty set there is no Range column: a row without months per minute carries the double dagger,
+    /// and the footnote speaks of the figure that is missing and of a minute from the recorded birth time.
+    /// </summary>
+    [Fact]
+    public void Table_MissingMonthsWithoutAWindow_FootnoteSpeaksOfMonthsPerMinute()
+    {
+        List<string> lines = Section(
+            Result(), [Hit(), Hit(monthsPerMinute: null, noMonths: PrimaryDirectionGapReasons.BeyondAgeLimit)], "Sub", "None.");
+
+        lines.Should().Contain("\u2021 No Months/min: a minute from the recorded birth time this direction falls beyond the age limit.");
+        lines.Should().NotContain(l => l.Contains("No Range", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// With an uncertainty set, a row without months per minute takes the same mark and the same footnote as the
+    /// rows without a range, and its reason joins theirs.
+    /// </summary>
+    [Fact]
+    public void Table_MissingMonthsWithAWindow_IsCoveredByTheRangesFootnote()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [
+                Hit(noRange: PrimaryDirectionGapReasons.BeforeBirth),
+                Hit(monthsPerMinute: null, noMonths: PrimaryDirectionGapReasons.BeyondAgeLimit, noRange: PrimaryDirectionGapReasons.BeyondAgeLimit),
+            ],
+            "Sub", "None.");
+
+        lines.Should().Contain("\u2021 No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.");
+        lines.Count(l => l.StartsWith('\u2021')).Should().Be(1);
+    }
+
+    /// <summary>A missing figure with no recorded reason prints the em dash alone, and no footnote follows.</summary>
+    [Fact]
+    public void Table_MissingFigureWithoutAReason_HasNoMarkAndNoFootnote()
+    {
+        List<string> lines = Section(
+            Result(settings: new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 }),
+            [Hit(monthsPerMinute: null)], "Sub", "None.");
+
+        lines.Should().NotContain(l => l.Contains('\u2021'));
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>The section's lines for a result and its hits.</summary>
@@ -303,9 +410,13 @@ public sealed class PrimaryDirectionSectionFormatterTests
         double? monthsPerMinute = -2.9539,
         DateTime? rangeStart = null,
         DateTime? rangeEnd = null,
-        bool isTurning = false) => new()
+        bool isTurning = false,
+        PrimaryDirectionGapReasons noMonths = PrimaryDirectionGapReasons.None,
+        PrimaryDirectionGapReasons noRange = PrimaryDirectionGapReasons.None) => new()
     {
         IsTurning = isTurning,
+        NoMonthsPerMinuteReasons = noMonths,
+        NoRangeReasons = noRange,
         Significator = "Midheaven",
         Promissor = "Moon",
         PromissorKind = PrimaryDirectionPromissorKind.Body,
@@ -317,8 +428,8 @@ public sealed class PrimaryDirectionSectionFormatterTests
         JulianDayUt = 2457474.377752,
         InstantUtc = new DateTime(2016, 3, 26, 21, 3, 58, DateTimeKind.Utc),
         MonthsPerMinute = monthsPerMinute,
-        RangeStartUtc = rangeStart ?? (monthsPerMinute is null ? null : new DateTime(2015, 4, 2, 5, 50, 20, DateTimeKind.Utc)),
-        RangeEndUtc = rangeEnd ?? (monthsPerMinute is null ? null : new DateTime(2017, 3, 21, 12, 18, 15, DateTimeKind.Utc)),
+        RangeStartUtc = rangeStart ?? (monthsPerMinute is null || noRange != PrimaryDirectionGapReasons.None ? null : new DateTime(2015, 4, 2, 5, 50, 20, DateTimeKind.Utc)),
+        RangeEndUtc = rangeEnd ?? (monthsPerMinute is null || noRange != PrimaryDirectionGapReasons.None ? null : new DateTime(2017, 3, 21, 12, 18, 15, DateTimeKind.Utc)),
     };
 
     /// <summary>A chart with only what the section reads: its latitude and its birth-time source.</summary>

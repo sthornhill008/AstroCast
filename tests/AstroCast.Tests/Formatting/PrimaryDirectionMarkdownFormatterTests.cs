@@ -137,7 +137,9 @@ public sealed class PrimaryDirectionMarkdownFormatterTests(EphemerisFixture fixt
 
     /// <summary>
     /// The table the Directions panel lists is the report's own (branch PrimaryPanel, 1.5.0): the report holds it
-    /// whole, and at an uncertainty of 4 minutes its first line is the header with the Range column.
+    /// whole, and at an uncertainty of 4 minutes its first line is the header with the Range column. Since branch
+    /// DirectionNotes (1.7.2) the table's notes come with it, after a blank line, so the rows are the lines before
+    /// the first blank one.
     /// </summary>
     [Fact]
     public void FormatTable_IsTheReportsTable()
@@ -151,7 +153,7 @@ public sealed class PrimaryDirectionMarkdownFormatterTests(EphemerisFixture fixt
         report.Should().Contain(table);
         List<string> lines = Lines(table.TrimEnd('\r', '\n'));
         lines[0].Should().Be("| Date (UTC) | Age | D/C | Significator | Aspect | Promissor | Arc | Months/min | Range (\u00b14 min) |");
-        lines.Should().HaveCount(result.Hits.Count + 2, "the header, the separator and one row per hit");
+        lines.TakeWhile(l => l.Length > 0).Should().HaveCount(result.Hits.Count + 2, "the header, the separator and one row per hit");
     }
 
     /// <summary>Without a hit the table is the report's none sentence.</summary>

@@ -104,6 +104,98 @@ public sealed class PrimaryDirectionNotesTests(EphemerisFixture fixture)
 
     #endregion
 
+    #region The cut-off Range
+
+    /// <summary>The double dagger's footnote where rows are cut off by birth and by the age limit.</summary>
+    private const string BothReasonsFootnote =
+        "\u2021 No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.";
+
+    /// <summary>
+    /// J2000 NYC at an uncertainty of 4 minutes: the seven rows without a Range carry the double dagger after their
+    /// em dash, every other cell as before the branch, and one footnote names both reasons, a row cut off by birth
+    /// (the converse Midheaven to Mars's dexter trine, age 0.49) and one by the age limit (Alcyone to the
+    /// Ascendant, age 99.20) being among them. No row turns, so no dagger prints.
+    /// </summary>
+    [Fact]
+    public void Report_MarksTheRowsCutOffByBirthAndByTheAgeLimit_AndNamesBothReasons()
+    {
+        List<string> lines = Lines(Report(J2000Nyc(), window: 4));
+
+        lines.Should().Contain("| 2000-06-27 | 0.49 | C | Midheaven | tri dex | Mars | 0\u00b028\u2032 | +3.0 | \u2014 \u2021 |");
+        lines.Should().Contain("| 2099-03-14 | 99.20 | D | Ascendant | cnj | Alcyone | 97\u00b046\u2032 | -3.1 | \u2014 \u2021 |");
+        lines.Count(l => l.StartsWith('|') && l.Contains('\u2021')).Should().Be(7);
+        lines.Should().NotContain(l => l.EndsWith("| \u2014 |", StringComparison.Ordinal), "every row without a Range has its reason");
+        lines.Count(l => l == BothReasonsFootnote).Should().Be(1);
+        lines.Should().NotContain(l => l.Contains('\u2020'));
+
+        int afterTable = EndOfDirectionsTable(lines);
+        lines[afterTable].Should().BeEmpty();
+        lines[afterTable + 1].Should().Be(BothReasonsFootnote);
+    }
+
+    /// <summary>
+    /// The footnote names the reasons that occur among the printed rows and no other: the transit report's section
+    /// for J2000 NYC's first year holds rows cut off by birth alone, and its section for 2099 rows cut off by the
+    /// age limit alone.
+    /// </summary>
+    [Fact]
+    public void TransitReport_FootnoteNamesOnlyTheReasonsOfItsOwnRows()
+    {
+        List<string> firstYear = Lines(TransitReport(J2000Nyc(), new DateOnly(2000, 1, 2), new DateOnly(2000, 12, 31), window: 4));
+        List<string> lastYear = Lines(TransitReport(J2000Nyc(), new DateOnly(2099, 1, 1), new DateOnly(2099, 12, 31), window: 4));
+
+        firstYear.Should().Contain("| 2000-06-27 | 0.49 | C | Midheaven | tri dex | Mars | 0\u00b028\u2032 | +3.0 | \u2014 \u2021 |");
+        firstYear.Should().Contain("\u2021 No Range: at one end of the birth-time window this direction falls before birth.");
+        firstYear.Count(l => l.StartsWith('\u2021')).Should().Be(1);
+
+        lastYear.Should().Contain("| 2099-03-14 | 99.20 | D | Ascendant | cnj | Alcyone | 97\u00b046\u2032 | -3.1 | \u2014 \u2021 |");
+        lastYear.Should().Contain("\u2021 No Range: at one end of the birth-time window this direction falls beyond the age limit.");
+        lastYear.Count(l => l.StartsWith('\u2021')).Should().Be(1);
+    }
+
+    /// <summary>
+    /// Person A at an uncertainty of 10 minutes has a turning row and rows without a Range: both footnotes print,
+    /// the dagger's first, a blank line between them. Her last row, the converse Ascendant to Pollux at age 99.95,
+    /// has no Months/min either and carries the double dagger in both cells.
+    /// </summary>
+    [Fact]
+    public void Report_WithBothKindsOfRow_PrintsTheDaggersFootnoteFirst()
+    {
+        List<string> lines = Lines(Report(Hartwell(), window: 10));
+
+        lines.Should().Contain("| 2047-09-16 | 99.95 | C | Ascendant | cnj | Pollux | 98\u00b030\u2032 | \u2014 \u2021 | \u2014 \u2021 |");
+        lines.Should().Contain("| 1947-11-27 | 0.14 | D | Moon | cnj | Betelgeuse | 0\u00b008\u2032 | -0.6 | \u2014 \u2021 |");
+        int afterTable = EndOfDirectionsTable(lines);
+        lines[afterTable].Should().BeEmpty();
+        lines[afterTable + 1].Should().Be(TurningFootnote);
+        lines[afterTable + 2].Should().BeEmpty();
+        lines[afterTable + 3].Should().Be(BothReasonsFootnote);
+    }
+
+    /// <summary>
+    /// With no uncertainty set the report has no Range column: person A's one row without Months/min carries the
+    /// double dagger, and the footnote speaks of that figure and of a minute from the recorded birth time. The
+    /// Directions panel's list shows the same row and the same footnote.
+    /// </summary>
+    [Fact]
+    public void Report_WithoutAWindow_MarksTheRowWithoutMonthsPerMinute()
+    {
+        const string row = "| 2047-09-16 | 99.95 | C | Ascendant | cnj | Pollux | 98\u00b030\u2032 | \u2014 \u2021 |";
+        const string footnote = "\u2021 No Months/min: a minute from the recorded birth time this direction falls beyond the age limit.";
+        PrimaryDirectionResult result = Directions(Hartwell(), window: 0);
+
+        List<string> report = Lines(PrimaryDirectionMarkdownFormatter.ToMarkdown(result, GoldenFixtures.GoldenClock()));
+        List<string> panel = Lines(PrimaryDirectionMarkdownFormatter.FormatTable(result));
+
+        report.Should().Contain(row);
+        report.Count(l => l == footnote).Should().Be(1);
+        report.Should().NotContain(l => l.Contains("No Range", StringComparison.Ordinal));
+        panel.Should().Contain(row);
+        panel.Count(l => l == footnote).Should().Be(1);
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>J2000 NYC.</summary>

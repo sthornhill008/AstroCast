@@ -52,6 +52,27 @@ internal static class PrimaryDirectionSectionFormatter
     /// <summary>Where a date turns when no uncertainty is set: between the dates a minute either side of the birth.</summary>
     private const string WithinAMinute = "within a minute of the recorded birth time";
 
+    /// <summary>
+    /// The mark a missing figure carries when its reason is known, a double dagger (U+2021), after the em dash
+    /// and a space (branch DirectionNotes, 1.7.2; finding A5): <see cref="PrimaryDirectionHit.NoRangeReasons"/>
+    /// and <see cref="PrimaryDirectionHit.NoMonthsPerMinuteReasons"/>.
+    /// </summary>
+    internal const string NoFigureMark = "\u2021";
+
+    /// <summary>The double dagger's footnote where a Range is missing, before the reasons.</summary>
+    private const string NoRangeFootnoteStart =
+        NoFigureMark + " No Range: at one end of the birth-time window this direction ";
+
+    /// <summary>
+    /// The double dagger's footnote where only a Months/min is missing, before the reasons: with no uncertainty
+    /// set there is no Range, and the figure is taken a minute either side of the birth.
+    /// </summary>
+    private const string NoMonthsFootnoteStart =
+        NoFigureMark + " No Months/min: a minute from the recorded birth time this direction ";
+
+    /// <summary>The words for a reason that is not said in a few plain ones: the general form.</summary>
+    private const string NoDateWords = "has no date";
+
     /// <summary>The table's header, before the optional Range column.</summary>
     private const string TableHeader = "| Date (UTC) | Age | D/C | Significator | Aspect | Promissor | Arc | Months/min |";
 
@@ -113,7 +134,9 @@ internal static class PrimaryDirectionSectionFormatter
     /// <remarks>
     /// The table's notes follow its rows (branch DirectionNotes, 1.7.2; finding A5), each after a blank line and
     /// only when a row among <paramref name="hits"/> calls for it: the dagger's footnote
-    /// (<see cref="TurningFootnote"/>) when a row is turning. Nothing follows the none sentence.
+    /// (<see cref="TurningFootnote"/>) when a row is turning, then the double dagger's
+    /// (<see cref="NoFigureFootnote"/>) when a row's missing figure has its reason. Nothing follows the none
+    /// sentence.
     /// </remarks>
     /// <param name="sb">The string builder to append to.</param>
     /// <param name="settings">The run's settings: the uncertainty decides the Range column.</param>
@@ -158,6 +181,79 @@ internal static class PrimaryDirectionSectionFormatter
             sb.AppendLine();
             sb.AppendLine(turning);
         }
+
+        if (NoFigureFootnote(settings, hits) is string noFigure)
+        {
+            sb.AppendLine();
+            sb.AppendLine(noFigure);
+        }
+    }
+
+    /// <summary>
+    /// The double dagger's footnote, only when a row among the hits carries the mark (branch DirectionNotes,
+    /// 1.7.2; finding A5): "\u2021 No Range: at one end of the birth-time window this direction falls before birth or
+    /// beyond the age limit.", the reasons those that occur among the rows and no other
+    /// (<see cref="ReasonWords"/>). A row whose Months/min is missing takes the same mark and its reasons join
+    /// the footnote's. Where no row lacks a Range with a reason, as when no uncertainty is set and the table has
+    /// no Range column, the footnote reads "\u2021 No Months/min: a minute from the recorded birth time this
+    /// direction falls beyond the age limit.".
+    /// </summary>
+    /// <param name="settings">The run's settings: the uncertainty decides whether a Range is printed.</param>
+    /// <param name="hits">The hits the table prints.</param>
+    /// <returns>The footnote, or null when no row carries the mark.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when either argument is null.</exception>
+    internal static string? NoFigureFootnote(PrimaryDirectionSettings settings, IReadOnlyList<PrimaryDirectionHit> hits)
+    {
+        ArgumentNullException.ThrowIfNull(settings);
+        ArgumentNullException.ThrowIfNull(hits);
+
+        bool withRange = settings.BirthTimeUncertaintyMinutes > 0;
+        PrimaryDirectionGapReasons reasons = PrimaryDirectionGapReasons.None;
+        bool rangeMissing = false;
+        foreach (PrimaryDirectionHit hit in hits)
+        {
+            if (hit.MonthsPerMinute is null)
+                reasons |= hit.NoMonthsPerMinuteReasons;
+            if (withRange && hit.RangeStartUtc is null && hit.NoRangeReasons != PrimaryDirectionGapReasons.None)
+            {
+                reasons |= hit.NoRangeReasons;
+                rangeMissing = true;
+            }
+        }
+
+        if (reasons == PrimaryDirectionGapReasons.None)
+            return null;
+
+        return $"{(rangeMissing ? NoRangeFootnoteStart : NoMonthsFootnoteStart)}{ReasonWords(reasons)}.";
+    }
+
+    /// <summary>
+    /// The reasons a figure is missing, in plain words joined with "or", in the enumeration's order: "falls
+    /// before birth", "falls beyond the age limit" (together "falls before birth or beyond the age limit"), "is
+    /// to a Part of Fortune whose formula changes between day and night", and for a direction that has no arc
+    /// at that birth time the general form, "has no date".
+    /// </summary>
+    /// <param name="reasons">The reasons that occur.</param>
+    /// <returns>The words, without a full stop.</returns>
+    internal static string ReasonWords(PrimaryDirectionGapReasons reasons)
+    {
+        List<string> words = [];
+
+        bool beforeBirth = reasons.HasFlag(PrimaryDirectionGapReasons.BeforeBirth);
+        bool beyondAgeLimit = reasons.HasFlag(PrimaryDirectionGapReasons.BeyondAgeLimit);
+        if (beforeBirth && beyondAgeLimit)
+            words.Add("falls before birth or beyond the age limit");
+        else if (beforeBirth)
+            words.Add("falls before birth");
+        else if (beyondAgeLimit)
+            words.Add("falls beyond the age limit");
+
+        if (reasons.HasFlag(PrimaryDirectionGapReasons.SectChange))
+            words.Add("is to a Part of Fortune whose formula changes between day and night");
+        if (reasons.HasFlag(PrimaryDirectionGapReasons.NoSemiArc))
+            words.Add(NoDateWords);
+
+        return string.Join(" or ", words);
     }
 
     /// <summary>
@@ -244,7 +340,9 @@ internal static class PrimaryDirectionSectionFormatter
     /// <remarks>
     /// A turning row (<see cref="PrimaryDirectionHit.IsTurning"/>) carries <see cref="TurningMark"/> after each
     /// of the two figures it has, a space between ("+0.8 \u2020"); the values are the hit's own (branch
-    /// DirectionNotes, 1.7.2; finding A5).
+    /// DirectionNotes, 1.7.2; finding A5). A figure that is missing for a recorded reason
+    /// (<see cref="PrimaryDirectionHit.NoMonthsPerMinuteReasons"/>, <see cref="PrimaryDirectionHit.NoRangeReasons"/>)
+    /// prints the em dash and <see cref="NoFigureMark"/>; one missing with no reason recorded, the em dash alone.
     /// </remarks>
     /// <param name="hit">The hit.</param>
     /// <param name="withRange">Whether the Range column is printed.</param>
@@ -257,6 +355,8 @@ internal static class PrimaryDirectionSectionFormatter
         string months = FormatMonthsPerMinute(hit.MonthsPerMinute);
         if (hit.MonthsPerMinute is not null && hit.IsTurning)
             months = $"{months} {TurningMark}";
+        else if (hit.MonthsPerMinute is null && hit.NoMonthsPerMinuteReasons != PrimaryDirectionGapReasons.None)
+            months = $"{months} {NoFigureMark}";
 
         string row = string.Create(Inv,
             $"| {CalendarDateFormatter.Date(hit.InstantUtc)} | {hit.Years:F2} | {motion} | {hit.Significator} | {AspectLabel(hit)} | {hit.Promissor} | {PositionFormatter.FormatArc(hit.Arc)} | {months} |");
@@ -273,7 +373,7 @@ internal static class PrimaryDirectionSectionFormatter
         }
         else
         {
-            range = NoFigure;
+            range = hit.NoRangeReasons != PrimaryDirectionGapReasons.None ? $"{NoFigure} {NoFigureMark}" : NoFigure;
         }
 
         return $"{row} {range} |";

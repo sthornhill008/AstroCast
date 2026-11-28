@@ -39,6 +39,13 @@ namespace AstroCast.Core.Services.PrimaryDirections;
 /// not bound its date and its months per minute are not a rate. Only dates already in hand are compared; no date,
 /// arc or figure is changed.
 /// </para>
+/// <para>
+/// Where a figure is left null its reason is recorded (<see cref="PrimaryDirectionHit.NoMonthsPerMinuteReasons"/>,
+/// <see cref="PrimaryDirectionHit.NoRangeReasons"/>; the same branch): the Part of Fortune's change of sect, or, for
+/// a hit absent at one of the two instants, what became of it there, by <see cref="GapReason"/>: before birth, beyond
+/// the age limit, or without a semi-arc. Each moved instant keeps the arcs of the directions it did not keep for
+/// this, the arcs its own loop computes.
+/// </para>
 /// </remarks>
 public sealed class PrimaryDirectionService : IPrimaryDirectionService
 {
@@ -116,19 +123,19 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
 
         double latitude = natalChart.Input.Latitude;
         double longitude = natalChart.Input.Longitude;
-        (Dictionary<HitKey, Direction> minuteBefore, bool sectBefore) = HitsAtShift(natal.JulianDayUt - MinuteInDays, latitude, longitude, settings, cancellationToken);
-        (Dictionary<HitKey, Direction> minuteAfter, bool sectAfter) = HitsAtShift(natal.JulianDayUt + MinuteInDays, latitude, longitude, settings, cancellationToken);
-        bool sectFlipsWithinMinute = sectBefore != natal.IsDayChart || sectAfter != natal.IsDayChart;
+        ShiftedHits minuteBefore = HitsAtShift(natal.JulianDayUt - MinuteInDays, latitude, longitude, settings, cancellationToken);
+        ShiftedHits minuteAfter = HitsAtShift(natal.JulianDayUt + MinuteInDays, latitude, longitude, settings, cancellationToken);
+        bool sectFlipsWithinMinute = minuteBefore.IsDayChart != natal.IsDayChart || minuteAfter.IsDayChart != natal.IsDayChart;
 
-        Dictionary<HitKey, Direction>? earlier = null;
-        Dictionary<HitKey, Direction>? later = null;
+        ShiftedHits? earlier = null;
+        ShiftedHits? later = null;
         bool sectFlipsWithinRange = false;
         if (settings.BirthTimeUncertaintyMinutes > 0)
         {
             double shift = settings.BirthTimeUncertaintyMinutes * MinuteInDays;
-            (earlier, bool sectEarlier) = HitsAtShift(natal.JulianDayUt - shift, latitude, longitude, settings, cancellationToken);
-            (later, bool sectLater) = HitsAtShift(natal.JulianDayUt + shift, latitude, longitude, settings, cancellationToken);
-            sectFlipsWithinRange = sectEarlier != natal.IsDayChart || sectLater != natal.IsDayChart;
+            earlier = HitsAtShift(natal.JulianDayUt - shift, latitude, longitude, settings, cancellationToken);
+            later = HitsAtShift(natal.JulianDayUt + shift, latitude, longitude, settings, cancellationToken);
+            sectFlipsWithinRange = earlier.IsDayChart != natal.IsDayChart || later.IsDayChart != natal.IsDayChart;
         }
 
         Dictionary<string, int> significatorOrder = natal.Significators
@@ -145,27 +152,45 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
             // here reads the ephemeris or says how an arc becomes a date
             bool isTurning = false;
 
+            // Where a figure is left null its reason is recorded from what is in hand: the sect at the two instants,
+            // and the arc the direction has there (branch DirectionNotes, 1.7.2; finding A5)
             double? monthsPerMinute = null;
-            if (minuteBefore.TryGetValue(key, out Direction before)
-                && minuteAfter.TryGetValue(key, out Direction after)
+            PrimaryDirectionGapReasons noMonthsPerMinute = PrimaryDirectionGapReasons.None;
+            if (minuteBefore.Hits.TryGetValue(key, out Direction before)
+                && minuteAfter.Hits.TryGetValue(key, out Direction after)
                 && !(isFortune && sectFlipsWithinMinute))
             {
                 monthsPerMinute = (after.JulianDayUt - before.JulianDayUt) / 2.0 / DaysPerMonth;
                 isTurning = !IsBetween(direction.JulianDayUt, before.JulianDayUt, after.JulianDayUt);
             }
+            else
+            {
+                noMonthsPerMinute = isFortune && sectFlipsWithinMinute
+                    ? PrimaryDirectionGapReasons.SectChange
+                    : GapReason(key, direction.Arc, minuteBefore) | GapReason(key, direction.Arc, minuteAfter);
+            }
 
             DateTime? rangeStart = null;
             DateTime? rangeEnd = null;
-            if (earlier is not null && later is not null
-                && earlier.TryGetValue(key, out Direction atEarlier)
-                && later.TryGetValue(key, out Direction atLater)
-                && !(isFortune && sectFlipsWithinRange))
+            PrimaryDirectionGapReasons noRange = PrimaryDirectionGapReasons.None;
+            if (earlier is not null && later is not null)
             {
-                double first = Math.Min(atEarlier.JulianDayUt, atLater.JulianDayUt);
-                double second = Math.Max(atEarlier.JulianDayUt, atLater.JulianDayUt);
-                rangeStart = JulianDayUtility.JulianDayToInstant(first);
-                rangeEnd = JulianDayUtility.JulianDayToInstant(second);
-                isTurning |= !IsBetween(direction.JulianDayUt, first, second);
+                if (earlier.Hits.TryGetValue(key, out Direction atEarlier)
+                    && later.Hits.TryGetValue(key, out Direction atLater)
+                    && !(isFortune && sectFlipsWithinRange))
+                {
+                    double first = Math.Min(atEarlier.JulianDayUt, atLater.JulianDayUt);
+                    double second = Math.Max(atEarlier.JulianDayUt, atLater.JulianDayUt);
+                    rangeStart = JulianDayUtility.JulianDayToInstant(first);
+                    rangeEnd = JulianDayUtility.JulianDayToInstant(second);
+                    isTurning |= !IsBetween(direction.JulianDayUt, first, second);
+                }
+                else
+                {
+                    noRange = isFortune && sectFlipsWithinRange
+                        ? PrimaryDirectionGapReasons.SectChange
+                        : GapReason(key, direction.Arc, earlier) | GapReason(key, direction.Arc, later);
+                }
             }
 
             hits.Add(new PrimaryDirectionHit
@@ -184,6 +209,8 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
                 RangeStartUtc = rangeStart,
                 RangeEndUtc = rangeEnd,
                 IsTurning = isTurning,
+                NoMonthsPerMinuteReasons = noMonthsPerMinute,
+                NoRangeReasons = noRange,
             });
         }
 
@@ -232,6 +259,40 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
     /// <returns>True when the date is at or after the earlier of the two and at or before the later.</returns>
     internal static bool IsBetween(double julianDayUt, double one, double other) =>
         julianDayUt >= Math.Min(one, other) && julianDayUt <= Math.Max(one, other);
+
+    #endregion
+
+    #region Why a figure is missing (branch DirectionNotes, 1.7.2)
+
+    /// <summary>
+    /// Why a direction of the birth is not among the hits of a moved birth instant; none when it is among them.
+    /// </summary>
+    /// <remarks>
+    /// The moved instant's list holds the arc of every direction it did not keep
+    /// (<see cref="ShiftedHits.NotKept"/>). No arc there means a semi-arc the direction uses does not exist at that
+    /// instant. An arc there was dropped by the key and the age limit, and its place beside the birth's own arc
+    /// says on which side: the arc runs from 0° at birth, and a move of minutes changes it by a few degrees, so
+    /// when the birth's arc plus the change (the difference of the two arcs, taken the short way round) is below
+    /// zero the direction has passed its start and falls before birth; otherwise it falls beyond the age limit.
+    /// Only arcs are compared: nothing here says how an arc becomes a date.
+    /// </remarks>
+    /// <param name="key">The direction.</param>
+    /// <param name="birthArc">The direction's arc at the birth, in degrees.</param>
+    /// <param name="moved">The hits of the moved birth instant.</param>
+    /// <returns>The reason, or <see cref="PrimaryDirectionGapReasons.None"/>.</returns>
+    private static PrimaryDirectionGapReasons GapReason(HitKey key, double birthArc, ShiftedHits moved)
+    {
+        if (moved.Hits.ContainsKey(key))
+            return PrimaryDirectionGapReasons.None;
+
+        if (!moved.NotKept.TryGetValue(key, out double? movedArc) || movedArc is not double arc)
+            return PrimaryDirectionGapReasons.NoSemiArc;
+
+        double change = SpeculumPoint.Wrap180(arc - birthArc);
+        return birthArc + change < 0.0
+            ? PrimaryDirectionGapReasons.BeforeBirth
+            : PrimaryDirectionGapReasons.BeyondAgeLimit;
+    }
 
     #endregion
 
@@ -390,22 +451,39 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
     /// <summary>A direction found: its arc, its years and its instant, and what its promissor is.</summary>
     private readonly record struct Direction(double Arc, double Years, double JulianDayUt, PrimaryDirectionPromissorKind Kind);
 
-    /// <summary>The hits of a birth at a shifted instant, and whether that instant is a day chart.</summary>
-    private (Dictionary<HitKey, Direction> Hits, bool IsDayChart) HitsAtShift(
+    /// <summary>
+    /// The directions of a birth at a moved instant: the hits, whether that instant is a day chart, and the arc of
+    /// every direction the instant did not keep.
+    /// </summary>
+    /// <param name="Hits">The hits within the age limit, by key.</param>
+    /// <param name="IsDayChart">Whether the instant is a day chart.</param>
+    /// <param name="NotKept">
+    /// Every direction tried and not kept, by key (branch DirectionNotes, 1.7.2): its arc when the key and the age
+    /// limit dropped it, null when a semi-arc it uses does not exist. <see cref="GapReason"/> reads it.
+    /// </param>
+    private sealed record ShiftedHits(
+        Dictionary<HitKey, Direction> Hits, bool IsDayChart, Dictionary<HitKey, double?> NotKept);
+
+    /// <summary>The hits of a birth at a shifted instant, whether that instant is a day chart, and the arcs it did not keep.</summary>
+    private ShiftedHits HitsAtShift(
         double julianDayUt, double latitude, double longitude, PrimaryDirectionSettings settings,
         CancellationToken cancellationToken)
     {
         Speculum speculum = Speculum.AtInstant(julianDayUt, latitude, longitude, _ephemeris, settings.PlanetsAsSignificators);
-        (Dictionary<HitKey, Direction> hits, _) = HitsAt(speculum, settings, cancellationToken);
-        return (hits, speculum.IsDayChart);
+        Dictionary<HitKey, double?> notKept = [];
+        (Dictionary<HitKey, Direction> hits, _) = HitsAt(speculum, settings, cancellationToken, notKept);
+        return new ShiftedHits(hits, speculum.IsDayChart, notKept);
     }
 
     /// <summary>
     /// Every direction of a speculum within the age limit, by key, and the count of pairs left out for want of a
-    /// semi-arc (rules R1 to R7).
+    /// semi-arc (rules R1 to R7). When <paramref name="notKept"/> is given, every direction tried and not kept is
+    /// recorded there with its arc, or with null when it has none (branch DirectionNotes, 1.7.2): the same arcs
+    /// the loop computes, with no further work.
     /// </summary>
     private (Dictionary<HitKey, Direction> Hits, int LeftOut) HitsAt(
-        Speculum speculum, PrimaryDirectionSettings settings, CancellationToken cancellationToken)
+        Speculum speculum, PrimaryDirectionSettings settings, CancellationToken cancellationToken,
+        Dictionary<HitKey, double?>? notKept = null)
     {
         Dictionary<HitKey, Direction> hits = [];
         int leftOut = 0;
@@ -441,17 +519,21 @@ public sealed class PrimaryDirectionService : IPrimaryDirectionService
                     double? arc = motion == PrimaryDirectionMotion.Direct
                         ? PrimaryDirectionArcs.Direct(significator, promissor.Point)
                         : PrimaryDirectionArcs.Converse(significator.Point, promissor.Point);
+                    HitKey key = new(significator.Name, promissor.Source, promissor.Aspect, promissor.Angle, motion);
                     if (arc is not double arcValue)
                     {
                         leftOut++;
+                        notKept?[key] = null;
                         continue;
                     }
 
                     double? years = YearsFor(arcValue, settings.Key, inverter);
                     if (years is not double yearsValue || yearsValue > ageLimit)
+                    {
+                        notKept?[key] = arcValue;
                         continue;
+                    }
 
-                    HitKey key = new(significator.Name, promissor.Source, promissor.Aspect, promissor.Angle, motion);
                     hits[key] = new Direction(arcValue, yearsValue, JulianDayAt(speculum.JulianDayUt, yearsValue), promissor.Kind);
                 }
             }

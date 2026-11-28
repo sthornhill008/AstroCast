@@ -486,10 +486,10 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 |------------|-----|-----|--------------|--------|-----------|-----|------------|----------------|
 | 2000-01-11 | 0.03 | D | Sun | tri dex | Saturn | 0°01′ | 0.0 | 2000-01-10 to 2000-01-12 |
 | 2000-03-07 | 0.18 | C | Sun | cnj | Lesath | 0°10′ | -0.4 | 2000-01-13 to 2000-04-30 |
-| 2000-03-22 | 0.22 | D | Part of Fortune | sqr sin | Venus | 0°13′ | -2.2 | — |
-| 2000-06-23 | 0.48 | D | Part of Fortune | sxt sin | Mercury | 0°28′ | -2.2 | — |
-| 2000-06-27 | 0.49 | C | Midheaven | tri dex | Mars | 0°28′ | +3.0 | — |
-| 2000-07-09 | 0.52 | D | Part of Fortune | cnj | Markab | 0°30′ | -2.4 | — |
+| 2000-03-22 | 0.22 | D | Part of Fortune | sqr sin | Venus | 0°13′ | -2.2 | — ‡ |
+| 2000-06-23 | 0.48 | D | Part of Fortune | sxt sin | Mercury | 0°28′ | -2.2 | — ‡ |
+| 2000-06-27 | 0.49 | C | Midheaven | tri dex | Mars | 0°28′ | +3.0 | — ‡ |
+| 2000-07-09 | 0.52 | D | Part of Fortune | cnj | Markab | 0°30′ | -2.4 | — ‡ |
 | 2000-11-26 | 0.90 | D | Moon | sqr dex | Uranus | 0°53′ | -0.3 | 2000-10-22 to 2000-12-31 |
 | 2001-03-25 | 1.23 | D | Moon | cnj | South Scale | 1°12′ | -0.3 | 2001-02-19 to 2001-04-28 |
 | 2001-04-24 | 1.31 | D | Moon | antiscion | Uranus | 1°17′ | -0.3 | 2001-03-20 to 2001-05-30 |
@@ -1053,9 +1053,11 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 | 2098-08-27 | 98.66 | D | Sun | sqr sin | Mars | 97°14′ | -1.1 | 2098-04-18 to 2099-01-05 |
 | 2098-10-09 | 98.77 | D | Midheaven | sxt sin | Venus | 97°21′ | -3.0 | 2097-10-04 to 2099-10-15 |
 | 2099-01-26 | 99.07 | D | Part of Fortune | tri sin | Mars | 97°39′ | -2.5 | 2098-04-02 to 2099-11-21 |
-| 2099-03-14 | 99.20 | D | Ascendant | cnj | Alcyone | 97°46′ | -3.1 | — |
-| 2099-03-26 | 99.23 | D | Part of Fortune | contra-antiscion | Mercury | 97°48′ | -2.5 | — |
-| 2099-05-24 | 99.39 | C | Ascendant | sxt dex | Moon | 97°58′ | +2.3 | — |
+| 2099-03-14 | 99.20 | D | Ascendant | cnj | Alcyone | 97°46′ | -3.1 | — ‡ |
+| 2099-03-26 | 99.23 | D | Part of Fortune | contra-antiscion | Mercury | 97°48′ | -2.5 | — ‡ |
+| 2099-05-24 | 99.39 | C | Ascendant | sxt dex | Moon | 97°58′ | +2.3 | — ‡ |
+
+‡ No Range: at one end of the birth-time window this direction falls before birth or beyond the age limit.
 
 ---
 *Engine: AstroCast X.Y.Z (SwissEph VER)*

@@ -77,4 +77,19 @@ public sealed class PrimaryDirectionHit
     /// mark such a row with a dagger.
     /// </summary>
     public bool IsTurning { get; init; }
+
+    /// <summary>
+    /// Why <see cref="MonthsPerMinute"/> is null (branch DirectionNotes, 1.7.2; finding A5): what happens to the
+    /// direction at a minute before the birth or a minute after it. <see cref="PrimaryDirectionGapReasons.None"/>
+    /// when the figure is there.
+    /// </summary>
+    public PrimaryDirectionGapReasons NoMonthsPerMinuteReasons { get; init; }
+
+    /// <summary>
+    /// Why the range is null although a birth-time uncertainty is set (branch DirectionNotes, 1.7.2; finding A5):
+    /// what happens to the direction at one end of the uncertainty or the other.
+    /// <see cref="PrimaryDirectionGapReasons.None"/> when the range has its two dates, and when no uncertainty is
+    /// set, where no range is sought.
+    /// </summary>
+    public PrimaryDirectionGapReasons NoRangeReasons { get; init; }
 }

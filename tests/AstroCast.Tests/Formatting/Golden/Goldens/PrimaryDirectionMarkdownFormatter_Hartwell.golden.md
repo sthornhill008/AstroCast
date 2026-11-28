@@ -1056,7 +1056,9 @@ Scoring (AstroCast's own scheme): ASC sign 3pts, ASC ruler sign 2pts, Moon sign 
 | 2047-02-12 | 99.36 | D | Descendant | cnj | Regulus | 97°55′ | -3.1 |
 | 2047-06-10 | 99.68 | D | Sun | sqr sin | Neptune | 98°15′ | -0.6 |
 | 2047-08-06 | 99.84 | C | Ascendant | tri dex | Jupiter | 98°24′ | +1.3 |
-| 2047-09-16 | 99.95 | C | Ascendant | cnj | Pollux | 98°30′ | — |
+| 2047-09-16 | 99.95 | C | Ascendant | cnj | Pollux | 98°30′ | — ‡ |
+
+‡ No Months/min: a minute from the recorded birth time this direction falls beyond the age limit.
 
 ---
 *Engine: AstroCast X.Y.Z (SwissEph VER)*

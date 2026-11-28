@@ -91,8 +91,8 @@ public static class PrimaryDirectionMarkdownFormatter
     /// </summary>
     /// <remarks>
     /// The table's notes come with it, as the report prints them under its rows (branch DirectionNotes, 1.7.2;
-    /// finding A5): a turning row's daggers and their footnote
-    /// (<see cref="PrimaryDirectionSectionFormatter.AppendTable"/>).
+    /// finding A5): a turning row's daggers and their footnote, and the double dagger of a missing figure with
+    /// its footnote (<see cref="PrimaryDirectionSectionFormatter.AppendTable"/>).
     /// </remarks>
     /// <param name="result">The primary directions of a chart.</param>
     /// <returns>The table, or the none sentence.</returns>

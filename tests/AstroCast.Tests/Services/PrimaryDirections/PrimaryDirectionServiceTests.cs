@@ -447,6 +447,103 @@ public sealed class PrimaryDirectionServiceTests(EphemerisFixture fixture)
 
     #endregion
 
+    #region Why a figure is missing (branch DirectionNotes, 1.7.2)
+
+    /// <summary>
+    /// J2000 NYC at an uncertainty of 4 minutes has seven hits without a range (found by script): four fall before
+    /// birth at one end of the window, at ages 0.22 to 0.52, and three beyond the age limit, at ages 99.20 to
+    /// 99.39. Every hit without a range has its reason, and every hit with one has none.
+    /// </summary>
+    [Fact]
+    public void NoRangeReasons_J2000AtFourMinutes_AreBeforeBirthOrBeyondTheAgeLimit()
+    {
+        PrimaryDirectionResult result = Service().Calculate(J2000Nyc(), new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 });
+
+        List<PrimaryDirectionHit> withoutRange = result.Hits.Where(h => h.RangeStartUtc is null).ToList();
+        withoutRange.Should().HaveCount(7);
+        result.Hits.Should().OnlyContain(h => (h.RangeStartUtc == null) == (h.NoRangeReasons != PrimaryDirectionGapReasons.None));
+        withoutRange.Where(h => h.Years < 1.0).Should().HaveCount(4)
+            .And.OnlyContain(h => h.NoRangeReasons == PrimaryDirectionGapReasons.BeforeBirth);
+        withoutRange.Where(h => h.Years > 99.0).Should().HaveCount(3)
+            .And.OnlyContain(h => h.NoRangeReasons == PrimaryDirectionGapReasons.BeyondAgeLimit);
+
+        PrimaryDirectionHit marsToMidheaven = withoutRange.Single(h =>
+            h.Motion == PrimaryDirectionMotion.Converse && h.Significator == "Midheaven" && h.Promissor == "Mars");
+        marsToMidheaven.NoRangeReasons.Should().Be(PrimaryDirectionGapReasons.BeforeBirth);
+        marsToMidheaven.MonthsPerMinute.Should().NotBeNull("the direction exists a minute either side of the birth");
+        marsToMidheaven.NoMonthsPerMinuteReasons.Should().Be(PrimaryDirectionGapReasons.None);
+
+        PrimaryDirectionHit alcyoneToAscendant = withoutRange.Single(h => h.Significator == "Ascendant" && h.Promissor == "Alcyone");
+        alcyoneToAscendant.NoRangeReasons.Should().Be(PrimaryDirectionGapReasons.BeyondAgeLimit);
+    }
+
+    /// <summary>With no uncertainty set no range is sought, so no hit carries a reason for its absence.</summary>
+    [Fact]
+    public void NoRangeReasons_WithoutAWindow_AreNone()
+    {
+        PrimaryDirectionResult result = Service().Calculate(J2000Nyc(), PrimaryDirectionSettings.Default);
+
+        result.Hits.Should().OnlyContain(h => h.NoRangeReasons == PrimaryDirectionGapReasons.None);
+    }
+
+    /// <summary>
+    /// A hit without months per minute has its reason too (found by script): Daniel Whitfield's chart has six, three
+    /// that fall before birth a minute from the birth, at ages 0.06 to 0.17, and three beyond the age limit, at
+    /// ages 99.77 to 99.96; person A's has one, the converse Ascendant to Pollux at age 99.95.
+    /// </summary>
+    [Fact]
+    public void NoMonthsPerMinuteReasons_AreBeforeBirthOrBeyondTheAgeLimit()
+    {
+        PrimaryDirectionResult whitfield = Service().Calculate(Whitfield(), PrimaryDirectionSettings.Default);
+
+        List<PrimaryDirectionHit> withoutFigure = whitfield.Hits.Where(h => h.MonthsPerMinute is null).ToList();
+        withoutFigure.Should().HaveCount(6);
+        whitfield.Hits.Should().OnlyContain(h => (h.MonthsPerMinute == null) == (h.NoMonthsPerMinuteReasons != PrimaryDirectionGapReasons.None));
+        withoutFigure.Where(h => h.Years < 1.0).Should().HaveCount(3)
+            .And.OnlyContain(h => h.NoMonthsPerMinuteReasons == PrimaryDirectionGapReasons.BeforeBirth);
+        withoutFigure.Where(h => h.Years > 99.0).Should().HaveCount(3)
+            .And.OnlyContain(h => h.NoMonthsPerMinuteReasons == PrimaryDirectionGapReasons.BeyondAgeLimit);
+
+        PrimaryDirectionResult hartwell = Service().Calculate(Hartwell(), PrimaryDirectionSettings.Default);
+        hartwell.Hits.Where(h => h.MonthsPerMinute is null).Should().ContainSingle()
+            .Which.Should().Match<PrimaryDirectionHit>(h =>
+                h.Significator == "Ascendant" && h.Promissor == "Pollux" && h.NoMonthsPerMinuteReasons == PrimaryDirectionGapReasons.BeyondAgeLimit);
+    }
+
+    /// <summary>
+    /// The birth at 07:24:40 in New York of <see cref="SectFlipWithinTheMinute_LeavesTheFortuneWithoutAFigure"/>:
+    /// the reason every Part of Fortune hit has no months per minute is the change of sect, and at an uncertainty
+    /// of 4 minutes it is the reason they have no range.
+    /// </summary>
+    [Fact]
+    public void SectFlip_IsTheReasonTheFortuneHasNoFigure()
+    {
+        ChartInput j2000 = GoldenFixtures.J2000NycInput();
+        ChartInput input = new()
+        {
+            Name = "J2000 NYC at 07:24:40",
+            LocalDateTime = new DateTime(2000, 1, 1, 7, 24, 40),
+            TimeZone = j2000.TimeZone,
+            Latitude = j2000.Latitude,
+            Longitude = j2000.Longitude,
+            LocationName = j2000.LocationName,
+            EventType = j2000.EventType,
+            HouseSystem = j2000.HouseSystem,
+        };
+        ChartResult natal = GoldenFixtures.CreateChartEngine(fixture).Calculate(input);
+
+        PrimaryDirectionResult result = Service().Calculate(natal, new PrimaryDirectionSettings { BirthTimeUncertaintyMinutes = 4 });
+
+        List<PrimaryDirectionHit> fortune = result.Hits.Where(h => h.Significator == "Part of Fortune").ToList();
+        fortune.Should().NotBeEmpty();
+        fortune.Should().OnlyContain(h => h.NoMonthsPerMinuteReasons == PrimaryDirectionGapReasons.SectChange);
+        fortune.Should().OnlyContain(h => h.RangeStartUtc == null && h.NoRangeReasons == PrimaryDirectionGapReasons.SectChange);
+        result.Hits.Where(h => h.Significator != "Part of Fortune")
+            .Should().NotContain(h => h.NoRangeReasons.HasFlag(PrimaryDirectionGapReasons.SectChange));
+    }
+
+    #endregion
+
     #region Helpers
 
     /// <summary>Person A, Eleanor Hartwell (invented), with a birth-time source.</summary>
